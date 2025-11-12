@@ -1,0 +1,9 @@
+# ESLint
+node_modules/
+dist/
+build/
+coverage/
+
+# 設定ファイル自体は除外
+.eslintrc.cjs
+vite.config.ts

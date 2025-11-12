@@ -151,3 +151,171 @@
 - mainブランチへのマージ前に全テスト合格が必須
 - テストカバレッジレポートの生成・可視化
 
+## コーディング規約
+
+### 共通規約
+
+#### 命名規則
+- **わかりやすさ優先**: 略語よりも完全な単語を使用
+- **一貫性**: プロジェクト全体で統一された命名パターン
+- **ビジネス用語**: ドメイン用語を正確に反映
+
+#### コメント
+- **コードで表現できないことを書く**: Whyを説明、Whatは書かない
+- **日本語OK**: チーム内での理解を優先
+- **TODOコメント**: `// TODO: [担当者名] 説明` の形式
+
+#### バージョン管理
+- **コミットメッセージ**: Conventional Commits形式
+  - `feat: 新機能の説明`
+  - `fix: バグ修正の説明`
+  - `refactor: リファクタリングの説明`
+  - `test: テスト追加・修正`
+  - `docs: ドキュメント更新`
+- **ブランチ戦略**: GitHub Flow
+  - `main`: 本番環境用
+  - `feature/*`: 機能開発用
+  - `fix/*`: バグ修正用
+
+### フロントエンド（React + TypeScript）
+
+#### ファイル・ディレクトリ構成
+```
+src/
+  components/     # 再利用可能なコンポーネント
+  pages/          # ページコンポーネント
+  hooks/          # カスタムフック
+  services/       # API通信
+  types/          # 型定義
+  utils/          # ユーティリティ関数
+  test/           # テスト関連
+```
+
+#### 命名規則
+- **コンポーネント**: PascalCase（例: `PhotoUploadForm.tsx`）
+- **関数・変数**: camelCase（例: `uploadPhoto`, `imageUrl`）
+- **定数**: UPPER_SNAKE_CASE（例: `MAX_FILE_SIZE`）
+- **型・インターフェース**: PascalCase（例: `PhotoData`, `UserProfile`）
+- **カスタムフック**: `use`プレフィックス（例: `usePhotoUpload`）
+
+#### コンポーネント設計
+- **関数コンポーネント**: 常に関数コンポーネントを使用
+- **1ファイル1コンポーネント**: 原則として1ファイルに1つのエクスポートコンポーネント
+- **Props型定義**: インターフェースで明示的に定義
+  ```typescript
+  interface PhotoCardProps {
+    photoId: string;
+    imageUrl: string;
+    onDelete: (id: string) => void;
+  }
+  ```
+- **デフォルトエクスポート**: コンポーネントは名前付きエクスポートを推奨
+
+#### TypeScript
+- **厳格モード**: `strict: true` を維持
+- **any禁止**: 原則として`any`は使用しない（`unknown`を検討）
+- **型推論活用**: 明らかな場合は型注釈を省略
+- **nullチェック**: Optional Chaining（`?.`）とNullish Coalescing（`??`）を活用
+
+#### スタイリング
+- **Material-UI**: コンポーネントライブラリとして使用
+- **sx prop**: インラインスタイルは`sx` propを使用
+- **テーマ**: MUIのテーマシステムを活用
+- **レスポンシブ**: モバイルファーストで設計
+
+#### 状態管理
+- **ローカル状態**: `useState`で管理
+- **副作用**: `useEffect`で管理、依存配列を正確に指定
+- **グローバル状態**: 必要に応じてContext APIを使用（初期は不要）
+
+#### API通信
+- **エラーハンドリング**: try-catchで適切に処理
+- **ローディング状態**: ユーザーにフィードバックを提供
+- **型安全性**: レスポンスの型を定義
+
+#### テスト
+- **ファイル名**: `*.test.tsx` または `*.test.ts`
+- **配置**: テスト対象と同じディレクトリまたは`test/`配下
+- **テストID**: `data-testid`属性を使用
+- **アクセシビリティ**: `getByRole`, `getByLabelText`を優先
+
+### バックエンド（Spring Boot + Java）
+
+#### パッケージ構成（Clean Architecture）
+```
+com.hatomask/
+  presentation/       # Controller, DTO, リクエスト/レスポンス
+    controller/
+    dto/
+  application/        # UseCase, ApplicationService
+    usecase/
+  domain/            # Entity, DomainService, ValueObject
+    model/
+    service/
+  infrastructure/    # Repository実装, 外部サービス連携
+    repository/
+    external/
+  config/            # 設定クラス
+```
+
+#### 命名規則
+- **クラス**: PascalCase（例: `PhotoUploadUseCase`）
+- **メソッド・変数**: camelCase（例: `uploadPhoto`, `imageData`）
+- **定数**: UPPER_SNAKE_CASE（例: `MAX_IMAGE_SIZE`）
+- **パッケージ**: 小文字（例: `com.hatomask.domain.model`）
+
+#### クラス設計
+- **単一責任の原則**: 1クラス1責務
+- **Controller**: リクエスト/レスポンスの変換のみ、ビジネスロジックは持たない
+- **UseCase**: ビジネスロジックを実装、1つのユースケースを表現
+- **Entity**: ドメインロジックを持つ、アノテーションは最小限
+- **DTO**: データ転送用、不変オブジェクト推奨
+
+#### アノテーション
+- **依存性注入**: コンストラクタインジェクション（`@RequiredArgsConstructor`推奨）
+- **Lombok**: `@Data`, `@Builder`, `@RequiredArgsConstructor`を活用
+- **Validation**: `@Valid`, `@NotNull`, `@Size`等でバリデーション
+
+#### エラーハンドリング
+- **カスタム例外**: ドメイン固有の例外を定義
+- **グローバルハンドラー**: `@RestControllerAdvice`で統一的に処理
+- **RFC 9457準拠**: Problem Details形式でレスポンス
+
+#### データベース
+- **Repository**: Spring Data JPAのインターフェースを活用
+- **命名**: `findByXxx`, `existsByXxx`等の規約に従う
+- **トランザクション**: `@Transactional`を適切に使用
+- **ID**: UUIDを主キーとして使用
+
+#### ロギング
+- **SLF4J**: `@Slf4j`アノテーションを使用
+- **ログレベル**:
+  - `ERROR`: システムエラー、予期しない例外
+  - `WARN`: 警告、復旧可能なエラー
+  - `INFO`: 重要な処理の開始・終了
+  - `DEBUG`: 開発時のデバッグ情報
+- **個人情報**: ログに出力しない
+
+#### テスト
+- **配置**: `src/test/java`配下、パッケージ構成は本番コードと同じ
+- **命名**: 
+  - 単体テスト: `*Test.java`（例: `PhotoUploadUseCaseTest.java`）
+  - 統合テスト: `*IntegrationTest.java`（例: `PhotoControllerIntegrationTest.java`）
+- **配置場所**:
+  - 単体テスト: テスト対象と同じパッケージ（例: `controller/HelloControllerTest.java`）
+  - 統合テスト: `integration/`パッケージ（例: `integration/HelloControllerIntegrationTest.java`）
+- **DisplayName**: `@DisplayName`で日本語の説明を記述
+- **Given-When-Then**: テストコードの構造を明確に
+- **モック**: Mockitoを使用、`@Mock`, `@InjectMocks`
+
+#### セキュリティ
+- **入力検証**: 必ず実施
+- **SQLインジェクション対策**: PreparedStatementまたはJPAを使用
+- **パスワード**: ハッシュ化（BCrypt推奨）
+- **機密情報**: 環境変数または設定ファイルで管理、コードに埋め込まない
+
+#### パフォーマンス
+- **N+1問題**: `@EntityGraph`や`JOIN FETCH`で対策
+- **ページネーション**: 大量データは必ずページングする
+- **キャッシュ**: 必要に応じて`@Cacheable`を使用
+

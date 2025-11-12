@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!--
+    HatoMask バックエンド Checkstyle設定
+    コーディング規約に基づいたJavaコードの品質チェック
+-->
+
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="error"/>
+    <property name="fileExtensions" value="java"/>
+
+    <!-- ファイルの除外 -->
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value="module\-info\.java$"/>
+    </module>
+
+    <!-- ファイルサイズチェック -->
+    <module name="FileLength">
+        <property name="max" value="500"/>
+    </module>
+
+    <!-- TreeWalker: AST（抽象構文木）ベースのチェック -->
+    <module name="TreeWalker">
+        
+        <!-- 命名規約 -->
+        <!-- クラス名: PascalCase -->
+        <module name="TypeName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+                     value="クラス名はPascalCaseで命名してください: {0}"/>
+        </module>
+        
+        <!-- メソッド名: camelCase -->
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+                     value="メソッド名はcamelCaseで命名してください: {0}"/>
+        </module>
+        
+        <!-- 変数名: camelCase -->
+        <module name="LocalVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+                     value="変数名はcamelCaseで命名してください: {0}"/>
+        </module>
+        
+        <!-- メンバー変数名: camelCase -->
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+                     value="メンバー変数名はcamelCaseで命名してください: {0}"/>
+        </module>
+        
+        <!-- パラメータ名: camelCase -->
+        <module name="ParameterName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+                     value="パラメータ名はcamelCaseで命名してください: {0}"/>
+        </module>
+        
+        <!-- 定数名: UPPER_SNAKE_CASE -->
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+            <message key="name.invalidPattern"
+                     value="定数名はUPPER_SNAKE_CASEで命名してください: {0}"/>
+        </module>
+        
+        <!-- パッケージ名: 小文字 -->
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+            <message key="name.invalidPattern"
+                     value="パッケージ名は小文字で命名してください: {0}"/>
+        </module>
+
+        <!-- インポート -->
+        <!-- 未使用のインポート禁止 -->
+        <module name="UnusedImports"/>
+        
+        <!-- ワイルドカードインポート禁止 -->
+        <module name="AvoidStarImport"/>
+        
+        <!-- 冗長なインポート禁止 -->
+        <module name="RedundantImport"/>
+
+        <!-- コードスタイル -->
+        <!-- 1行1文 -->
+        <module name="OneStatementPerLine"/>
+        
+        <!-- 配列の型スタイル: String[] args（Javaスタイル） -->
+        <module name="ArrayTypeStyle"/>
+        
+        <!-- 不要なカッコの警告 -->
+        <module name="UnnecessaryParentheses"/>
+
+        <!-- クラス設計 -->
+        <!-- finalクラスの設計（utilityクラスなど） -->
+        <module name="FinalClass"/>
+        
+        <!-- インターフェースは型定義のみ -->
+        <module name="InterfaceIsType"/>
+        
+        <!-- 可視性修飾子の順序 -->
+        <module name="ModifierOrder"/>
+        
+        <!-- 冗長な修飾子の警告 -->
+        <module name="RedundantModifier"/>
+
+        <!-- メソッド設計 -->
+        <!-- メソッドの長さ制限 -->
+        <module name="MethodLength">
+            <property name="max" value="50"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        
+        <!-- パラメータ数制限 -->
+        <module name="ParameterNumber">
+            <property name="max" value="7"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+
+        <!-- 複雑度 -->
+        <!-- 循環的複雑度（McCabe） -->
+        <module name="CyclomaticComplexity">
+            <property name="max" value="10"/>
+        </module>
+
+        <!-- コード品質 -->
+        <!-- equals()とhashCode()の同時実装チェック -->
+        <module name="EqualsHashCode"/>
+        
+        <!-- String比較でequals()使用 -->
+        <module name="StringLiteralEquality"/>
+        
+        <!-- switch文のdefault必須 -->
+        <module name="MissingSwitchDefault"/>
+        
+        <!-- fall-throughコメント必須 -->
+        <module name="FallThrough"/>
+        
+        <!-- 空のcatchブロック禁止 -->
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected|ignore"/>
+        </module>
+
+        <!-- インデント -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="caseIndent" value="4"/>
+            <property name="throwsIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>
+            <property name="arrayInitIndent" value="4"/>
+        </module>
+
+        <!-- 空白 -->
+        <!-- 演算子周りの空白 -->
+        <module name="WhitespaceAround">
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+            <property name="allowEmptyLoops" value="true"/>
+        </module>
+        
+        <!-- カンマ、セミコロン後の空白 -->
+        <module name="WhitespaceAfter"/>
+
+        <!-- 中括弧 -->
+        <!-- if, else, for, do, while に中括弧必須 -->
+        <module name="NeedBraces"/>
+        
+        <!-- 中括弧の位置 -->
+        <module name="LeftCurly"/>
+        <module name="RightCurly"/>
+
+        <!-- アノテーション -->
+        <!-- アノテーションの位置 -->
+        <module name="AnnotationLocation">
+            <property name="allowSamelineMultipleAnnotations" value="false"/>
+            <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
+        </module>
+
+        <!-- Javadoc -->
+        <!-- public メソッドにはJavadoc推奨（warningレベル） -->
+        <module name="MissingJavadocMethod">
+            <property name="severity" value="warning"/>
+            <property name="scope" value="public"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+        </module>
+        
+        <!-- publicクラスにはJavadoc推奨（warningレベル） -->
+        <module name="MissingJavadocType">
+            <property name="severity" value="warning"/>
+            <property name="scope" value="public"/>
+        </module>
+
+        <!-- その他 -->
+        <!-- TODO/FIXMEコメントの検出（info） -->
+        <module name="TodoComment">
+            <property name="severity" value="info"/>
+            <property name="format" value="(TODO|FIXME)"/>
+        </module>
+        
+        <!-- マジックナンバーの検出 -->
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1, 0, 1, 2"/>
+            <property name="ignoreHashCodeMethod" value="true"/>
+            <property name="ignoreAnnotation" value="true"/>
+        </module>
+
+    </module>
+
+    <!-- 行の長さチェック -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+    </module>
+
+</module>
