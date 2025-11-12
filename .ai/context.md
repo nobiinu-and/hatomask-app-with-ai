@@ -1,0 +1,3 @@
+- Stack: React + TypeScript + Spring Boot + PostgreSQL
+- Architecture: Clean Architecture
+- API: 統一レスポンス形式、エラーレスポンスは、RFC 9457（Problem Details）仕様に従う
