@@ -45,10 +45,12 @@
 #### 技術スタック
 - React
 - TypeScript
+- UIコンポーネント: Material-UI (MUI)
 - HTTP クライアント: fetch API または axios
 
 #### 実装方針
 - コンポーネントベースの設計
+- Material-UIを使用した統一されたUI/UX
 - シンプルな状態管理（useState/useEffect から開始）
 - 型安全性を重視（TypeScript の活用）
 

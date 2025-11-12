@@ -1,0 +1,4 @@
+/* Material-UIのCssBaselineが基本的なリセットを提供 */
+body {
+  margin: 0;
+}
