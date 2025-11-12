@@ -1,0 +1,29 @@
+# 依存関係
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ビルド出力
+dist
+build
+
+# IDEの設定ファイル
+.vscode
+.idea
+*.swp
+*.bak
+*~
+.DS_Store
+
+# 環境変数ファイル
+.env
+.env.local
+.env.*.local
+
+# ログファイル
+*.log
+
+# OS固有のファイル
+Thumbs.db

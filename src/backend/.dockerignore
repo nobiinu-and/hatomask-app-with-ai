@@ -1,0 +1,19 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDEの設定ファイル
+.idea
+.vscode
+*.swp
+*.bak
+*~
+.DS_Store
+
+# ログファイル
+*.log
+
+# OS固有のファイル
+Thumbs.db
