@@ -1,53 +1,131 @@
-# E2Eテスト
+# Cucumber E2Eテスト
 
-このディレクトリには Playwright を使用した E2E テストが含まれています。
+このディレクトリには、Cucumberを使用したBDD（振る舞い駆動開発）スタイルのE2Eテストが含まれています。
 
-## セットアップ
+## ディレクトリ構造
 
+```
+e2e/
+├── features/              # Gherkin形式のフィーチャーファイル
+│   ├── top-page.feature
+│   ├── responsive-design.feature
+│   └── ui-theme.feature
+├── step-definitions/      # ステップ定義（テストの実装）
+│   └── steps.ts
+├── support/              # テストのセットアップとフック
+│   └── hooks.ts
+├── cucumber.js           # Cucumber設定ファイル
+└── tsconfig.cucumber.json # TypeScript設定
+```
+
+## テストの実行
+
+### 前提条件
+
+1. 依存関係のインストール:
 ```bash
-cd e2e
 npm install
+```
+
+2. Cucumberの最新バージョン（v12.2.0）を使用しています。
+
+3. Playwrightブラウザのインストール:
+```bash
 npm run playwright:install
 ```
 
-## テスト実行
-
-### 全テスト実行
+4. アプリケーションの起動（別ターミナルで）:
 ```bash
-npm run test:e2e
-```
-
-### UIモードで実行
-```bash
-npm run test:e2e:ui
-```
-
-### ヘッドモードで実行（ブラウザを表示）
-```bash
-npm run test:e2e:headed
-```
-
-### デバッグモード
-```bash
-npm run test:e2e:debug
-```
-
-## 前提条件
-
-E2Eテストを実行する前に、以下を確認してください：
-
-1. フロントエンドが http://localhost:3000 で起動している
-2. バックエンドが http://localhost:8080 で起動している
-
-Docker Composeで全体を起動する場合：
-```bash
-cd /workspaces/hatomask-app-with-ai
+# フロントエンドとバックエンドを起動
 docker-compose -f docker-compose.dev.yml up
 ```
 
-## テスト結果
+### Cucumberテストの実行
 
-- HTMLレポート: `playwright-report/index.html`
-- JSONレポート: `test-results/results.json`
-- スクリーンショット: `test-results/` 配下に保存
-- ビデオ: `test-results/` 配下に保存
+```bash
+# すべてのCucumberテストを実行
+npm run test:cucumber
+
+# ドライラン（構文チェックのみ）
+npm run test:cucumber:dry
+```
+
+### Playwrightテストの実行（従来のテスト）
+
+```bash
+# すべてのPlaywrightテストを実行
+npm run test:e2e
+
+# UIモードで実行
+npm run test:e2e:ui
+
+# ヘッドモードで実行（ブラウザ表示あり）
+npm run test:e2e:headed
+
+# デバッグモードで実行
+npm run test:e2e:debug
+```
+
+## フィーチャーファイルの書き方
+
+フィーチャーファイルはGherkin構文を使用し、日本語で記述されています：
+
+```gherkin
+# language: ja
+機能: トップページの表示
+
+  シナリオ: トップページが正しく表示される
+    前提 ユーザーがブラウザを開いている
+    もし トップページにアクセスする
+    ならば タイトル "🕊️ HatoMask App" が表示される
+```
+
+### キーワード
+
+- `機能`: テスト対象の機能
+- `シナリオ`: 具体的なテストケース
+- `シナリオアウトライン`: パラメータ化されたテストケース
+- `前提` (Given): 初期状態
+- `もし` (When): アクション
+- `ならば` (Then): 期待される結果
+- `かつ` (And): 前のステップの続き
+
+## テストレポート
+
+テスト実行後、以下の場所にレポートが生成されます：
+
+- HTML: `test-results/cucumber-report.html`
+- JSON: `test-results/cucumber-report.json`
+- JUnit XML: `test-results/cucumber-report.xml`
+
+## ステップ定義の追加
+
+新しいステップを追加する場合は、`step-definitions/steps.ts`に追加してください：
+
+```typescript
+Given('新しい前提条件', async function () {
+  // 実装
+});
+
+When('新しいアクション', async function () {
+  // 実装
+});
+
+Then('新しい期待結果', async function () {
+  // 実装
+});
+```
+
+## トラブルシューティング
+
+### エラー: `page is not defined`
+
+`support/hooks.ts`でPageオブジェクトが正しくセットアップされているか確認してください。
+
+### エラー: `Cannot find module`
+
+`tsconfig.cucumber.json`の設定を確認し、必要なモジュールがインストールされているか確認してください。
+
+### タイムアウトエラー
+
+`step-definitions/steps.ts`の先頭で`setDefaultTimeout`の値を調整してください。
