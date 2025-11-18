@@ -1,0 +1,29 @@
+{
+  "name": "generate-test-images",
+  "version": "1.0.0",
+  "description": "Test image generation tool for Hatomask application",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "generate": "tsx src/index.ts"
+  },
+  "keywords": [
+    "test",
+    "image",
+    "generator"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "sharp": "^0.33.1",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
