@@ -2,6 +2,16 @@
 
 このドキュメントは、AIエージェントが開発を支援する際のコンテキスト情報を提供します。
 
+## 重要: システムプロンプトの読み込み
+
+**GitHub Copilot でチャットを開始する際は、必ず以下のファイルを読み込んでください:**
+
+- `docs/ai/prompts/system/00_role.md` - AIエージェントの役割定義
+- `docs/ai/prompts/system/01_implementation_workflow.md` - 実装ワークフロー
+- `docs/ai/prompts/system/02_quality_standards.md` - 品質基準
+
+これらのファイルには、このプロジェクトにおけるAIエージェントの振る舞いや開発方針に関する重要な指示が含まれています。
+
 ## 技術スタック
 
 - **フロントエンド**: React + TypeScript

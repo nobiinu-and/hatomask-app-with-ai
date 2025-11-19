@@ -1,8 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
+import { http, HttpResponse } from 'msw'
+import { describe, it, expect, vi } from 'vitest'
+
 import App from '../App'
 import { server } from './mocks/server'
-import { http, HttpResponse } from 'msw'
+
 
 describe('App コンポーネント', () => {
   it('ローディング中は CircularProgress が表示される', () => {

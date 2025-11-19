@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import {
   Container,
   Box,
@@ -11,7 +11,7 @@ import {
   createTheme,
   CssBaseline,
 } from '@mui/material'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import { useState, useEffect } from 'react'
 
 interface HelloResponse {
   message: string
