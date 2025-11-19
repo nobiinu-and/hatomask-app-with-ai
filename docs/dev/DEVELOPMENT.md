@@ -350,6 +350,27 @@ cd src/frontend
 npm test
 ```
 
+##### テスト実装時の注意事項
+
+**Material-UIのTouchRipple処理**
+
+Material-UIのボタンコンポーネント(Button、IconButtonなど)は、クリック時にTouchRippleエフェクトを非同期で更新します。テストでこれらのボタンをクリックする場合、非同期更新を`act()`でラップする必要があります。
+
+```tsx
+import { act } from 'react';
+import userEvent from '@testing-library/user-event';
+
+// ボタンクリック時は act でラップ
+await act(async () => {
+  await user.click(button)
+})
+```
+
+これを怠ると、以下のような警告が表示されます:
+```
+Warning: An update to ForwardRef(ButtonBase) inside a test was not wrapped in act(...)
+```
+
 #### E2Eテスト実行(モックAPI使用)
 ```bash
 cd e2e
