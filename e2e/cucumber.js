@@ -14,7 +14,6 @@ const common = {
 
 module.exports = {
   default: {
-    ...common,
-    paths: ['features/**/*.feature']
+    ...common
   }
 };
