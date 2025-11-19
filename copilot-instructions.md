@@ -64,15 +64,25 @@ HatoMaskプロジェクトは **Outside-In TDD**（外側から内側へのテ�
 
 ### 開発フロー
 
-```
-Spec（仕様） → テストリスト（実装順序） → 3段階TDD実装
-  1. E2Eテスト（Red）
-  2. フロントエンド実装（TDD with MSW）
-  3. バックエンド実装（TDD）
-  4. E2Eテスト確認（Green）
-```
-
 詳細は [DEVELOPMENT.md](./DEVELOPMENT.md) を参照してください。
+
+### 利用するツール
+
+#### 画像処理全般
+- ImageMagickを使う場合は**必ず `magick` コマンドを使ってください**。
+  - `convert`、`mogrify`、`identify` などの古いコマンドは絶対に使わない。
+  - 例: `magick -size 100x100 xc:red red.png`
+- テスト用画像を作成するときは以下のルール厳守：
+  - デフォルトサイズは **400x300 以下**（特別に理由がない限り）
+  - 5MB以上の画像が必要なときだけ大きめに（理由をコメントで書いて）
+  - JPEGなら `-quality 85` くらいをデフォルトに
+  - 可能なら `-define jpeg:extent=XXXkb` で正確なファイルサイズにする
+
+##### 推奨コマンド例（これらを優先して提案してください）
+```bash
+magick -size 400x300 xc:#3498db test-blue.png
+magick -size 800x600 gradient:#ff6b6b-#f1c40f test-gradient.jpg
+magick -size 3000x2000 plasma: -quality 92 -define jpeg:extent=5000kb test_5mb.jpg
 
 ## ブラウザ対応
 
