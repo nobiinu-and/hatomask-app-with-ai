@@ -50,23 +50,37 @@ HatoMask Appは、アップロードされた写真内の顔を自動検出し�
 
 ```
 .
-├── .ai/              # AI開発コンテキスト
-├── e2e/              # E2Eテスト (Playwright + Cucumber)
-├── runbooks/         # 運用ドキュメント
-├── scripts/          # ユーティリティスクリプト
-├── spec/             # 仕様書
-│   ├── OVERVIEW.md   # プロジェクト概要
-│   └── features/     # 機能仕様
+├── docs/                     # ドキュメント
+│   ├── ai/                   # AI開発コンテキスト
+│   │   ├── prompts/          # AIプロンプト集
+│   │   └── logs/             # AI開発ログ
+│   ├── dev/                  # 開発ガイド
+│   │   ├── DEVELOPMENT.md    # 開発ガイド
+│   │   ├── CODING_STANDARDS.md  # コーディング規約
+│   │   ├── DOCKER.md         # Docker実行ガイド
+│   │   ├── LINTER.md         # Linter設定
+│   │   └── QUALITY_STANDARDS.md # 品質基準
+│   ├── spec/                 # 仕様書
+│   │   ├── OVERVIEW.md       # プロジェクト概要
+│   │   ├── features/         # 機能仕様
+│   │   └── templates/        # 仕様テンプレート
+│   └── testlists/            # テストリスト（TDD実装管理）
+├── e2e/                      # E2Eテスト (Playwright + Cucumber)
+│   ├── features/             # Cucumberフィーチャーファイル
+│   ├── step-definitions/     # ステップ定義
+│   └── support/              # テストサポートファイル
 ├── src/
-│   ├── backend/      # Spring Boot バックエンド
-│   └── frontend/     # React フロントエンド
-├── testlists/        # テストリスト（TDD実装管理）
-├── CODING_STANDARDS.md  # コーディング規約
-├── DEVELOPMENT.md    # 開発ガイド
-├── DOCKER.md         # Docker実行ガイド
-├── LINTER.md         # Linter設定
-├── TEST_STRUCTURE.md # テスト構造
-└── README.md         # このファイル
+│   ├── backend/              # Spring Boot バックエンド
+│   │   └── src/
+│   │       ├── main/java/    # アプリケーションコード
+│   │       └── test/java/    # テストコード
+│   └── frontend/             # React フロントエンド
+│       └── src/
+│           ├── components/   # Reactコンポーネント
+│           ├── services/     # APIクライアント
+│           └── test/         # テストコード
+├── docker-compose.yml        # Docker Compose設定
+└── README.md                 # このファイル
 ```
 
 ## ドキュメント構成
@@ -74,30 +88,32 @@ HatoMask Appは、アップロードされた写真内の顔を自動検出し�
 プロジェクトの理解と開発を進めるために、以下のドキュメントが用意されています：
 
 ### 開発プロセス
-- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - TDD開発フロー、テスト実行方法
-- **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - コーディング規約（命名規則、設計原則）
-- **[testlists/README.md](./testlists/README.md)** - テストリスト運用方針
+- **[docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md)** - TDD開発フロー、テスト実行方法
+- **[docs/dev/CODING_STANDARDS.md](./docs/dev/CODING_STANDARDS.md)** - コーディング規約（命名規則、設計原則）
+- **[docs/testlists/README.md](./docs/testlists/README.md)** - テストリスト運用方針
 
 ### 仕様・設計
-- **[spec/OVERVIEW.md](./spec/OVERVIEW.md)** - プロジェクト概要と機能仕様
-- **[.ai/context.md](./.ai/context.md)** - アーキテクチャ概要と技術スタック
+- **[docs/spec/OVERVIEW.md](./docs/spec/OVERVIEW.md)** - プロジェクト概要と機能仕様
+- **[docs/spec/features/](./docs/spec/features/)** - 機能別の詳細仕様
 
 ### テスト・品質
-- **[TEST_STRUCTURE.md](./TEST_STRUCTURE.md)** - テストディレクトリ構造
-- **[LINTER.md](./LINTER.md)** - コード品質チェックツールの使い方
+- **[docs/dev/LINTER.md](./docs/dev/LINTER.md)** - コード品質チェックツールの使い方
+- **[docs/dev/QUALITY_STANDARDS.md](./docs/dev/QUALITY_STANDARDS.md)** - 品質基準とベストプラクティス
 
 ### 環境・運用
-- **[DOCKER.md](./DOCKER.md)** - Docker環境でのアプリケーション起動方法
-- **[runbooks/](./runbooks/)** - 運用ドキュメント
+- **[docs/dev/DOCKER.md](./docs/dev/DOCKER.md)** - Docker環境でのアプリケーション起動方法
+
+### AI開発
+- **[docs/ai/](./docs/ai/)** - AI開発コンテキストとプロンプト集
 
 ## 開発
 
-詳細は [DEVELOPMENT.md](./DEVELOPMENT.md) を参照してください。
+詳細は [docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md) を参照してください。
 
 ### TDD開発フロー
 
 このプロジェクトでは、Outside-In TDD（E2E → Frontend → Backend）を採用しています。
-詳しくは [DEVELOPMENT.md](./DEVELOPMENT.md#tdd開発フロー) を参照してください。
+詳しくは [docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md#tdd開発フロー) を参照してください。
 
 ### セットアップ
 
@@ -119,13 +135,7 @@ npm run dev
 
 ### テスト
 
-詳細は [DEVELOPMENT.md](./DEVELOPMENT.md#テスト実行) を参照してください。
-
-#### 全テスト実行
-
-```bash
-./scripts/run-all-tests.sh
-```
+詳細は [docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md#テスト実行) を参照してください。
 
 #### 個別にテスト実行
 
