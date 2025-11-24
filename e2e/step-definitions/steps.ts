@@ -107,3 +107,22 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
   await input.setInputFiles(path);
 });
 
+When('ユーザーがアップロードを実行する', { timeout: 60000 }, async function (this: CustomWorld) {
+  const uploadBtn = this.page.getByRole('button', { name: 'アップロード' });
+  // Wait until the button is attached and enabled (not disabled)
+  await this.page.waitForFunction((text) => {
+    const btns = Array.from(document.querySelectorAll('button')) as HTMLButtonElement[];
+    const b = btns.find(x => x.innerText.trim() === text);
+    return !!b && !b.disabled;
+  }, 'アップロード', { timeout: 10000 });
+  await uploadBtn.click();
+  // wait for success indicator
+  await this.page.waitForSelector('#upload-success', { state: 'visible', timeout: 10000 });
+});
+
+Then('アップロードが成功する', { timeout: 60000 }, async function (this: CustomWorld) {
+  await expect(this.page.getByText('アップロードに成功しました')).toBeVisible({ timeout: 5000 });
+  const preview = this.page.locator('#photo-preview');
+  await expect(preview).toBeVisible({ timeout: 5000 });
+});
+

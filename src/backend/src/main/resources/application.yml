@@ -28,3 +28,8 @@ cors:
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS
   allowed-headers: "*"
   allow-credentials: true
+
+# アップロード先ディレクトリ（コンテナ実行時はボリュームを `/data/uploads` にマウントする想定）
+app:
+  upload:
+    dir: /data/uploads

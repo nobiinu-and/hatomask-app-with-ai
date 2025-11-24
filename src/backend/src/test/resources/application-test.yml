@@ -29,3 +29,8 @@ logging:
     com.hatomask: DEBUG
     org.springframework.web: INFO
     org.hibernate: INFO
+
+# テスト用のアップロード先（テストは相対パス `uploads` を想定）
+app:
+  upload:
+    dir: uploads

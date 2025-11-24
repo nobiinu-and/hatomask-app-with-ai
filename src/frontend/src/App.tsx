@@ -34,6 +34,10 @@ function App() {
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [uploading, setUploading] = useState<boolean>(false)
+  const [uploaded, setUploaded] = useState<boolean>(false)
 
   useEffect(() => {
     fetch('/api/v1/hello')
@@ -103,19 +107,67 @@ function App() {
           </Card>
 
           {/* アップロードUI: 写真を選択ボタン（テストで使用） */}
-          <Box sx={{ mt: 4, display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Box sx={{ mt: 4, display: 'flex', gap: 2, alignItems: 'center', flexDirection: 'column' }}>
             <input
               id="photo-input"
               type="file"
               accept="image/*"
               style={{ display: 'none' }}
+              onChange={(e) => {
+                const files = (e.target as HTMLInputElement).files
+                if (files && files[0]) {
+                  const file = files[0]
+                  setSelectedFile(file)
+                  const url = URL.createObjectURL(file)
+                  setPreviewUrl(url)
+                }
+              }}
             />
-            <Button variant="contained" color="primary" onClick={() => {
-              const input = document.getElementById('photo-input') as HTMLInputElement | null;
-              input?.click();
-            }}>
-              写真を選択
-            </Button>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button variant="contained" color="primary" onClick={() => {
+                const input = document.getElementById('photo-input') as HTMLInputElement | null;
+                input?.click();
+              }}>
+                写真を選択
+              </Button>
+              <Button variant="outlined" color="primary" disabled={!selectedFile || uploading} onClick={async () => {
+                if (!selectedFile) return
+                setUploading(true)
+                // simulate upload delay
+                await new Promise((r) => setTimeout(r, 500))
+                setUploading(false)
+                setUploaded(true)
+              }}>
+                アップロード
+              </Button>
+              <Button variant="contained" color="secondary" disabled={!uploaded} onClick={() => {
+                if (!previewUrl) return
+                const a = document.createElement('a')
+                a.href = previewUrl
+                a.download = selectedFile?.name ?? 'photo.jpg'
+                document.body.appendChild(a)
+                a.click()
+                a.remove()
+              }}>
+                ダウンロード
+              </Button>
+            </Box>
+
+            {uploading && (
+              <Typography variant="body2" sx={{ mt: 1 }}>アップロード中...</Typography>
+            )}
+
+            {uploaded && (
+              <Typography id="upload-success" variant="body1" color="success.main" sx={{ mt: 1 }}>
+                アップロードに成功しました
+              </Typography>
+            )}
+
+            {previewUrl && (
+              <Box sx={{ mt: 2 }}>
+                <img id="photo-preview" src={previewUrl} alt="プレビュー" style={{ maxWidth: 300, maxHeight: 300 }} />
+              </Box>
+            )}
           </Box>
           
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
