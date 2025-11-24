@@ -81,3 +81,11 @@ Then('Material-UIのカードコンポーネントが表示される', { timeout
   const card = this.page.locator('[class*="MuiCard-root"]').first();
   await expect(card).toBeVisible();
 });
+
+When('ユーザーが「写真を選択」ボタンをクリックする', { timeout: 60000 }, async function (this: CustomWorld) {
+  // ボタンはまだ存在しない可能性があるため、まず存在を待つ
+  const btn = this.page.getByRole('button', { name: '写真を選択' });
+  await expect(btn).toBeVisible({ timeout: 5000 });
+  await btn.click();
+});
+

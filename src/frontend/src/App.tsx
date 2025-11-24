@@ -2,6 +2,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import {
   Container,
   Box,
+  Button,
   Typography,
   Card,
   CardContent,
@@ -100,6 +101,22 @@ function App() {
               )}
             </CardContent>
           </Card>
+
+          {/* アップロードUI: 写真を選択ボタン（テストで使用） */}
+          <Box sx={{ mt: 4, display: 'flex', gap: 2, alignItems: 'center' }}>
+            <input
+              id="photo-input"
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+            />
+            <Button variant="contained" color="primary" onClick={() => {
+              const input = document.getElementById('photo-input') as HTMLInputElement | null;
+              input?.click();
+            }}>
+              写真を選択
+            </Button>
+          </Box>
           
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
             写真にある顔をハトマスクに入れ替えるアプリケーション
