@@ -105,6 +105,10 @@ temp/
 *.bak
 *.backup
 
+# Test Generated Files
+test-results/
+uploads_data/
+
 # OS specific
 Thumbs.db
 ehthumbs.db
