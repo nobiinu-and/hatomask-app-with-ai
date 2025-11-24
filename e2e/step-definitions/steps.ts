@@ -10,6 +10,31 @@ Given('ユーザーがブラウザを開いている', { timeout: 60000 }, async
   // hooksでpageが設定されている
 });
 
+Given('ユーザーがHatoMaskアプリケーションにアクセスしている', { timeout: 60000 }, async function (this: CustomWorld) {
+  const errors: string[] = [];
+  this.page.on('pageerror', (e) => errors.push(String(e?.message ?? e)));
+  this.page.on('console', (msg) => {
+    if (msg.type() === 'error') errors.push(msg.text());
+  });
+
+  await this.page.goto('/');
+  await this.page.waitForLoadState('load');
+
+  // ドキュメントが完全にロードされていることを確認
+  const readyState = await this.page.evaluate(() => document.readyState);
+  if (readyState !== 'complete') {
+    throw new Error(`document.readyState is not complete: ${readyState}`);
+  }
+
+  // ページタイトルの確認
+  await expect(this.page.getByText('HatoMask App')).toBeVisible({ timeout: 5000 });
+
+  // コンソールエラーがないことを確認
+  if (errors.length > 0) {
+    throw new Error(`Console errors detected: ${errors.join(' | ')}`);
+  }
+});
+
 Given('ビューポートサイズを {int}x{int} に設定する', { timeout: 60000 }, async function (this: CustomWorld, width: number, height: number) {
   await this.page.setViewportSize({ width, height });
 });
