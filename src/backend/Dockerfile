@@ -8,6 +8,9 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
+# checkstyle設定をプロジェクトルートにコピー（Dockerコンテキスト内のcheckstyle.xmlはここに存在する）
+COPY checkstyle.xml .
+
 # ソースコードをコピー
 COPY src ./src
 
