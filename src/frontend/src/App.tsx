@@ -38,6 +38,7 @@ function App() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [uploading, setUploading] = useState<boolean>(false)
   const [uploaded, setUploaded] = useState<boolean>(false)
+  const [uploadMessage, setUploadMessage] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/v1/hello')
@@ -123,7 +124,7 @@ function App() {
                 }
               }}
             />
-            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2 }}>
               <Button variant="contained" color="primary" onClick={() => {
                 const input = document.getElementById('photo-input') as HTMLInputElement | null;
                 input?.click();
@@ -133,10 +134,27 @@ function App() {
               <Button variant="outlined" color="primary" disabled={!selectedFile || uploading} onClick={async () => {
                 if (!selectedFile) return
                 setUploading(true)
-                // simulate upload delay
-                await new Promise((r) => setTimeout(r, 500))
-                setUploading(false)
-                setUploaded(true)
+                setUploadMessage(null)
+                try {
+                  const fd = new FormData()
+                  fd.append('file', selectedFile)
+                  const resp = await fetch('/api/v1/photos/upload', {
+                    method: 'POST',
+                    body: fd,
+                  })
+                  const data = await resp.json().catch(() => ({}))
+                  if (resp.ok) {
+                    setUploaded(true)
+                    setUploadMessage((data && data.message) ? data.message : 'アップロードに成功しました')
+                  } else {
+                    setUploadMessage((data && data.message) ? data.message : 'アップロードに失敗しました')
+                  }
+                } catch (e) {
+                  console.error('upload error', e)
+                  setUploadMessage('アップロード中にエラーが発生しました')
+                } finally {
+                  setUploading(false)
+                }
               }}>
                 アップロード
               </Button>
@@ -157,9 +175,9 @@ function App() {
               <Typography variant="body2" sx={{ mt: 1 }}>アップロード中...</Typography>
             )}
 
-            {uploaded && (
-              <Typography id="upload-success" variant="body1" color="success.main" sx={{ mt: 1 }}>
-                アップロードに成功しました
+            {uploadMessage && (
+              <Typography id="upload-success" variant="body1" color={uploaded ? 'success.main' : 'error.main'} sx={{ mt: 1 }}>
+                {uploadMessage}
               </Typography>
             )}
 

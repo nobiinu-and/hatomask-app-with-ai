@@ -4,6 +4,8 @@ import { Page } from '@playwright/test';
 
 interface CustomWorld {
   page: Page;
+  // hooks で捕捉したレスポンスを参照するためのフィールド
+  lastResponses?: Array<{ url: string; status: number; body?: string | null }>;
 }
 
 function createDummyImageBuffer(sizeInBytes: number): Buffer {
@@ -97,26 +99,25 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
   const path = './fixtures/images/test_5mb.jpg';
   const fs = await import('fs');
   if (! fs.existsSync(path)) {
-    // If the prepared fixture is not present, fail the test explicitly
+    // 準備されたフィクスチャが存在しない場合はテストを明示的に失敗させる
     throw new Error(`Required fixture not found: ${path}. Please add the 5MB JPEG fixture at this path.`);
   }
   // App.tsx の input は id="photo-input" で非表示になっているため、attached を待つ
   await this.page.waitForSelector('#photo-input', { state: 'attached', timeout: 5000 });
   const input = this.page.locator('#photo-input');
-  // Use prepared file from repository fixtures
+  // リポジトリ内のフィクスチャからファイルを使用する
   await input.setInputFiles(path);
 });
 
 When('ユーザーがアップロードを実行する', { timeout: 60000 }, async function (this: CustomWorld) {
   const uploadBtn = this.page.getByRole('button', { name: 'アップロード' });
-  // Wait until the button is attached and enabled (not disabled)
+  // ボタンがDOMにアタッチされ、有効（disabledでない）になるまで待つ
   await this.page.waitForFunction((text) => {
     const btns = Array.from(document.querySelectorAll('button')) as HTMLButtonElement[];
     const b = btns.find(x => x.innerText.trim() === text);
     return !!b && !b.disabled;
   }, 'アップロード', { timeout: 10000 });
   await uploadBtn.click();
-  // wait for success indicator
   await this.page.waitForSelector('#upload-success', { state: 'visible', timeout: 10000 });
 });
 
