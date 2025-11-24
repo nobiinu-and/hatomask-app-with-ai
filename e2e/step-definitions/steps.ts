@@ -6,6 +6,10 @@ interface CustomWorld {
   page: Page;
 }
 
+function createDummyImageBuffer(sizeInBytes: number): Buffer {
+  return Buffer.alloc(sizeInBytes, 0xff);
+}
+
 Given('ユーザーがブラウザを開いている', { timeout: 60000 }, async function (this: CustomWorld) {
   // hooksでpageが設定されている
 });
@@ -87,5 +91,19 @@ When('ユーザーが「写真を選択」ボタンをクリックする', { tim
   const btn = this.page.getByRole('button', { name: '写真を選択' });
   await expect(btn).toBeVisible({ timeout: 5000 });
   await btn.click();
+});
+
+When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  const path = './fixtures/images/test_5mb.jpg';
+  const fs = await import('fs');
+  if (! fs.existsSync(path)) {
+    // If the prepared fixture is not present, fail the test explicitly
+    throw new Error(`Required fixture not found: ${path}. Please add the 5MB JPEG fixture at this path.`);
+  }
+  // App.tsx の input は id="photo-input" で非表示になっているため、attached を待つ
+  await this.page.waitForSelector('#photo-input', { state: 'attached', timeout: 5000 });
+  const input = this.page.locator('#photo-input');
+  // Use prepared file from repository fixtures
+  await input.setInputFiles(path);
 });
 
