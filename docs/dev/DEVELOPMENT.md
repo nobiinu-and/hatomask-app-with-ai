@@ -17,7 +17,16 @@ AIと協働する際は、以下のルールを絶対に守ってください。
 1.  `spec/features/` に仕様と受け入れ基準(Given-When-Then)を記述する。
 2.  実装するシナリオを**1つだけ**選び、`e2e/features/` に `.feature` ファイルとして作成する。
 
-### Phase 2: Frontend & E2E (BDD - 1ステップずつ)
+### Phase 2: Implementation Planning (実装計画)
+実装に入る前に、シナリオ全体を分析し、技術的な計画を立てる。
+
+1.  **Plan Creation**: `docs/plans/implementation_plan.template.md` をコピーし、シナリオごとに計画ファイルを作成する。
+    - ファイル名規則: `docs/plans/[Spec名]_[シナリオ識別子].md`
+2.  **Step Analysis**: 各ステップで必要な技術要素(UIコンポーネント, API, DBスキーマ)を洗い出し、計画書に記入する。
+3.  **Risk Assessment**: 技術的な難所や注意点を特定する。
+4.  **Review**: 計画内容を確認し、方針を確定する。
+
+### Phase 3: Frontend & E2E (BDD - 1ステップずつ)
 **シナリオの各ステップ(Given/When/Then)に対して、以下のサイクルを回す:**
 
 1.  **Step Definition (Red)**: `e2e/step-definitions/` にステップ定義を追加し、E2Eテストが失敗することを確認。
@@ -29,7 +38,7 @@ AIと協働する際は、以下のルールを絶対に守ってください。
 
 > **⚠️ 重要**: 複数のステップをまとめて実装することは禁止。必ず1つずつ完了させること。
 
-### Phase 3: Backend (TDD)
+### Phase 4: Backend (TDD)
 フロントエンド完成後、モックAPIを実実装に置き換える。
 
 1.  **Test List**: 実装すべきテスト項目をリストアップする(`testlists/`)。
