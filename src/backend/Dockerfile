@@ -10,6 +10,7 @@ RUN mvn dependency:go-offline -B
 
 # ソースコードをコピー
 COPY src ./src
+COPY checkstyle.xml .
 
 # アプリケーションをビルド
 RUN mvn clean package -DskipTests
