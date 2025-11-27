@@ -6,6 +6,12 @@ interface CustomWorld {
   page: Page;
 }
 
+Given('ユーザーがHatoMaskアプリケーションにアクセスしている', { timeout: 60000 }, async function (this: CustomWorld) {
+  // 期待されるタイトルを確認する
+  await this.page.goto('/');
+  await expect(this.page.getByText('HatoMask App')).toBeVisible({ timeout: 10000 });
+});
+
 Given('ユーザーがブラウザを開いている', { timeout: 60000 }, async function (this: CustomWorld) {
   // hooksでpageが設定されている
 });
