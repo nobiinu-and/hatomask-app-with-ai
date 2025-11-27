@@ -5,6 +5,7 @@ import {
   Typography,
   Card,
   CardContent,
+  Button,
   CircularProgress,
   Alert,
   ThemeProvider,
@@ -101,6 +102,11 @@ function App() {
             </CardContent>
           </Card>
           
+          {/* 写真選択ボタンは接続状態カードの外に配置 */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+            <Button variant="contained" color="primary">写真を選択</Button>
+          </Box>
+
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
             写真にある顔をハトマスクに入れ替えるアプリケーション
           </Typography>
