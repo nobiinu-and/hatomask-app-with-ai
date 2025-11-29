@@ -1,0 +1,20 @@
+FROM maven:3.9-eclipse-temurin-17
+
+WORKDIR /app
+
+# 依存を事前取得
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
+
+# entr を使ってファイル変更を検知する
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends entr && rm -rf /var/lib/apt/lists/*
+
+# ソースをコピー（開発時は compose でボリュームマウントする想定）
+COPY . .
+
+RUN chmod +x ./docker-entrypoint-dev.sh || true
+
+EXPOSE 8080
+
+CMD ["./docker-entrypoint-dev.sh"]
