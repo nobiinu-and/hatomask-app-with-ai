@@ -19,13 +19,14 @@ description: BDDの1ステップを実装するためのプロンプトテンプ
 
 1.  **ステップ定義の作成 (Red)**
         - `e2e/step-definitions/` にステップ定義を追加する。
-        - E2Eテストを実行し、**Red（失敗）であることを確認して報告**する。 ただし、失敗を作るために無理やり `throw new Error(...)` を書くことは避けること。
-        - 優先する Red の作り方（推奨順）:
-            1. ステップを未実装（未定義）にして、テストフレームワークが自然に未定義/未実装として失敗させる。
-            2. プロダクト側が未実装のために自然に失敗するような**意味のあるアサーション**を書く（たとえば、まだ存在しない UI セレクタの存在を期待するなど）。失敗メッセージは必ず実装不足を示す説明を付ける。
-            3. フレームワークがサポートする「保留／pending」メカニズムを使う（例: `pending()`、`this.pending()`、あるいはテストフレームワークの明示的な保留表現）。
-        - どの場合でも、失敗理由に「未実装（TODO: implement <thing>）」と分かりやすく書き残すこと。
-        - **注意**: まだプロダクトの実装コードは書かないこと。
+        - E2Eテストを実行し、**Red（失敗）であることを確認して報告**する。失敗を作るために無理やり `throw new Error(...)` を書くのは避けること。
+        - ステップ定義は「プロダクトが実装されている」前提で現実的なセレクタ／ラベルを使うこと（`to be determined` のような曖昧なプレースホルダは使わない）。
+            - セマンティックなクエリを優先する：`getByRole`、`getByLabelText`、`getByText` など。
+            - Gherkin の文言をそのままラベルに反映する（例: ステップに `写真を選択` があれば `getByRole('button', { name: '写真を選択' })` を使う）。
+        - 例（NG / OK）:
+            - NG: `this.page.getByRole('button', { name: 'to be determined' });`
+            - OK: `await this.page.getByRole('button', { name: '写真を選択' }).click(); // TODO: implement button (features/photo_upload.feature:12)`
+        - **注意**: ステップ作成時点ではプロダクトの実装コードを書かないこと。
 
 2.  **モック/ユニットテスト作成 (Red)** (必要な場合)
     - フロントエンドのユニットテストを作成する。
@@ -44,13 +45,25 @@ description: BDDの1ステップを実装するためのプロンプトテンプ
     - 無理に例外を投げて失敗させるのではなく、上の「優先する Red の作り方」に従ってください。
 - 📝 **最小実装**: 必要以上の機能を実装しないこと。
 
-## 追加: AIへの具体的指示テンプレート（例）
-- **NG（しないでください）**: "Implement step by throwing an Error('not implemented') so test is red."
-- **OK（推奨）**: "Create the step definition file and mark it pending or add a minimal assertion that will fail naturally because the product code is missing. Include a clear TODO comment linking to the feature and what should be implemented. After confirming the test fails (Red), stop and ask for confirmation before implementing." 
+## ファイルアップロード実装時の前提と注意
 
-## 追加: ステップ実装例（テンプレート）
-- **コメント版（保留を使う場合）**: `// TODO: implement header component (see feature X)
-    // pending: step intentionally left pending until product code implemented`
-- **アサーション版（自然に失敗させる場合）**: `expect(await page.$('selector-for-new-ui')).not.toBeNull(); // currently fails because component not created — TODO implement`
+- **e2e 配下のリソース前提**: ファイルアップロードに関するステップを実装する際は、テスト用のリソースファイルがリポジトリの `e2e/fixtures` のようなディレクトリに存在することを前提にしてください。新たにバイナリを生成したり、ユーザ入力の代わりに Buffer を用いてバイナリを埋め込む実装は行わないでください。
+- **Buffer を使わない**: サンプルファイルを扱う際は、Node の `Buffer` に直接読み込む方法を避け、テストランナー／ブラウザ自動化（Playwrightなど）のファイル入力 API にファイルパスを渡す方法を使ってください。
 
-これらをAIプロンプトに明示すれば、AI実装者は無理に `throw` して Red を作るのではなく、プロダクト未実装であることを示す自然な失敗を残すようになります。
+例（Playwright + Cucumber のステップ定義 TypeScript）:
+
+```ts
+// e2e/fixtures にある sample.jpg をアップロードする例
+await this.page.locator('input[type="file"]').setInputFiles('e2e/fixtures/sample.jpg');
+
+// 複数ファイルをセットする場合
+await this.page.locator('input[type="file"]').setInputFiles([
+    'e2e/fixtures/sample.jpg',
+    'e2e/fixtures/sample2.jpg'
+]);
+```
+
+ポイント:
+- `setInputFiles` などの API はファイルパスを受け取り、内部で適切にファイルを扱うため Buffer を使う必要はありません。
+- サンプルファイルはテスト専用リソース（`e2e/fixtures`）に置き、ステップ実装ではそのパスを直接参照するだけにしてください。
+- CI 環境でテストが実行されることを考慮し、相対パスはテストルートから有効なものを使う（必要なら `path.join(process.cwd(), 'e2e/fixtures/sample.jpg')` を使用）。
