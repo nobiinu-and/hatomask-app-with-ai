@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { Page } from '@playwright/test';
+import path from 'path';
 
 interface CustomWorld {
   page: Page;
@@ -17,6 +18,19 @@ When('ユーザーが「写真を選択」ボタンをクリックする', { tim
   const button = this.page.getByRole('button', { name: '写真を選択' });
   await expect(button).toBeVisible({ timeout: 10000 });
   await button.click();
+});
+
+When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // テスト用のfixturesに置かれた5MBのJPEGファイルを想定してアップロードする
+  // input[type="file"] が存在しない場合は自然に失敗する（Redを誘発）
+  const fileInput = this.page.locator('input[type="file"]');
+  await expect(fileInput).toBeVisible({ timeout: 10000 });
+
+  // テスト実行ルートからの相対パスを使用
+  const filePath = path.join(process.cwd(), 'fixtures', 'sample-5mb.jpg');
+
+  // PlaywrightのAPIでファイルをセットする。ファイルが存在しなければこの行で失敗する。
+  await fileInput.setInputFiles(filePath);
 });
 
 Given('ユーザーがブラウザを開いている', { timeout: 60000 }, async function (this: CustomWorld) {

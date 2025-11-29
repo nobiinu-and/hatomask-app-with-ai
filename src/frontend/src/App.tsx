@@ -12,7 +12,7 @@ import {
   createTheme,
   CssBaseline,
 } from '@mui/material'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface HelloResponse {
   message: string
@@ -34,6 +34,7 @@ function App() {
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     fetch('/api/v1/hello')
@@ -102,9 +103,26 @@ function App() {
             </CardContent>
           </Card>
           
-          {/* 写真選択ボタンは接続状態カードの外に配置 */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <Button variant="contained" color="primary">写真を選択</Button>
+          {/* 写真選択ボタンとファイル入力（テストで直接参照されるため可視にする） */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
+            <input
+              type="file"
+              accept="image/jpeg"
+              // テストの setInputFiles / 可視性チェックに対応するため display:block にしておく
+              style={{ display: 'block', marginBottom: 8 }}
+              aria-label="写真ファイル入力"
+              ref={(el) => fileInputRef.current = el}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                // ボタンからファイル選択ダイアログを開けるようにする
+                if (fileInputRef.current) fileInputRef.current.click()
+              }}
+            >
+              写真を選択
+            </Button>
           </Box>
 
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
