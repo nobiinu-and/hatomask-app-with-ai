@@ -1,7 +1,7 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { Page } from '@playwright/test';
-import path from 'path';
+import { fixturePath } from '../support/fixtures';
 
 interface CustomWorld {
   page: Page;
@@ -28,7 +28,7 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
   await expect(fileInput).toHaveCount(1, { timeout: 10000 });
 
   // テスト実行ルートからの相対パスを使用
-  const filePath = path.join(process.cwd(), 'fixtures', 'sample-5mb.jpg');
+  const filePath = fixturePath('sample-5mb.jpg');
 
   // PlaywrightのAPIでファイルをセットする。ファイルが存在しなければこの行で失敗する。
   await fileInput.setInputFiles(filePath);

@@ -5,14 +5,14 @@ import {
   Typography,
   Card,
   CardContent,
-  Button,
   CircularProgress,
   Alert,
   ThemeProvider,
   createTheme,
   CssBaseline,
 } from '@mui/material'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import PhotoUploader from './components/PhotoUploader'
 
 interface HelloResponse {
   message: string
@@ -34,7 +34,7 @@ function App() {
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  // file input is handled by PhotoUploader component
 
   useEffect(() => {
     fetch('/api/v1/hello')
@@ -103,26 +103,11 @@ function App() {
             </CardContent>
           </Card>
           
-          {/* 写真選択ボタンとファイル入力（テストで直接参照されるため可視にする） */}
+          {/* 写真選択コンポーネント（PhotoUploader に切り出し） */}
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
-            <input
-              type="file"
-              accept="image/jpeg"
-              // UI的には隠す（画面外へオフスクリーン配置）して、ボタンで開く方式にする
-              style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}
-              aria-label="写真ファイル入力"
-              ref={(el) => (fileInputRef.current = el)}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                // ボタンからファイル選択ダイアログを開けるようにする
-                if (fileInputRef.current) fileInputRef.current.click()
-              }}
-            >
-              写真を選択
-            </Button>
+            {/* PhotoUploader は input をオフスクリーンにしてボタンで開く実装を持つ */}
+            {/* onFileSelected は将来の処理のフックポイント */}
+            <PhotoUploader onFileSelected={(file) => console.log('選択されたファイル:', file.name)} />
           </Box>
 
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
