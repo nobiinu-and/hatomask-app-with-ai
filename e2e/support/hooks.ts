@@ -1,4 +1,4 @@
-import { Before, After, AfterAll, setWorldConstructor, World } from '@cucumber/cucumber';
+import { Before, After, AfterAll, setWorldConstructor, World, setDefaultTimeout } from '@cucumber/cucumber';
 import { Browser, BrowserContext, chromium, Page } from '@playwright/test';
 
 let browser: Browser | null = null;
@@ -14,6 +14,9 @@ class CustomWorldImpl extends World implements CustomWorld {
 }
 
 setWorldConstructor(CustomWorldImpl);
+
+// Increase default timeout for hooks/steps to 60s to accommodate browser startup
+setDefaultTimeout(60 * 1000);
 
 Before(async function (this: CustomWorld) {
   // 最初のテストでブラウザを起動
