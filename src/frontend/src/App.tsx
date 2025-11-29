@@ -108,10 +108,10 @@ function App() {
             <input
               type="file"
               accept="image/jpeg"
-              // テストの setInputFiles / 可視性チェックに対応するため display:block にしておく
-              style={{ display: 'block', marginBottom: 8 }}
+              // UI的には隠す（画面外へオフスクリーン配置）して、ボタンで開く方式にする
+              style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}
               aria-label="写真ファイル入力"
-              ref={(el) => fileInputRef.current = el}
+              ref={(el) => (fileInputRef.current = el)}
             />
             <Button
               variant="contained"

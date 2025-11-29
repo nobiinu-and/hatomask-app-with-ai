@@ -24,7 +24,8 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
   // テスト用のfixturesに置かれた5MBのJPEGファイルを想定してアップロードする
   // input[type="file"] が存在しない場合は自然に失敗する（Redを誘発）
   const fileInput = this.page.locator('input[type="file"]');
-  await expect(fileInput).toBeVisible({ timeout: 10000 });
+  // UI側では input を隠しているため可視性チェックは行わず、要素が存在することを確認する
+  await expect(fileInput).toHaveCount(1, { timeout: 10000 });
 
   // テスト実行ルートからの相対パスを使用
   const filePath = path.join(process.cwd(), 'fixtures', 'sample-5mb.jpg');
