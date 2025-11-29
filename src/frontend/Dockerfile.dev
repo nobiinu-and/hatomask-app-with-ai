@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+# 作業ディレクトリ
+WORKDIR /app
+
+# package を先にコピーして依存をインストール（ビルドキャッシュ用）
+COPY package*.json ./
+RUN npm ci
+
+# ソースはコンテナ側にコピーされるが、開発時は docker-compose でボリュームマウントする想定
+COPY . .
+
+EXPOSE 3000
+
+# Vite dev server を起動。Compose 側で --host 0.0.0.0 を渡す。
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
