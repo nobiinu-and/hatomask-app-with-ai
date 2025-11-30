@@ -84,3 +84,11 @@ Then('Material-UIのカードコンポーネントが表示される', { timeout
   const card = this.page.locator('[class*="MuiCard-root"]').first();
   await expect(card).toBeVisible();
 });
+
+Then('アップロードが成功する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // フロントエンドの最小実装があれば、プレビュー画像は
+  // <img src="/api/v1/photos/{id}"> のようになる想定です。
+  // ここではその存在をセマンティックに検証します。
+  const uploadedImg = this.page.locator('img[src*="/api/v1/photos/"]');
+  await expect(uploadedImg).toBeVisible({ timeout: 20000 });
+});

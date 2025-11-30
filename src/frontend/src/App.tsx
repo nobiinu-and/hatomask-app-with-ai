@@ -34,6 +34,14 @@ function App() {
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
+  const [uploadedPhoto, setUploadedPhoto] = useState<{
+    id: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    createdAt: string
+  } | null>(null)
+  const [isUploading, setIsUploading] = useState<boolean>(false)
   // file input is handled by PhotoUploader component
 
   useEffect(() => {
@@ -106,8 +114,30 @@ function App() {
           {/* 写真選択コンポーネント（PhotoUploader に切り出し） */}
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
             {/* PhotoUploader は input をオフスクリーンにしてボタンで開く実装を持つ */}
-            {/* onFileSelected は将来の処理のフックポイント */}
-            <PhotoUploader onFileSelected={(file) => console.log('選択されたファイル:', file.name)} />
+            {/* onFileSelected の最小実装: 選択されたファイル情報を保持してプレビューを表示する */}
+            <PhotoUploader
+              setIsUploading={setIsUploading}
+              onUploadSuccess={(photo) => {
+                setUploadedPhoto(photo)
+              }}
+            />
+
+            {isUploading && (
+              <Box sx={{ mt: 2 }}>
+                <CircularProgress size={24} />
+              </Box>
+            )}
+
+            {/* アップロード成功を示す最小プレビュー表示（テストは img[src*="/api/v1/photos/"] を探す） */}
+            {uploadedPhoto && (
+              <Box sx={{ mt: 2, width: '100%', maxWidth: 400 }}>
+                <img
+                  src={`/api/v1/photos/${uploadedPhoto.id}`}
+                  alt={uploadedPhoto.fileName}
+                  style={{ width: '100%', height: 'auto', maxHeight: 400, objectFit: 'contain' }}
+                />
+              </Box>
+            )}
           </Box>
 
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
