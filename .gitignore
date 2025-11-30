@@ -37,6 +37,8 @@ dist-ssr/
 src/frontend/dist/
 src/frontend/node_modules/
 src/frontend/.vite/
+# MSW generated service worker (generated via `npx msw init public/`)
+src/frontend/public/mockServiceWorker.js
 
 # Java / Maven / Spring Boot
 target/
