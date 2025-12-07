@@ -1,273 +1,252 @@
-# 機能仕様: [機能名]
+# 実装計画: [機能名]
 
-## 概要
+## 基本情報
+- **Feature**: [機能の概要]
+- **Scenario**: [シナリオ名]
+- **Spec**: `docs/spec/features/[ファイル名].md`
+- **テストリスト**: `docs/plans/[プラン名]/backend-testlist/`
 
-[この機能の目的と概要を記述]
+---
 
-## スコープ
+## 📍 実装フェーズの原則
 
-[実装範囲を明確に記述。最小実装か、フル実装かなど]
+### Phase 1: Frontend実装 (MSW使用)
+すべてのステップでフロントエンドを先に実装します。
 
-## ユースケース
+**実装対象**:
+- フロントエンドコンポーネント (`src/frontend/src/components/`)
+- APIクライアント (`src/frontend/src/services/`)
+- MSWモックハンドラー (`src/frontend/src/mocks/handlers.ts`)
+- E2Eステップ定義 (`e2e/step-definitions/`)
 
-### 基本フロー
+**完了条件**:
+- ✅ E2EテストがMSWで通ること
+- ✅ フロントエンドが完全に動作すること
 
-1. [ステップ1]
-2. [ステップ2]
-3. [ステップ3]
-...
+**禁止事項**:
+- 🚫 バックエンド(`src/backend/`)は一切触らない
 
-## 機能要件
+---
 
-### 1. [機能名1]
+### Phase 2: Backend実装 (TDD)
+フロントエンド完成後、バックエンドを実装します。
 
-[機能の詳細を記述]
+**🎯 目的**: **モックAPI(MSW)の動作を本物のバックエンドで再現する**
 
-### 2. [機能名2]
+**実装対象**:
+- バックエンドコード (`src/backend/`) のみ
 
-[機能の詳細を記述]
+**実装手順**:
+1. **テストリスト作成**: Gherkinステップごとにテストリストを作成
+   - 配置場所: `docs/plans/{feature_name}/backend-testlist/`
+   - 命名規則: `{step_type}_{step_description}.md`
+     - 例: `then_upload_success.md`, `and_preview_image.md`
+2. **MSWレスポンス確認**: `src/frontend/src/mocks/handlers.ts` で形式を把握
+3. **TDDサイクル**: testlist -> Red → Green → Refactor
+4. **レスポンス形式厳守**: MSWと完全に同じJSON構造、ステータスコード、ヘッダーを返す
 
-### 3. [機能名3]
+**🚫 禁止事項**:
+- ❌ **E2Eステップ定義(`e2e/step-definitions/`)を変更しない**
+  - フロントエンド実装でE2Eテストは既に完成している
+- ❌ **フロントエンドコード(`src/frontend/`)を変更しない**
+  - APIクライアントも変更しない
+- ❌ **MSWハンドラー(`src/frontend/src/mocks/`)を変更しない**
+  - モックAPIは既に完成している
 
-[機能の詳細を記述]
+---
 
-## UI/UX要件
+## プロンプト参照
 
-### レイアウト
+### Frontend実装時
+- **プロンプト**: `docs/ai/prompts/tasks/03_implement_bdd_step.md`
+- **指定**: "Phase 1 (Frontend) を実装してください"
 
-```
-[ASCIIアートでレイアウトを描く]
-```
+### Backend実装時
+- **プロンプト**: `docs/ai/prompts/tasks/03b_implement_backend_tdd.md`
+- **前提**: フロントエンド実装が完了していること
+- **開始**: テストリストの作成から始める
 
-### デザイン要件
+## Gherkinステップごとの実装要件
 
-- [デザイン要件1]
-- [デザイン要件2]
+### Given [前提条件を記述]
+**Frontend**
+- **Components**: [コンポーネント名]
+  - [実装内容を記述]
+- **State**: [状態管理の詳細]
+- **UI/UX**: [UI/UXの要件]
 
-## 技術要件
+**Backend API**
+- なし (または該当するAPIがあれば記述)
 
-### フロントエンド
+---
 
-#### 状態管理
-- [管理する状態1]
-- [管理する状態2]
+### When [ユーザーアクションを記述]
+**Frontend**
+- **Components**: [コンポーネント名]
+  - [実装内容を記述]
+- **UI/UX**: [UI/UXの要件]
 
-### バックエンド
+**Backend API**
+- なし (または該当するAPIがあれば記述)
 
-#### ファイルストレージ（該当する場合）
-- [ストレージの種類と設定]
+---
 
-#### API エンドポイント
+### And [追加のアクションを記述]
+**Frontend**
+- **Components**: [コンポーネント名]
+  - [実装内容を記述]
+- **Validation**:
+  - [バリデーション要件1]
+  - [バリデーション要件2]
 
-##### [HTTPメソッド] [エンドポイントパス]
-[エンドポイントの説明]
+**Backend API**
+- なし (または該当するAPIがあれば記述)
 
-**リクエスト**
-- [リクエストの詳細]
+---
 
-**レスポンス**
+### Then [期待される結果を記述]
+
+#### Phase 1: Frontend実装要件
+
+**Components**: [コンポーネント名]
+- [実装内容を記述]
+
+**State**:
+- [状態変数名] ([型]): [説明]
+
+**Mock API (MSW)**:
+- `handlers.ts` に [HTTPメソッド] [エンドポイント] のハンドラを追加
+- レスポンス ([ステータスコード]) を返す
+  ```json
+  {
+    "field1": "value1",
+    "field2": "value2"
+  }
+  ```
+
+---
+
+#### Phase 2: Backend実装要件
+
+**API Endpoint**: [HTTPメソッド] [エンドポイント]
+
+**Request**: [リクエスト形式]
+- [パラメータ名]: [型] ([説明])
+
+**Response**: [ステータスコード] (MSWと同じ形式)
 ```json
 {
-  "field1": "type1",
-  "field2": "type2"
+  "field1": "value1",
+  "field2": "value2"
 }
 ```
 
-**エラーレスポンス** (RFC 9457 準拠)
-```json
-{
-  "type": "about:blank",
-  "title": "Error Title",
-  "status": 400,
-  "detail": "Error detail message"
+**Database**
+- **Tables**: [テーブル名]
+- **Changes**: [変更内容]
+
+**Validation & Logic**
+- [バリデーション要件1]
+- [ロジック要件1]
+- [ロジック要件2]
+
+---
+
+### And [追加の期待結果を記述]
+
+#### Phase 1: Frontend実装要件
+
+**Components**: [コンポーネント名]
+- [実装内容を記述]
+
+**UI/UX**: [UI/UXの要件]
+
+**Mock API (MSW)**:
+- `handlers.ts` に [HTTPメソッド] [エンドポイント] のハンドラを追加
+- [レスポンス形式を記述]
+
+---
+
+#### Phase 2: Backend実装要件
+
+**API Endpoint**: [HTTPメソッド] [エンドポイント]
+
+**Request**: [リクエスト形式]
+
+**Response**: [ステータスコード]
+- Content-Type: [コンテンツタイプ]
+- Body: [ボディの説明]
+
+**Logic**
+- [ロジック要件1]
+- [ロジック要件2]
+
+## データモデル設計 (共通)
+
+### Entities / Interfaces
+
+**TypeScript (Frontend)**
+```typescript
+export interface [EntityName] {
+  id: string;
+  field1: string;
+  field2: number;
+  createdAt: string;
+}
+
+export interface ApiError {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
 }
 ```
 
-#### データモデル
+**Java (Backend)**
+```java
+// Entity
+@Entity
+@Table(name = "[table_name]")
+public class [EntityName] {
+    @Id
+    private UUID id;
+    
+    @Column(nullable = false)
+    private String field1;
+    
+    @Column(nullable = false)
+    private Long field2;
+    
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+}
 
-**[テーブル名] テーブル**
+// DTO
+public record [EntityName]Response(
+    UUID id,
+    String field1,
+    Long field2,
+    LocalDateTime createdAt
+) {}
+```
+
+### DB Schema
 ```sql
-CREATE TABLE table_name (
+CREATE TABLE [table_name] (
   id UUID PRIMARY KEY,
   field1 VARCHAR(255) NOT NULL,
+  field2 BIGINT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-#### この機能で実装する層
+## 技術的課題・リスク
+- [ ] **[課題1のタイトル]**: [課題の詳細と対策を記述]
+- [ ] **[課題2のタイトル]**: [課題の詳細と対策を記述]
+- [ ] **[課題3のタイトル]**: [課題の詳細と対策を記述]
+- [ ] **CORS**: フロントエンド(Vite)とバックエンド(Spring Boot)のポートが異なるため、開発環境でのCORS設定が必要。
+- [ ] **エラーハンドリング**: RFC 9457 形式のエラーレスポンスをフロントエンドで適切にパースして表示する共通処理が必要。
 
-- **Controller層**: [Controllerクラス名]（[エンドポイント概要]）
-- **UseCase層**: [UseCaseクラス名1]、[UseCaseクラス名2]
-- **Repository層**: [Repositoryクラス名]
-- **Infrastructure層**: [Serviceクラス名]
-
-## エラーハンドリング
-
-[エラーハンドリングの方針を記述]
-
-### エラーケース
-
-| エラー | 発生場所 | メッセージ |
-|--------|----------|-----------|
-| [エラー1] | [場所] | 「[メッセージ]」 |
-| [エラー2] | [場所] | 「[メッセージ]」 |
-
-## 実装手順
-
-[主要機能に分けて段階的に実装します。各機能で動作確認を行いながら進めます。]
-
-### 機能1: [機能名1]
-
-**目的**: [この機能で実現すること]
-
-#### 環境セットアップ（必要な場合）
-1. [セットアップ項目1]
-2. [セットアップ項目2]
-
-#### バックエンド実装
-1. [実装項目1]
-2. [実装項目2]
-3. [実装項目3]
-
-#### フロントエンド実装
-1. [実装項目1]
-2. [実装項目2]
-3. [実装項目3]
-
-**動作確認**: 
-- [確認項目1]
-- [確認項目2]
-
-### 機能2: [機能名2]
-
-**目的**: [この機能で実現すること]
-
-#### バックエンド実装
-1. [実装項目1]
-2. [実装項目2]
-
-#### フロントエンド実装
-1. [実装項目1]
-2. [実装項目2]
-
-**動作確認**:
-- [確認項目1]
-- [確認項目2]
-
-### 機能3: [機能名3]
-
-**目的**: [この機能で実現すること]
-
-#### フロントエンド実装（またはバックエンド実装）
-1. [実装項目1]
-2. [実装項目2]
-
-**動作確認**:
-- [確認項目1]
-- [確認項目2]
-
-### 最終確認: E2Eテスト
-
-**目的**: 全機能が連携して正しく動作することを確認する
-
-1. [テスト項目1]
-2. [テスト項目2]
-3. [テスト項目3]
-
-**確認**: すべてのテストケースが通ること
-
-## 受け入れ基準 - Specification by Example
-
-### Scenario: [正常系シナリオ1のタイトル]
-
-```gherkin
-Given [前提条件を記述]
-When [ユーザーのアクションを記述]
-And [追加のアクションを記述]
-Then [期待される結果を記述]
-And [追加の期待結果を記述]
-```
-
-### Scenario: [正常系シナリオ2のタイトル]
-
-```gherkin
-Given [前提条件を記述]
-When [ユーザーのアクションを記述]
-And [追加のアクションを記述]
-Then [期待される結果を記述]
-And [追加の期待結果を記述]
-```
-
-### Scenario: [異常系シナリオのタイトル]
-
-```gherkin
-Given [前提条件を記述]
-When [エラーを引き起こすアクションを記述]
-Then [エラーメッセージが表示されることを記述]
-And [期待される状態を記述]
-```
-
-### Scenario: [UI状態確認シナリオのタイトル]
-
-```gherkin
-Given [前提条件を記述]
-When [アクションを記述（必要な場合）]
-Then [UIの状態を記述]
-And [追加のUI状態を記述]
-```
-
-### Scenario Outline: [パラメータ化テストのタイトル]
-
-```gherkin
-Given [前提条件を<パラメータ>を使って記述]
-When [アクションを記述]
-And [追加のアクションを記述]
-Then [期待される結果を記述]
-And [追加の期待結果を記述]
-
-Examples:
-  | パラメータ1 | パラメータ2 |
-  | 値1-1       | 値1-2       |
-  | 値2-1       | 値2-2       |
-  | 値3-1       | 値3-2       |
-```
-
-### Scenario Outline: [ブラウザ互換性テスト]（必要な場合）
-
-```gherkin
-Given ユーザーが<ブラウザ>を使用している
-When ユーザーが[アプリケーション名]にアクセスする
-And [主要なアクションを記述]
-Then [期待される動作を記述]
-And [追加の期待される動作を記述]
-
-Examples:
-  | ブラウザ | バージョン |
-  | Chrome   | 最新版     |
-  | Firefox  | 最新版     |
-  | Safari   | 最新版     |
-  | Edge     | 最新版     |
-```
-
-### Scenario Outline: [レスポンシブデザインテスト]（必要な場合）
-
-```gherkin
-Given ユーザーが<デバイス>を使用している
-And 画面サイズが<画面サイズ>である
-When ユーザーが[アプリケーション名]にアクセスする
-And [主要なアクションを記述]
-Then レイアウトが適切に表示される
-And すべての機能が正常に動作する
-
-Examples:
-  | デバイス     | 画面サイズ    |
-  | デスクトップ | 1920x1080     |
-  | タブレット   | 768x1024      |
-  | モバイル     | 375x667       |
-```
-
-## 将来の拡張候補
-
-- [拡張候補1]
-- [拡張候補2]
-- [拡張候補3]
+## 備考
+- まずはHappy Path (正常系) を通すことを最優先とし、エラーハンドリングは基本的なものに留める。
+- テスト駆動開発(TDD)を意識し、バックエンドはController/Service/Repositoryの単体テスト、フロントエンドはコンポーネントテストを書きながら進める。
