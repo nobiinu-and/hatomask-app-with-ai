@@ -11,39 +11,105 @@ AIと協働する際は、以下のルールを絶対に守ってください。
 3.  **完了確認の義務化**: 1ステップがGreenになるたびに作業を停止し、人間の確認を得ること。
 4.  **Red状態の提示**: 実装コード(Green)を書く前に、必ずテストが失敗すること(Red)を確認・提示させること。
 
-## 🔄 開発フロー
+## 🔄 開発フロー (API Contract First × 縦切り開発)
 
-### Phase 1: Spec & Scenario (要件定義)
-1.  `spec/features/` に仕様と受け入れ基準(Given-When-Then)を記述する。
-2.  実装するシナリオを**1つだけ**選び、`e2e/features/` に `.feature` ファイルとして作成する。
+### Phase 1: Spec作成 (要件定義)
+`docs/spec/features/` に機能仕様と受け入れ基準(Given-When-Then形式)を記述する。
 
-### Phase 2: Implementation Planning (実装計画)
-実装に入る前に、シナリオ全体を分析し、技術的な計画を立てる。
+### Phase 2: ドメインモデリング (初稿)
+**Specに記載された機能のみ**をモデル化する。
 
-1.  **Plan Creation**: `docs/plans/implementation_plan.template.md` をコピーし、シナリオごとに計画ファイルを作成する。
-    - ファイル名規則: `docs/plans/[Spec名]_[シナリオ識別子].md`
-2.  **Step Analysis**: 各ステップで必要な技術要素(UIコンポーネント, API, DBスキーマ)を洗い出し、計画書に記入する。
-3.  **Risk Assessment**: 技術的な難所や注意点を特定する。
-4.  **Review**: 計画内容を確認し、方針を確定する。
+1.  **Domain Model Creation**: `docs/spec/models/{feature_name}.md` にドメインモデルを作成。
+2.  **Entity定義**: エンティティのプロパティとバリデーションルールを定義。
+3.  **ValueObject定義**: バリューオブジェクトを定義（必要な場合）。
+4.  **Repository Interface定義**: リポジトリのメソッドシグネチャを定義。
+5.  **DomainService定義**: ドメインサービスを定義（必要な場合）。
 
-### Phase 3: Frontend & E2E (BDD - 1ステップずつ)
-**シナリオの各ステップ(Given/When/Then)に対して、以下のサイクルを回す:**
+> **重要**: 推測による拡張は禁止。Specに明記された機能のみ。
 
-1.  **Step Definition (Red)**: `e2e/step-definitions/` にステップ定義を追加し、E2Eテストが失敗することを確認。
-2.  **Mock API**: 必要に応じて `src/frontend/src/test/mocks/` にMSWハンドラを追加。
-3.  **Unit Test (Red)**: フロントエンドのユニットテストを作成し、失敗することを確認。
-4.  **Implementation (Green)**: 最小限の実装を行い、ユニットテストとE2Eテスト(該当ステップまで)を通す。
-5.  **Refactor**: コードを整理する。
-6.  **Next Step**: 次のステップへ進む。
+### Phase 3: API Contract設計 + ドメインモデル見直し
+**API仕様とドメインモデルを同時に設計**し、中立な契約を確立する。
 
-> **⚠️ 重要**: 複数のステップをまとめて実装することは禁止。必ず1つずつ完了させること。
+1.  **OpenAPI作成**: `docs/spec/api/{feature_name}.yaml` にOpenAPI 3.0仕様を作成。
+    - エンドポイント定義（パス、HTTPメソッド、パラメータ）
+    - リクエスト/レスポンススキーマ
+    - エラーレスポンス（RFC 9457準拠）
+2.  **ドメインモデルとの整合性確認**: API設計からドメインモデルへフィードバック。
+3.  **モデル修正**: 必要に応じて `docs/spec/models/{feature_name}.md` を更新。
 
-### Phase 4: Backend (TDD)
-フロントエンド完成後、モックAPIを実実装に置き換える。
+> **ポイント**: APIとモデルの「モデル初稿→API設計→モデル見直し」の1往復で概念を揃える。
 
-1.  **Test List**: 実装すべきテスト項目をリストアップする(`testlists/`)。
-2.  **TDD Cycle**: テスト作成(Red) → 実装(Green) → リファクタリング を繰り返す。
-3.  **Integration**: モックを無効化し、リアルAPIでE2Eテストが通ることを確認する。
+### Phase 4: Gherkinシナリオ作成 + 実装計画策定
+実装するシナリオを選び、技術的な計画を立てる。
+
+1.  **Scenario Selection**: 実装するシナリオを**1つ**選ぶ。
+2.  **Feature File作成**: `e2e/features/{feature_name}.feature` にGherkinで記述。
+3.  **Implementation Plan作成**: `docs/plans/[Spec名]_[シナリオ識別子].md` を作成。
+    - 各ステップの技術要素分析（UI、API、DB、ロジック）
+    - **ステップ別実装分類**: フロントのみ/API依存/状態依存
+    - **推奨実装グルーピング**: 状態連続性を考慮したステップグループ案
+    - OpenAPI仕様参照
+4.  **Risk Assessment**: 技術的な難所や注意点を特定。
+
+### Phase 5: Backend Stub生成
+**バックエンドにスタブを生成**し、フロントエンドが直接接続できる開発基盤を整える。
+
+1.  **Backend Stub作成**: Spring Boot Controllerにスタブ実装を追加。
+    - 固定データを返す最小限の実装
+    - `// TODO: Replace stub implementation` コメント必須
+    - OpenAPI仕様と完全一致するレスポンス
+2.  **Stub動作確認**: バックエンドStubが正しく動作することを確認。
+3.  **CORS設定**: フロントエンド（localhost:5173）からのアクセスを許可。
+
+> **重要**: スタブはOpenAPI契約に忠実に。Phase 6でフロントエンドはこのStubに直接接続。
+
+### Phase 6: 縦切り実装サイクル (柔軟な粒度)
+**API依存ステップのみバックエンド実装**。実装粒度はAIと相談して決定。
+
+#### 6.1 実装粒度の相談プロトコル
+
+各実装サイクル開始前に、AIが以下を分析・提案：
+
+1.  **ステップ依存関係分析**:
+    - 各ステップのAPI依存（呼び出すエンドポイント）
+    - 状態依存（前ステップのDB状態に依存）
+    - フロントのみで完結するステップ
+2.  **実装粒度の提案（3パターン）**:
+    - パターンA: ステップ単位（最小差分）
+    - パターンB: APIグループ単位（関連ステップまとめ）
+    - パターンC: シナリオ全体（従来方式）
+3.  **各パターンの比較**:
+    - メリット（差分サイズ、フィードバック速度）
+    - デメリット（状態分断リスク、実装オーバーヘッド）
+    - 推奨理由
+4.  **注意事項アドバイス**:
+    - 状態分断ポイント（例: POST後のGET依存）
+    - Stub継続 vs 即本実装の判断
+    - テストデータ準備の必要性
+
+人間が提案を確認し、実装粒度を決定する。
+
+#### 6.2 実装サイクル (決定した粒度単位)
+
+**フロントのみステップ**:
+1.  Step Definition (Red) → Unit Test (Red) → Implementation (Green) → Refactor
+2.  E2Eテスト実行（バックエンドStub接続）
+
+**API依存ステップ**:
+1.  **フロントエンド**: Step Definition → Unit Test → Implementation（バックエンドStub接続）
+2.  **バックエンド**:
+    - ドメイン層: TDD（Entity → Repository → Service）
+    - アプリケーション層: TDD（UseCase）
+    - プレゼンテーション層: TDD（Controller、Stub置き換え）
+3.  **E2Eテスト**: 実装したバックエンドで確認
+4.  **次の粒度単位へ**: 全テスト通過後、次のグループへ進む
+
+> **柔軟性**: ステップ単位/APIグループ単位/シナリオ単位を状況に応じて選択。
+
+### Phase 7: 統合テスト (シナリオ完結確認)
+1.  **Full E2E実行**: シナリオ全体を実装済みバックエンドで実行。
+2.  **Response検証**: 全エンドポイントがOpenAPI仕様通りに動作することを確認。
+3.  **次のシナリオへ**: 完了したら次のシナリオのPhase 4へ戻る。
 
 ## 🛠 主要コマンド
 
