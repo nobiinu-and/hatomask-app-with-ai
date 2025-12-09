@@ -1,0 +1,271 @@
+openapi: 3.0.3
+info:
+  title: HatoMask API
+  description: |
+    HatoMask アプリケーションのAPI仕様書
+    
+    ## 認証
+    将来的にJWT認証を実装予定。現在は認証なし。
+    
+    ## エラーレスポンス
+    全てのエラーレスポンスはRFC 9457 (Problem Details for HTTP APIs)に準拠。
+  version: 1.0.0
+  contact:
+    name: HatoMask Development Team
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: ローカル開発環境
+  - url: http://localhost:5173/api/v1
+    description: フロントエンド開発サーバー（MSW）
+
+tags:
+  - name: feature-name
+    description: 機能の説明
+
+paths:
+  /example:
+    get:
+      tags:
+        - feature-name
+      summary: リソース取得の例
+      description: |
+        詳細な説明をここに記述。
+        
+        ### ビジネスルール
+        - ルール1
+        - ルール2
+      operationId: getExample
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: リソースID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExampleResponse'
+        '404':
+          description: リソースが見つからない
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "about:blank"
+                title: "Not Found"
+                status: 404
+                detail: "Resource with id '123' not found"
+        '500':
+          description: サーバーエラー
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+
+    post:
+      tags:
+        - feature-name
+      summary: リソース作成の例
+      description: 新規リソースを作成する
+      operationId: createExample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExampleRequest'
+      responses:
+        '201':
+          description: 作成成功
+          headers:
+            Location:
+              description: 作成されたリソースのURI
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExampleResponse'
+        '400':
+          description: バリデーションエラー
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "about:blank"
+                title: "Bad Request"
+                status: 400
+                detail: "Validation failed"
+                errors:
+                  - field: "name"
+                    message: "must not be blank"
+
+  /files/upload:
+    post:
+      tags:
+        - feature-name
+      summary: ファイルアップロードの例
+      description: |
+        multipart/form-dataでファイルをアップロードする例。
+        
+        ### 制限
+        - 最大ファイルサイズ: 10MB
+        - 対応形式: JPEG, PNG
+      operationId: uploadFile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: アップロードするファイル
+                metadata:
+                  type: object
+                  description: オプションのメタデータ
+              required:
+                - file
+      responses:
+        '201':
+          description: アップロード成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+        '400':
+          description: バリデーションエラー
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "about:blank"
+                title: "Bad Request"
+                status: 400
+                detail: "File size exceeds maximum allowed size of 10MB"
+
+components:
+  schemas:
+    ExampleResponse:
+      type: object
+      description: レスポンスの例
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: リソースID
+        name:
+          type: string
+          description: 名前
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時（ISO 8601形式）
+      required:
+        - id
+        - name
+        - createdAt
+
+    CreateExampleRequest:
+      type: object
+      description: リクエストボディの例
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: 名前
+      required:
+        - name
+
+    FileUploadResponse:
+      type: object
+      description: ファイルアップロードレスポンス
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+        fileSize:
+          type: integer
+          format: int64
+        mimeType:
+          type: string
+        uploadedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - fileName
+        - fileSize
+        - mimeType
+        - uploadedAt
+
+    ProblemDetails:
+      type: object
+      description: |
+        RFC 9457準拠のエラーレスポンス。
+        全てのAPIエラーはこの形式で返却される。
+      properties:
+        type:
+          type: string
+          description: |
+            問題タイプを識別するURI。
+            通常は "about:blank" を使用。
+          example: "about:blank"
+        title:
+          type: string
+          description: 人間が読める短いエラー概要
+          example: "Bad Request"
+        status:
+          type: integer
+          description: HTTPステータスコード
+          example: 400
+        detail:
+          type: string
+          description: 問題の詳細な説明
+          example: "Validation failed for field 'email'"
+        instance:
+          type: string
+          description: 問題が発生したリクエストのURI（オプション）
+        errors:
+          type: array
+          description: バリデーションエラーの詳細（オプション）
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: エラーが発生したフィールド名
+              message:
+                type: string
+                description: エラーメッセージ
+      required:
+        - type
+        - title
+        - status
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT認証（将来実装予定）
+        ヘッダー: Authorization: Bearer <token>
+
+# 将来的に認証が必要なエンドポイントに適用
+# security:
+#   - bearerAuth: []
