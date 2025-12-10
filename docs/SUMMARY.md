@@ -2,6 +2,7 @@
 
 ## 🚀 はじめに
 - [プロジェクト概要](../README.md)
+- [AI協働開発手法](AI_COLLABORATION.md) - AI協働開発の思想、原則、7段階プロセス
 - [AI協働アーキテクチャ](../copilot-instructions.md)
 
 ## 👨‍💻 開発者向け
