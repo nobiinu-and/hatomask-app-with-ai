@@ -45,7 +45,7 @@
 - `docs/dev/DOCKER.md` - Docker環境の構築と実行方法
 
 ### 機能仕様(実装対象を確認)
-- `docs/spec/OVERVIEW.md` - プロジェクト全体のビジョンとアーキテクチャ
+- `docs/spec/README.md` - プロジェクト全体のビジョンとアーキテクチャ
 - `docs/spec/features/*.md` - 各機能の詳細仕様と受け入れ基準
 
 ### テスト計画(バックエンド実装時)

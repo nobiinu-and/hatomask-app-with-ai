@@ -113,7 +113,7 @@ AIとの協働セッションを記録し、ナレッジを蓄積します:
 - [アーキテクチャ指示](../../copilot-instructions.md)
 - [開発ガイド](../dev/DEVELOPMENT.md)
 - [コーディング規約](../dev/CODING_STANDARDS.md)
-- [機能仕様書](../spec/OVERVIEW.md)
+- [機能仕様書](../spec/README.md)
 
 ## 💡 ベストプラクティス
 

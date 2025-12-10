@@ -61,7 +61,7 @@ HatoMask Appは、アップロードされた写真内の顔を自動検出し�
 │   │   ├── LINTER.md         # Linter設定
 │   │   └── QUALITY_STANDARDS.md # 品質基準
 │   ├── spec/                 # 仕様書
-│   │   ├── OVERVIEW.md       # プロジェクト概要
+│   │   ├── README.md         # プロジェクト概要
 │   │   ├── features/         # 機能仕様
 │   │   └── templates/        # 仕様テンプレート
 ├── e2e/                      # E2Eテスト (Playwright + Cucumber)
@@ -95,7 +95,7 @@ HatoMask Appは、アップロードされた写真内の顔を自動検出し�
 - **[docs/dev/CODING_STANDARDS.md](./docs/dev/CODING_STANDARDS.md)** - コーディング規約（命名規則、設計原則）
 
 ### 仕様・設計
-- **[docs/spec/OVERVIEW.md](./docs/spec/OVERVIEW.md)** - プロジェクト概要と機能仕様
+- **[docs/spec/README.md](./docs/spec/README.md)** - プロジェクト概要と機能仕様
 - **[docs/spec/features/](./docs/spec/features/)** - 機能別の詳細仕様
 
 ### テスト・品質

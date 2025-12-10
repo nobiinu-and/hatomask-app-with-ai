@@ -17,7 +17,7 @@
 - [作業ログ](ai/logs/) - AI協働セッション記録（作成予定）
 
 ## 📖 仕様書
-- [機能概要](spec/OVERVIEW.md) - 全機能の一覧と概要
+- [機能概要](spec/README.md) - 全機能の一覧と概要
 - [機能仕様](spec/features/) - 詳細な機能仕様書
 - [仕様テンプレート](spec/templates/feature.template.md)
 
