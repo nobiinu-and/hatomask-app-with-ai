@@ -4,7 +4,7 @@ AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を�
 
 ## このリポジトリについて
 
-このリポジトリは、**HatoMask App**（写真の顔をハトマスクに入れ替えるWebアプリ）を題材に、AI協働開発の実践的な手法を示したテンプレートです。
+このリポジトリは、 **HatoMask App**（写真の顔をハトマスクに入れ替えるWebアプリ）を題材に、AI協働開発の考え方やプロセスを試行しながら理解するためのテンプレートです。
 
 **活用方法**:
 - このリポジトリをテンプレートとして使用し、独自のプロジェクトを開始できます
@@ -15,13 +15,6 @@ AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を�
 - AIとの協働開発で品質と効率を両立させたい開発者・チーム
 - GitHub Copilot、Claude、ChatGPTなどのAIツールを活用したい方
 - ドキュメント駆動開発、TDD、Clean Architectureに興味がある方
-
-## このテンプレートの使い方
-
-1. **リポジトリをテンプレートとして使用**: GitHubの「Use this template」ボタンで新規リポジトリを作成
-2. **プロジェクト固有の情報を更新**: `README.md`、`docs/spec/`配下の機能仕様をあなたのプロジェクトに合わせて書き換え
-3. **AIプロンプトをカスタマイズ**: `docs/ai/prompts/`を必要に応じて調整
-4. **開発開始**: [開発ガイド](./docs/dev/DEVELOPMENT.md)に従ってAIと協働で開発を進める
 
 ## サンプルアプリケーション：HatoMask App
 
@@ -41,45 +34,12 @@ AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を�
 
 詳細な仕様や要件は [docs/spec/README.md](./docs/spec/README.md) を参照してください。
 
-## プロジェクト構造
+## このテンプレートの使い方
 
-```
-.
-├── docs/                     # ドキュメント
-│   ├── ai/                   # AI開発コンテキスト
-│   │   ├── prompts/          # AIプロンプト集
-│   │   └── logs/             # AI開発ログ
-│   ├── dev/                  # 開発ガイド
-│   │   ├── DEVELOPMENT.md    # 開発ガイド
-│   │   ├── CODING_STANDARDS.md  # コーディング規約
-│   │   ├── DOCKER.md         # Docker実行ガイド
-│   │   ├── LINTER.md         # Linter設定
-│   │   └── QUALITY_STANDARDS.md # 品質基準
-│   ├── spec/                 # 仕様書
-│   │   ├── README.md         # プロジェクト概要
-│   │   ├── features/         # 機能仕様
-│   │   └── templates/        # 仕様テンプレート
-├── e2e/                      # E2Eテスト (Playwright + Cucumber)
-│   ├── features/             # Cucumberフィーチャーファイル
-│   ├── step-definitions/     # ステップ定義
-│   └── support/              # テストサポートファイル
-├── src/
-│   ├── backend/              # Spring Boot バックエンド
-│   │   └── src/
-│   │       ├── main/java/    # アプリケーションコード
-│   │       └── test/java/    # テストコード
-│   └── frontend/             # React フロントエンド
-│       └── src/
-│           ├── constants/    # 定数定義
-│           ├── hooks/        # カスタムフック
-│           ├── services/     # APIクライアント
-│           ├── types/        # 型定義
-│           ├── utils/        # ユーティリティ関数
-│           └── test/         # テストコード
-├── testlists/                # テストリスト（TDD実装管理）
-├── docker-compose.yml        # Docker Compose設定
-└── README.md                 # このファイル
-```
+1. **リポジトリをテンプレートとして使用**: GitHubの「Use this template」ボタンで新規リポジトリを作成
+2. **プロジェクト固有の情報を更新**: `README.md`、`docs/spec/`配下の機能仕様をあなたのプロジェクトに合わせて書き換え
+3. **AIプロンプトをカスタマイズ**: `docs/ai/prompts/`を必要に応じて調整
+4. **開発開始**: [開発ガイド](./docs/dev/DEVELOPMENT.md)に従ってAIと協働で開発を進める
 
 ## AI協働開発の手法
 
@@ -134,6 +94,46 @@ AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を�
 この分担により、AIを「自動生成ツール」ではなく「品質と効率を支えるエンジニアリングパートナー」として迎えることができると考えています。
 
 詳細は [AI協働開発手法](./docs/AI_COLLABORATION.md) を参照してください。
+
+## プロジェクト構造
+
+```
+.
+├── docs/                     # ドキュメント
+│   ├── ai/                   # AI開発コンテキスト
+│   │   ├── prompts/          # AIプロンプト集
+│   │   └── logs/             # AI開発ログ
+│   ├── dev/                  # 開発ガイド
+│   │   ├── DEVELOPMENT.md    # 開発ガイド
+│   │   ├── CODING_STANDARDS.md  # コーディング規約
+│   │   ├── DOCKER.md         # Docker実行ガイド
+│   │   ├── LINTER.md         # Linter設定
+│   │   └── QUALITY_STANDARDS.md # 品質基準
+│   ├── spec/                 # 仕様書
+│   │   ├── README.md         # プロジェクト概要
+│   │   ├── features/         # 機能仕様
+│   │   └── templates/        # 仕様テンプレート
+├── e2e/                      # E2Eテスト (Playwright + Cucumber)
+│   ├── features/             # Cucumberフィーチャーファイル
+│   ├── step-definitions/     # ステップ定義
+│   └── support/              # テストサポートファイル
+├── src/
+│   ├── backend/              # Spring Boot バックエンド
+│   │   └── src/
+│   │       ├── main/java/    # アプリケーションコード
+│   │       └── test/java/    # テストコード
+│   └── frontend/             # React フロントエンド
+│       └── src/
+│           ├── constants/    # 定数定義
+│           ├── hooks/        # カスタムフック
+│           ├── services/     # APIクライアント
+│           ├── types/        # 型定義
+│           ├── utils/        # ユーティリティ関数
+│           └── test/         # テストコード
+├── testlists/                # テストリスト（TDD実装管理）
+├── docker-compose.yml        # Docker Compose設定
+└── README.md                 # このファイル
+```
 
 ## ドキュメント構成
 
