@@ -263,14 +263,20 @@ com.hatomask/
     dto/
   application/        # UseCase, ApplicationService
     usecase/
-  domain/            # Entity, DomainService, ValueObject
-    model/
-    service/
+  domain/            # Entity, DomainService, ValueObject, Repository Interface
+    model/           # Entity, ValueObject
+    repository/      # Repository Interface
+    service/         # DomainService
   infrastructure/    # Repository実装, 外部サービス連携
-    repository/
+    repository/      # Repository実装 (JPA)
     external/
   config/            # 設定クラス
 ```
+
+**重要**:
+- Repository **Interface** は `domain/repository/` に配置（ドメイン層）
+- Repository **実装** は `infrastructure/repository/` に配置（インフラ層）
+- これにより、ドメイン層が外部技術（JPA）に依存しない設計を保ちます
 
 ### 命名規則
 
