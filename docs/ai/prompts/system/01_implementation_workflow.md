@@ -18,13 +18,16 @@
 1. docs/dev/DEVELOPMENT.md
    → BDD/TDDの開発プロセス全体を理解する
    
-2. docs/spec/features/{feature_name}.md
+2. docs/spec/models/{feature_name}.md
+   → ドメインモデルを確認する（Phase 2で作成）
+   
+3. docs/spec/features/{feature_name}.md
    → 実装する機能の仕様と受け入れ基準を確認する
    
-3. docs/dev/CODING_STANDARDS.md
+4. docs/dev/CODING_STANDARDS.md
    → コーディング規約を確認する
    
-4. testlists/{feature_name}_v1.md (バックエンド実装時)
+5. docs/plans/{feature_name}/backend-testlist/*.md (バックエンド実装時)
    → テストリストを確認する
 ```
 
