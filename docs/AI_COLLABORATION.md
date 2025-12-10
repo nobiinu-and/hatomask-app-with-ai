@@ -165,7 +165,7 @@ graph LR
   - 各Gherkinステップの実装分類（API依存/状態依存/フロントのみ）
   - 推奨グルーピング（APIグループ単位の提案）
   - ステップ間の依存関係分析（Mermaid図）
-- **AIタスク**: `docs/ai/prompts/tasks/01_generate_scenarios.md`, `04_plan_implementation.md`
+- **AIタスク**: `docs/ai/prompts/tasks/01_create_feature_spec.md`, `04_plan_implementation.md`
 
 #### Phase 5: Backend Stub生成
 

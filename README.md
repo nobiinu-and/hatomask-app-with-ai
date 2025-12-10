@@ -158,7 +158,7 @@ AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を�
 - **[docs/AI_COLLABORATION.md](./docs/AI_COLLABORATION.md)** - AI協働開発の思想、原則、7段階プロセス
 - **[docs/ai/](./docs/ai/)** - AI開発コンテキストとプロンプト集
     - **[docs/ai/prompts/tasks/](./docs/ai/prompts/tasks/)** - AIタスク用プロンプト
-        - `01_generate_scenarios.md`: 仕様書からGherkinシナリオを生成
+        - `01_create_feature_spec.md`: 機能仕様(Spec)を対話的に作成
         - `02_simple_modeling.md`: ドメインモデリング
         - `03_design_api_contract.md`: API Contract設計
         - `04_plan_implementation.md`: シナリオから実装計画を策定

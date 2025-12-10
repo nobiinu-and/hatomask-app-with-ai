@@ -6,7 +6,7 @@ Phase別のAIプロンプトテンプレートです。
 
 | Phase | タスク | ファイル |
 |-------|--------|----------|
-| Phase 1 | Spec作成 | `01_generate_scenarios.md` |
+| Phase 1 | 機能仕様(Spec)作成 | `01_create_feature_spec.md` |
 | Phase 2 | ドメインモデリング（初稿） | `02_simple_modeling.md` |
 | Phase 3 | API Contract設計 + モデル見直し | `03_design_api_contract.md` |
 | Phase 4 | Gherkinシナリオ + 実装計画策定 | `04_plan_implementation.md` |
@@ -17,6 +17,18 @@ Phase別のAIプロンプトテンプレートです。
 ## 使用方法
 
 各Phaseで対応するプロンプトファイルを参照し、AIに指示を出してください。
+
+### 例: Phase 1で機能仕様を作成
+
+```bash
+# プロンプトファイルを確認
+cat docs/ai/prompts/tasks/01_create_feature_spec.md
+
+# AIに依頼
+「docs/ai/prompts/tasks/01_create_feature_spec.mdの手順に従って、
+顔検出機能の仕様書を作成してください。
+対話的にヒアリングしながら進めてください。」
+```
 
 ### 例: Phase 3でAPI Contract設計
 

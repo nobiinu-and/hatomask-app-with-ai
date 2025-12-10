@@ -16,7 +16,7 @@
 
 各フェーズで使用するタスクプロンプト:
 
-1. **01_generate_scenarios.md** - Spec → Gherkinシナリオ生成
+1. **01_create_feature_spec.md** - 機能仕様(Spec)作成
 2. **02_simple_modeling.md** - Spec → ドメインモデル作成
 3. **03_plan_implementation.md** - Gherkin + モデル → 実装計画策定
 4. **04_implement_frontend_bdd.md** - BDDでフロントエンド実装
