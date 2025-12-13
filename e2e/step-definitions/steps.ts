@@ -105,6 +105,33 @@ Then('プレビューエリアに選択した画像が表示される', { timeou
   await expect(previewImage).toBeVisible({ timeout: 10000 });
 });
 
+When('ユーザーが「ダウンロード」ボタンをクリックする', { timeout: 60000 }, async function (this: CustomWorld) {
+  // ダウンロード処理を監視
+  const downloadPromise = this.page.waitForEvent('download', { timeout: 10000 });
+  
+  // ダウンロードボタンをクリック
+  const downloadButton = this.page.getByTestId('download-button');
+  await expect(downloadButton).toBeVisible({ timeout: 10000 });
+  await downloadButton.click();
+  
+  // ダウンロードイベントを待機
+  const download = await downloadPromise;
+  
+  // ダウンロードされたファイル名を確認
+  const suggestedFilename = download.suggestedFilename();
+  console.log('ダウンロードされたファイル名:', suggestedFilename);
+  expect(suggestedFilename).toMatch(/photo_.*\.jpg/);
+  
+  // ダウンロードが完了するまで待機
+  await download.path();
+});
+
+Then('元の画像がダウンロードされる', { timeout: 60000 }, async function (this: CustomWorld) {
+  // ダウンロード処理は上のステップで完了しているため、
+  // ここでは追加の検証は不要
+  console.log('ダウンロード完了');
+});
+
 Then('コンテンツ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, content: string) {
   await expect(this.page.getByText(content)).toBeVisible();
 });
