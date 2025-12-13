@@ -1,0 +1,275 @@
+openapi: 3.0.3
+info:
+  title: HatoMask API - Photo Upload/Download
+  description: |
+    写真のアップロードとダウンロード機能のAPI仕様
+    
+    ## 機能スコープ
+    - 写真アップロード（JPEG/PNG、最大10MB）
+    - プレビュー表示
+    - ダウンロード（無加工）
+    
+    ## エラーレスポンス
+    全てのエラーレスポンスはRFC 9457 (Problem Details for HTTP APIs)に準拠。
+  version: 1.0.0
+  contact:
+    name: HatoMask Development Team
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: バックエンド開発環境
+  - url: http://localhost:5173/api/v1
+    description: フロントエンド開発サーバー（MSW）
+
+tags:
+  - name: photos
+    description: 写真管理
+
+paths:
+  /photos:
+    post:
+      tags:
+        - photos
+      summary: 写真をアップロード
+      description: |
+        写真ファイルをアップロードし、サーバーに保存します。
+        
+        ### ビジネスルール
+        - ファイルサイズは10MB以下
+        - 対応形式: JPEG (.jpg, .jpeg), PNG (.png)
+        - 同一ユーザーが複数回アップロードした場合、新しいPhotoエンティティが作成される
+        
+        ### 処理フロー
+        1. ファイル形式をバリデーション（Content-Type確認）
+        2. ファイルサイズをチェック
+        3. ローカルストレージに保存
+        4. DBにメタデータを記録
+        5. 生成されたUUIDを返却
+      operationId: uploadPhoto
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: アップロードする写真ファイル（JPEG または PNG）
+              required:
+                - file
+      responses:
+        '201':
+          description: アップロード成功
+          headers:
+            Location:
+              description: 作成された写真リソースのURI
+              schema:
+                type: string
+                example: "/api/v1/photos/550e8400-e29b-41d4-a716-446655440000"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoResponse'
+        '400':
+          description: バリデーションエラー
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                fileSizeExceeded:
+                  summary: ファイルサイズ超過
+                  value:
+                    type: "about:blank"
+                    title: "Bad Request"
+                    status: 400
+                    detail: "ファイルサイズが最大許容サイズ10MBを超えています"
+                invalidFormat:
+                  summary: 非対応形式
+                  value:
+                    type: "about:blank"
+                    title: "Bad Request"
+                    status: 400
+                    detail: "サポートされていないファイル形式です。JPEG または PNG のみ許可されています"
+                missingFile:
+                  summary: ファイル未指定
+                  value:
+                    type: "about:blank"
+                    title: "Bad Request"
+                    status: 400
+                    detail: "ファイルは必須です"
+        '500':
+          description: サーバーエラー
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "about:blank"
+                title: "Internal Server Error"
+                status: 500
+                detail: "リクエストの処理中に予期しないエラーが発生しました"
+
+  /photos/{id}:
+    get:
+      tags:
+        - photos
+      summary: 写真を取得
+      description: |
+        指定されたIDの写真を取得します。プレビュー表示とダウンロードの両方で使用されます。
+        
+        ### 用途
+        - プレビュー表示: フロントエンドで画像として表示
+        - ダウンロード: ブラウザのダウンロード機能で保存
+        
+        ### レスポンス
+        - Content-Type: 画像のMIMEタイプ（image/jpeg または image/png）
+        - Content-Disposition: ダウンロード時に設定（attachment; filename="..."）
+        - 画像データをバイナリで返却
+      operationId: getPhotoById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 写真ID（UUID）
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        - name: download
+          in: query
+          required: false
+          description: trueの場合、Content-Dispositionヘッダーを設定してダウンロード用に返却
+          schema:
+            type: boolean
+            default: false
+          example: true
+      responses:
+        '200':
+          description: 写真取得成功
+          headers:
+            Content-Type:
+              description: 画像のMIMEタイプ
+              schema:
+                type: string
+                enum:
+                  - image/jpeg
+                  - image/png
+              example: "image/jpeg"
+            Content-Disposition:
+              description: ダウンロード時のファイル名指定（download=trueの場合のみ）
+              schema:
+                type: string
+              example: 'attachment; filename="photo_550e8400-e29b-41d4-a716-446655440000.jpg"'
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: 写真が見つからない
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "about:blank"
+                title: "Not Found"
+                status: 404
+                detail: "ID '550e8400-e29b-41d4-a716-446655440000' の写真が見つかりません"
+        '500':
+          description: サーバーエラー
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: "about:blank"
+                title: "Internal Server Error"
+                status: 500
+                detail: "写真の取得中に予期しないエラーが発生しました"
+
+components:
+  schemas:
+    PhotoResponse:
+      type: object
+      description: 写真アップロード成功時のレスポンス
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 写真ID
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        originalFileName:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: 元のファイル名
+          example: "sample.jpg"
+        contentType:
+          type: string
+          enum:
+            - image/jpeg
+            - image/png
+          description: MIMEタイプ
+          example: "image/jpeg"
+        fileSize:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 10485760
+          description: ファイルサイズ（バイト単位、最大10MB）
+          example: 5242880
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時（ISO 8601形式）
+          example: "2024-01-15T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時（ISO 8601形式）
+          example: "2024-01-15T10:30:00Z"
+      required:
+        - id
+        - originalFileName
+        - contentType
+        - fileSize
+        - createdAt
+        - updatedAt
+
+    ProblemDetails:
+      type: object
+      description: RFC 9457準拠のエラーレスポンス
+      properties:
+        type:
+          type: string
+          description: エラータイプを示すURI
+          example: "about:blank"
+        title:
+          type: string
+          description: エラーの短いタイトル
+          example: "Bad Request"
+        status:
+          type: integer
+          description: HTTPステータスコード
+          example: 400
+        detail:
+          type: string
+          description: エラーの詳細説明
+          example: "ファイルサイズが最大許容サイズ10MBを超えています"
+        instance:
+          type: string
+          description: エラーが発生した特定のリクエストを識別するURI（オプション）
+          example: "/api/v1/photos"
+      required:
+        - type
+        - title
+        - status
+        - detail
