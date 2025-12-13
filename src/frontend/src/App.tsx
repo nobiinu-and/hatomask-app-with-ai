@@ -13,6 +13,7 @@ import {
   Divider,
 } from '@mui/material'
 import { useState, useEffect } from 'react'
+import { PhotoUploadButton } from './components/PhotoUploadButton'
 
 interface HelloResponse {
   message: string
@@ -113,7 +114,7 @@ function App() {
               </Typography>
               
               <Box sx={{ mt: 3, textAlign: 'center' }}>
-                {/* 写真選択ボタン: ステップ2で実装 */}
+                <PhotoUploadButton />
                 
                 {/* プレビューエリア: ステップ5で実装 */}
                 
