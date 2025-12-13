@@ -66,7 +66,6 @@ When('ユーザーが「写真を選択」ボタンをクリックする', { tim
 
 When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
   // テスト用の5MB JPEGファイルをアップロード
-  // PlaywrightのsetInputFilesを使用
   const fileInput = this.page.locator('input[type="file"]');
   
   // 5MBのダミーJPEGファイルを作成
@@ -75,6 +74,23 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
   await fileInput.setInputFiles({
     name: 'test-photo.jpg',
     mimeType: 'image/jpeg',
+    buffer: buffer,
+  });
+  
+  // アップロード処理が完了するまで待機
+  await this.page.waitForTimeout(1000);
+});
+
+When('ユーザーがファイルサイズ3MBのPNGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // テスト用の3MB PNGファイルをアップロード
+  const fileInput = this.page.locator('input[type="file"]');
+  
+  // 3MBのダミーPNGファイルを作成
+  const buffer = Buffer.alloc(3 * 1024 * 1024); // 3MB
+  
+  await fileInput.setInputFiles({
+    name: 'test-photo.png',
+    mimeType: 'image/png',
     buffer: buffer,
   });
   
@@ -109,9 +125,9 @@ When('ユーザーが「ダウンロード」ボタンをクリックする', { 
   // ダウンロードイベントを待機
   const download = await downloadPromise;
   
-  // ダウンロードされたファイル名を確認
+  // ダウンロードされたファイル名を確認（JPEGまたはPNG）
   const suggestedFilename = download.suggestedFilename();
-  expect(suggestedFilename).toMatch(/photo_.*\.jpg/);
+  expect(suggestedFilename).toMatch(/photo_.*\.(jpg|png)/);
   
   // ダウンロードが完了するまで待機
   await download.path();
