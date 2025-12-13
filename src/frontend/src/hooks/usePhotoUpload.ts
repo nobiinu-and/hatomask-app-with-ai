@@ -32,6 +32,7 @@ export function usePhotoUpload() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'アップロードに失敗しました'
       setError(errorMessage)
+      setUploadedPhoto(null) // エラー時は前の画像をクリア
       throw err
     } finally {
       setIsUploading(false)

@@ -196,6 +196,40 @@ Then('プレビューエリアの画像が2枚目の画像に切り替わる', {
   expect(secondImageSrc).not.toBe(firstImageSrc);
 });
 
+// エラーハンドリング用ステップ
+When('ユーザーがファイルサイズ11MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // 「写真を選択」ボタンをクリック
+  const uploadButton = this.page.getByRole('button', { name: '写真を選択' });
+  await expect(uploadButton).toBeVisible();
+  await uploadButton.click();
+  
+  // ファイルを選択
+  const fileInput = this.page.locator('input[type="file"]');
+  // 11MBのダミーJPEGファイルを作成
+  const buffer = Buffer.alloc(11 * 1024 * 1024); // 11MB
+  
+  await fileInput.setInputFiles({
+    name: 'large-photo.jpg',
+    mimeType: 'image/jpeg',
+    buffer: buffer,
+  });
+  
+  // アップロード処理が完了するまで待機
+  await this.page.waitForTimeout(2000);
+});
+
+Then('エラーメッセージ「ファイルサイズは10MB以下にしてください」が表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  // エラーメッセージが表示されることを確認
+  const errorAlert = this.page.locator('[role="alert"]').filter({ hasText: /ファイルサイズ.*10MB/ });
+  await expect(errorAlert).toBeVisible({ timeout: 10000 });
+});
+
+Then('プレビューエリアの画像が消える', { timeout: 60000 }, async function (this: CustomWorld) {
+  // プレビュー画像が表示されていないことを確認（エラー時にクリアされる）
+  const previewImage = this.page.locator('img[alt*="プレビュー"], img[alt*="preview"]');
+  await expect(previewImage).not.toBeVisible();
+});
+
 Then('コンテンツ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, content: string) {
   await expect(this.page.getByText(content)).toBeVisible();
 });
