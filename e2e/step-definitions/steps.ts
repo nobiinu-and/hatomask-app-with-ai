@@ -88,14 +88,6 @@ Then('アップロードが成功する', { timeout: 60000 }, async function (th
   
   // エラーメッセージが表示されていないことを確認
   const errorAlert = this.page.locator('[role="alert"]').filter({ hasText: /エラー|失敗/ });
-  
-  // エラーが表示されている場合は内容を出力
-  const isErrorVisible = await errorAlert.isVisible().catch(() => false);
-  if (isErrorVisible) {
-    const errorText = await errorAlert.textContent();
-    console.log('エラーメッセージ:', errorText);
-  }
-  
   await expect(errorAlert).not.toBeVisible();
 });
 
@@ -119,7 +111,6 @@ When('ユーザーが「ダウンロード」ボタンをクリックする', { 
   
   // ダウンロードされたファイル名を確認
   const suggestedFilename = download.suggestedFilename();
-  console.log('ダウンロードされたファイル名:', suggestedFilename);
   expect(suggestedFilename).toMatch(/photo_.*\.jpg/);
   
   // ダウンロードが完了するまで待機
@@ -127,9 +118,7 @@ When('ユーザーが「ダウンロード」ボタンをクリックする', { 
 });
 
 Then('元の画像がダウンロードされる', { timeout: 60000 }, async function (this: CustomWorld) {
-  // ダウンロード処理は上のステップで完了しているため、
-  // ここでは追加の検証は不要
-  console.log('ダウンロード完了');
+  // ダウンロード処理は上のステップで完了しているため、追加の検証は不要
 });
 
 Then('コンテンツ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, content: string) {
