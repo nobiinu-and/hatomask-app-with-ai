@@ -137,6 +137,65 @@ Then('元の画像がダウンロードされる', { timeout: 60000 }, async fun
   // ダウンロード処理は上のステップで完了しているため、追加の検証は不要
 });
 
+// 複数回アップロード用ステップ
+When('ユーザーが1枚目のJPEGファイルをアップロードする', { timeout: 60000 }, async function (this: CustomWorld) {
+  // 「写真を選択」ボタンをクリック
+  const uploadButton = this.page.getByRole('button', { name: '写真を選択' });
+  await expect(uploadButton).toBeVisible();
+  await uploadButton.click();
+  
+  // ファイルを選択
+  const fileInput = this.page.locator('input[type="file"]');
+  const buffer = Buffer.alloc(2 * 1024 * 1024); // 2MB
+  
+  await fileInput.setInputFiles({
+    name: 'first-photo.jpg',
+    mimeType: 'image/jpeg',
+    buffer: buffer,
+  });
+  
+  // アップロード処理が完了するまで待機
+  await this.page.waitForTimeout(1000);
+});
+
+Then('1枚目の画像がプレビューエリアに表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  // プレビュー画像が表示されることを確認
+  const previewImage = this.page.locator('img[alt*="プレビュー"], img[alt*="preview"]');
+  await expect(previewImage).toBeVisible({ timeout: 10000 });
+  
+  // 1枚目の画像のsrc URLを保存（後で2枚目と比較するため）
+  const firstImageSrc = await previewImage.getAttribute('src');
+  (this as any).firstImageSrc = firstImageSrc;
+});
+
+When('ユーザーが2枚目のPNGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // ファイルを選択
+  const fileInput = this.page.locator('input[type="file"]');
+  const buffer = Buffer.alloc(1 * 1024 * 1024); // 1MB
+  
+  await fileInput.setInputFiles({
+    name: 'second-photo.png',
+    mimeType: 'image/png',
+    buffer: buffer,
+  });
+  
+  // アップロード処理が完了するまで待機
+  await this.page.waitForTimeout(1000);
+});
+
+Then('プレビューエリアの画像が2枚目の画像に切り替わる', { timeout: 60000 }, async function (this: CustomWorld) {
+  // プレビュー画像が表示されることを確認
+  const previewImage = this.page.locator('img[alt*="プレビュー"], img[alt*="preview"]');
+  await expect(previewImage).toBeVisible({ timeout: 10000 });
+  
+  // 2枚目の画像のsrc URLを取得
+  const secondImageSrc = await previewImage.getAttribute('src');
+  
+  // 1枚目と2枚目のURLが異なることを確認（画像が切り替わった）
+  const firstImageSrc = (this as any).firstImageSrc;
+  expect(secondImageSrc).not.toBe(firstImageSrc);
+});
+
 Then('コンテンツ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, content: string) {
   await expect(this.page.getByText(content)).toBeVisible();
 });
