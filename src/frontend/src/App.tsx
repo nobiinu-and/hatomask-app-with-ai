@@ -10,6 +10,7 @@ import {
   ThemeProvider,
   createTheme,
   CssBaseline,
+  Divider,
 } from '@mui/material'
 import { useState, useEffect } from 'react'
 
@@ -72,6 +73,7 @@ function App() {
             🕊️ HatoMask App
           </Typography>
           
+          {/* 既存の接続確認機能 */}
           <Card sx={{ mt: 4, width: '100%', maxWidth: 600 }}>
             <CardContent>
               {loading ? (
@@ -98,6 +100,25 @@ function App() {
                   )}
                 </>
               )}
+            </CardContent>
+          </Card>
+
+          <Divider sx={{ my: 4, width: '100%', maxWidth: 600 }} />
+
+          {/* 写真アップロード・ダウンロード機能 */}
+          <Card sx={{ width: '100%', maxWidth: 600 }}>
+            <CardContent>
+              <Typography variant="h6" component="h2" gutterBottom>
+                写真のアップロード
+              </Typography>
+              
+              <Box sx={{ mt: 3, textAlign: 'center' }}>
+                {/* 写真選択ボタン: ステップ2で実装 */}
+                
+                {/* プレビューエリア: ステップ5で実装 */}
+                
+                {/* ダウンロードボタン: ステップ6で実装 */}
+              </Box>
             </CardContent>
           </Card>
           

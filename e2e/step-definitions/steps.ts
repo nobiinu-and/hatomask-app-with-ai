@@ -48,6 +48,15 @@ Then('バックエンドからのメッセージが表示される', { timeout: 
   ).toBeVisible({ timeout: 10000 });
 });
 
+// 写真アップロード・ダウンロード機能
+Given('ユーザーがHatoMaskアプリケーションにアクセスしている', { timeout: 60000 }, async function (this: CustomWorld) {
+  await this.page.goto('/');
+  await this.page.waitForLoadState('domcontentloaded');
+  
+  // アプリケーションのタイトルが表示されていることを確認
+  await expect(this.page.getByText('HatoMask App')).toBeVisible();
+});
+
 Then('コンテンツ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, content: string) {
   await expect(this.page.getByText(content)).toBeVisible();
 });
