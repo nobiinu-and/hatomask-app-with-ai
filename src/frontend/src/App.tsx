@@ -14,6 +14,8 @@ import {
 } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { PhotoUploadButton } from './components/PhotoUploadButton'
+import { PhotoPreview } from './components/PhotoPreview'
+import { usePhotoUpload } from './hooks/usePhotoUpload'
 
 interface HelloResponse {
   message: string
@@ -35,6 +37,16 @@ function App() {
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
+  
+  const { uploadedPhoto, isUploading, error: uploadError, uploadPhoto } = usePhotoUpload()
+
+  const handleFileSelect = async (file: File) => {
+    try {
+      await uploadPhoto(file)
+    } catch (err) {
+      console.error('Upload failed:', err)
+    }
+  }
 
   useEffect(() => {
     fetch('/api/v1/hello')
@@ -114,11 +126,17 @@ function App() {
               </Typography>
               
               <Box sx={{ mt: 3, textAlign: 'center' }}>
-                <PhotoUploadButton />
+                <PhotoUploadButton onFileSelect={handleFileSelect} />
                 
-                {/* プレビューエリア: ステップ5で実装 */}
+                {uploadError && (
+                  <Alert severity="error" sx={{ mt: 2 }}>
+                    {uploadError}
+                  </Alert>
+                )}
                 
-                {/* ダウンロードボタン: ステップ6で実装 */}
+                <PhotoPreview photoId={uploadedPhoto?.id || null} isLoading={isUploading} />
+                
+                {/* ダウンロードボタン: ステップ6-7で実装 */}
               </Box>
             </CardContent>
           </Card>

@@ -64,6 +64,47 @@ When('ユーザーが「写真を選択」ボタンをクリックする', { tim
   await uploadButton.click();
 });
 
+When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // テスト用の5MB JPEGファイルをアップロード
+  // PlaywrightのsetInputFilesを使用
+  const fileInput = this.page.locator('input[type="file"]');
+  
+  // 5MBのダミーJPEGファイルを作成
+  const buffer = Buffer.alloc(5 * 1024 * 1024); // 5MB
+  
+  await fileInput.setInputFiles({
+    name: 'test-photo.jpg',
+    mimeType: 'image/jpeg',
+    buffer: buffer,
+  });
+  
+  // アップロード処理が完了するまで待機
+  await this.page.waitForTimeout(1000);
+});
+
+Then('アップロードが成功する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // アップロード処理が完了するまで待機
+  await this.page.waitForTimeout(2000);
+  
+  // エラーメッセージが表示されていないことを確認
+  const errorAlert = this.page.locator('[role="alert"]').filter({ hasText: /エラー|失敗/ });
+  
+  // エラーが表示されている場合は内容を出力
+  const isErrorVisible = await errorAlert.isVisible().catch(() => false);
+  if (isErrorVisible) {
+    const errorText = await errorAlert.textContent();
+    console.log('エラーメッセージ:', errorText);
+  }
+  
+  await expect(errorAlert).not.toBeVisible();
+});
+
+Then('プレビューエリアに選択した画像が表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  // プレビュー画像が表示されることを確認
+  const previewImage = this.page.locator('img[alt*="プレビュー"], img[alt*="preview"]');
+  await expect(previewImage).toBeVisible({ timeout: 10000 });
+});
+
 Then('コンテンツ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, content: string) {
   await expect(this.page.getByText(content)).toBeVisible();
 });
