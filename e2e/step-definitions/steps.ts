@@ -230,6 +230,33 @@ Then('プレビューエリアの画像が消える', { timeout: 60000 }, async 
   await expect(previewImage).not.toBeVisible();
 });
 
+When('ユーザーがGIF形式のファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  // 「写真を選択」ボタンをクリック
+  const uploadButton = this.page.getByRole('button', { name: '写真を選択' });
+  await expect(uploadButton).toBeVisible();
+  await uploadButton.click();
+  
+  // ファイルを選択
+  const fileInput = this.page.locator('input[type="file"]');
+  // GIFファイルを作成
+  const buffer = Buffer.alloc(1 * 1024 * 1024); // 1MB
+  
+  await fileInput.setInputFiles({
+    name: 'test-image.gif',
+    mimeType: 'image/gif',
+    buffer: buffer,
+  });
+  
+  // アップロード処理が完了するまで待機
+  await this.page.waitForTimeout(2000);
+});
+
+Then('エラーメッセージ「JPEG または PNG ファイルを選択してください」が表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  // エラーメッセージが表示されることを確認
+  const errorAlert = this.page.locator('[role="alert"]').filter({ hasText: /JPEG.*PNG/ });
+  await expect(errorAlert).toBeVisible({ timeout: 10000 });
+});
+
 Then('コンテンツ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, content: string) {
   await expect(this.page.getByText(content)).toBeVisible();
 });

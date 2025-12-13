@@ -24,8 +24,7 @@ public class ContentType {
             throw new IllegalArgumentException("ContentType must not be null or empty");
         }
         if (!IMAGE_JPEG.equals(value) && !IMAGE_PNG.equals(value)) {
-            throw new IllegalArgumentException(
-                    "Unsupported content type: " + value + ". Only image/jpeg and image/png are allowed.");
+            throw new IllegalArgumentException("JPEG または PNG ファイルを選択してください");
         }
         this.value = value;
     }
