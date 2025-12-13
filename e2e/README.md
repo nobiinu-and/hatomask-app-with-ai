@@ -98,6 +98,49 @@ npm run test:e2e:debug
 - JSON: `test-results/cucumber-report.json`
 - JUnit XML: `test-results/cucumber-report.xml`
 
+## デバッグ機能
+
+### テスト失敗時の自動保存
+
+テストが失敗すると、以下のファイルが自動的に保存されます：
+
+#### 1. スクリーンショット
+- 保存先: `test-results/screenshots/`
+- フルページスクリーンショット（PNG形式）
+- ファイル名: `{シナリオ名}_{タイムスタンプ}.png`
+
+#### 2. Playwrightトレース
+- 保存先: `test-results/traces/`
+- 実行履歴の完全な記録（ZIP形式）
+- ファイル名: `{シナリオ名}_{タイムスタンプ}.zip`
+- **表示方法**: 
+  ```bash
+  npx playwright show-trace test-results/traces/{ファイル名}.zip
+  ```
+- トレースビューアでは以下を確認できます：
+  - 各ステップのスクリーンショット
+  - DOMスナップショット
+  - ネットワークリクエスト
+  - コンソールログ
+  - ソースコード
+
+#### 3. HTMLダンプ
+- 保存先: `test-results/screenshots/`
+- 失敗時のページHTML（HTML形式）
+- ファイル名: `{シナリオ名}_{タイムスタンプ}.html`
+
+#### 4. ビデオ録画
+- 保存先: `test-results/videos/`
+- テスト実行中の画面録画（WebM形式）
+- すべてのテストで自動録画
+
+### ブラウザコンソール監視
+
+テスト実行中、ブラウザのエラーと警告がターミナルに出力されます：
+- `[Browser ERROR]: {メッセージ}` - JavaScriptエラー
+- `[Browser WARNING]: {メッセージ}` - 警告
+- `[Page Error]: {メッセージ}` - ページエラー
+
 ## ステップ定義の追加
 
 新しいステップを追加する場合は、`step-definitions/steps.ts`に追加してください：
