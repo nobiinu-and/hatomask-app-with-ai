@@ -22,6 +22,10 @@ spring:
   h2:
     console:
       enabled: false
+  
+  # テスト環境では Flyway を無効化 (JPA の ddl-auto でスキーマ生成)
+  flyway:
+    enabled: false
 
 # ログレベル
 logging:
