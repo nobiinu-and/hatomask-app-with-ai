@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:80'
+    networks:
+      - hatomask-network
+    depends_on:
+      backend:
+        condition: service_started
+
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    networks:
+      - hatomask-network
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/hatomask
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: hatomask
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    # CI用: tmpfsでメモリ上にDBを配置して高速化
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks:
+      - hatomask-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  hatomask-network:
+    driver: bridge

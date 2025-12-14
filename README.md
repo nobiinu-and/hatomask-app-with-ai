@@ -34,6 +34,38 @@ AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を�
 
 詳細な仕様や要件は [docs/spec/README.md](./docs/spec/README.md) を参照してください。
 
+## CI/CD
+
+このプロジェクトは、GitHub Actionsによる3段階のCIパイプラインを採用しています。
+
+[![PR Checks](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/pr-checks.yml)
+[![Build & Coverage](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/build.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/build.yml)
+[![Integration & E2E Tests](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/integration-e2e.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/integration-e2e.yml)
+
+### パイプライン構成
+
+1. **PR Checks** (3分) - 静的解析 + ユニットテスト
+2. **Build & Coverage** (3〜5分) - ビルド + カバレッジ測定（閾値80%）
+3. **Integration & E2E Tests** (5〜10分) - 統合テスト + E2Eテスト
+
+**カバレッジ閾値**: バックエンド・フロントエンド共に **80%** を設定
+- カバレッジが閾値を下回るとビルドが失敗します
+- PR時、カバレッジレポートが自動的にコメントされます
+
+詳細は [CI/CDガイド](docs/dev/CI.md) を参照してください。
+
+### ローカルでのCIテスト
+
+```bash
+# actを使用
+./bin/act push -W .github/workflows/pr-checks.yml \
+  -P ubuntu-latest=quay.io/jamezp/act-maven \
+  --artifact-server-path /workspaces/act-artifacts
+
+# または手動スクリプト
+./scripts/test-ci-locally.sh
+```
+
 ## このテンプレートの使い方
 
 1. **リポジトリをテンプレートとして使用**: GitHubの「Use this template」ボタンで新規リポジトリを作成
