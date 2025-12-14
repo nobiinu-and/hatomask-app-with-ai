@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       css: true,
       coverage: {
         provider: 'v8',
-        reporter: ['text', 'json', 'html'],
+        reporter: ['text', 'json', 'html', 'lcov'],
         exclude: [
           'node_modules/',
           'src/test/',
@@ -34,7 +34,16 @@ export default defineConfig(({ mode }) => {
           '**/*.config.*',
           '**/mockData',
           '**/*.test.{ts,tsx}',
+          '*.config.{js,ts,cjs,mjs}',
+          '.eslintrc.{js,cjs}',
+          'src/main.tsx', // Entry point - not typically tested
         ],
+        thresholds: {
+          statements: 80,
+          branches: 80,
+          functions: 80,
+          lines: 80,
+        },
       }
     }
   }

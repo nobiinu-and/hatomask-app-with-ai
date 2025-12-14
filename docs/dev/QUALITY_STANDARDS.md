@@ -177,20 +177,24 @@ void validate_fileSizeExceeds_throwsException() {
 
 #### テストカバレッジの目標
 
-- **全体**: 80%以上
+- **全体**: 80%以上（CI/CDで自動チェック ✅）
 - **重要なビジネスロジック**: 90%以上
 - **ユーティリティ関数**: 100%
 
+**閾値適用状況:**
+- **バックエンド（JaCoCo）**: 80%閾値を設定済み（Instructions, Lines, Methods）
+- **フロントエンド（Vitest）**: 80%閾値を設定済み（Statements, Branches, Functions, Lines）
+- 閾値を下回るとビルドが失敗します
+
 **測定方法:**
 ```bash
-# フロントエンド
+# フロントエンド（閾値チェック含む）
 cd src/frontend
-npm test -- --coverage
+npm run test:coverage
 
-# バックエンド
+# バックエンド（閾値チェック含む）
 cd src/backend
-mvn test
-mvn jacoco:report
+mvn clean verify
 ```
 
 ### E2Eテストの原則
@@ -785,7 +789,7 @@ const FileUpload = () => {
 - [ ] エラーレスポンスはRFC 9457に準拠しているか
 
 ### テスト
-- [ ] ユニットテストカバレッジは80%以上か
+- [ ] ユニットテストカバレッジは80%以上か（CI/CDで自動チェック）
 - [ ] E2Eテストはユーザー視点で書かれているか
 - [ ] エッジケースがテストされているか
 - [ ] エラーケースがテストされているか

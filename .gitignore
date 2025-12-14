@@ -98,6 +98,10 @@ lerna-debug.log*
 coverage/
 *.lcov
 .nyc_output/
+src/backend/target/site/jacoco/
+
+# Tools
+/bin/
 
 # Temporary files
 tmp/
