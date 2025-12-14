@@ -1,5 +1,13 @@
 # AI協働開発テンプレート（HatoMask App）
 
+[![PR Checks](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/pr-checks.yml)
+[![Build & Coverage](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/build.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/build.yml)
+[![Integration & E2E Tests](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/integration-e2e.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/integration-e2e.yml)
+
+[![GitHub issues](https://img.shields.io/github/issues/nobiinu-and/hatomask-app-with-ai)](https://github.com/nobiinu-and/hatomask-app-with-ai/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/nobiinu-and/hatomask-app-with-ai)](https://github.com/nobiinu-and/hatomask-app-with-ai/pulls)
+[![License](https://img.shields.io/github/license/nobiinu-and/hatomask-app-with-ai)](./LICENSE)
+
 AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を実現することを目指したテンプレートリポジトリです。
 
 ## このリポジトリについて
@@ -37,10 +45,6 @@ AIと協働で**再現可能**かつ**高品質**なソフトウェア開発を�
 ## CI/CD
 
 このプロジェクトは、GitHub Actionsによる3段階のCIパイプラインを採用しています。
-
-[![PR Checks](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/pr-checks.yml)
-[![Build & Coverage](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/build.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/build.yml)
-[![Integration & E2E Tests](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/integration-e2e.yml/badge.svg)](https://github.com/nobiinu-and/hatomask-app-with-ai/actions/workflows/integration-e2e.yml)
 
 ### パイプライン構成
 
