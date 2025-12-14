@@ -2,17 +2,15 @@ package com.hatomask;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("HatomaskApplication 統合テスト")
-class HatomaskApplicationTests {
+class HatomaskApplicationTests extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("アプリケーションコンテキストが正常にロードされる")
     void contextLoads() {
         // このテストはアプリケーションコンテキストが正常にロードされることを確認します
+        // Testcontainersで起動したPostgreSQLコンテナに接続し、
+        // Flywayマイグレーションも実行された状態でテストが行われます
     }
 }

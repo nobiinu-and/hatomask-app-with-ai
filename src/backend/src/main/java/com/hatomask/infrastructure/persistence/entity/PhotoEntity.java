@@ -3,7 +3,6 @@ package com.hatomask.infrastructure.persistence.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
@@ -29,8 +28,7 @@ public class PhotoEntity {
     @Column(name = "file_size", nullable = false)
     private Long fileSize;
 
-    @Lob
-    @Column(name = "image_data", nullable = false)
+    @Column(name = "image_data", nullable = false, columnDefinition = "bytea")
     private byte[] imageData;
 
     @Column(name = "created_at", nullable = false)
