@@ -1,12 +1,12 @@
 # 実装時の注意事項
 
-このドキュメントは、AIアシスタントが`docs/dev/DEVELOPMENT.md`に定義された開発プロセスを実行する際の注意事項を定義します。
+このドキュメントは、AI アシスタントが`docs/dev/DEVELOPMENT.md`に定義された開発プロセスを実行する際の注意事項を定義します。
 
 ## 基本方針
 
 **開発プロセスは`docs/dev/DEVELOPMENT.md`に従ってください。**
 
-このドキュメントには、AIアシスタント特有の実行時の注意点のみを記載します。
+このドキュメントには、AI アシスタント特有の実行時の注意点のみを記載します。
 
 ## タスク開始時の確認事項
 
@@ -17,18 +17,18 @@
 ```
 1. docs/dev/DEVELOPMENT.md
    → BDD/TDDの開発プロセス全体を理解する
-   
+
 2. docs/spec/models/{feature_name}.md
    → ドメインモデルを確認する（Phase 2で作成）
-   
+
 3. docs/spec/features/{feature_name}.md
    → 実装する機能の仕様と受け入れ基準を確認する
-   
+
 4. docs/dev/CODING_STANDARDS.md
    → コーディング規約を確認する
-   
-5. docs/plans/{feature_name}/backend-testlist/*.md (バックエンド実装時)
-   → テストリストを確認する
+
+5. docs/plans/[Spec名]_[シナリオ識別子].md (実装計画)
+   → 実装計画を確認する
 ```
 
 ### 2. 実装前のコード調査
@@ -41,13 +41,14 @@
 - **テストの構造**: 既存のテストパターンを理解する
 
 **調査方法:**
+
 ```
 - semantic_search を使って関連コードを探す
 - grep_search を使って特定のパターンを探す
 - list_code_usages を使って使用箇所を確認する
 ```
 
-## AI特有の実行ルール
+## AI 特有の実行ルール
 
 ### テスト実行の徹底
 
@@ -74,16 +75,18 @@ npm test -- --name "シナリオ名"  # 各ステップ完了後に実行
 ### コマンド実行時の注意
 
 1. **作業ディレクトリを意識する**
+
    ```bash
    # 絶対パスを使用する
    cd /workspaces/hatomask-app-with-ai/src/frontend
-   
+
    # または現在のディレクトリを確認してから実行
    pwd
    cd src/frontend
    ```
 
 2. **エラーが発生したら必ず確認する**
+
    ```bash
    # エラーメッセージを読む
    # ログを確認する
@@ -91,38 +94,42 @@ npm test -- --name "シナリオ名"  # 各ステップ完了後に実行
    ```
 
 3. **長時間実行されるコマンド**
+
    ```bash
    # サーバー起動などはバックグラウンドで実行
    mvn spring-boot:run &
-   
+
    # または別のターミナルで実行
    ```
 
 ### コード生成時の注意
 
 1. **完全なコードを生成する**
+
    - 省略記号（`...`, `// 既存のコード`, `/* ... */`）は使用しない
    - すべてのコードを明示的に記述する
 
 2. **インポート文を忘れない**
+
    ```typescript
    // ✅ Good - インポート文を含む
-   import React, { useState } from 'react';
-   import { Button } from '@mui/material';
-   
+   import React, { useState } from "react";
+   import { Button } from "@mui/material";
+
    export const PhotoUpload: React.FC = () => {
      // コンポーネント実装
    };
    ```
 
 3. **型定義を明確にする**
+
    ```typescript
    // ✅ Good - 明確な型定義
    interface PhotoUploadProps {
      onUpload: (file: File) => Promise<void>;
      maxSize?: number;
    }
-   
+
    // ❌ Bad - 型が曖昧
    const PhotoUpload = (props) => {
      // ...
@@ -131,7 +138,7 @@ npm test -- --name "シナリオ名"  # 各ステップ完了後に実行
 
 ### エラーハンドリングの実装
 
-**すべてのAPI呼び出しにエラーハンドリングを追加してください:**
+**すべての API 呼び出しにエラーハンドリングを追加してください:**
 
 ```typescript
 // フロントエンド
@@ -142,10 +149,10 @@ const uploadPhoto = async (file: File): Promise<PhotoResponse> => {
   } catch (error) {
     // ユーザーフレンドリーなエラーメッセージ
     if (error instanceof FileSizeExceededException) {
-      throw new Error('ファイルサイズは10MB以下にしてください');
+      throw new Error("ファイルサイズは10MB以下にしてください");
     }
     // 汎用的なエラー
-    throw new Error('アップロードに失敗しました。もう一度お試しください');
+    throw new Error("アップロードに失敗しました。もう一度お試しください");
   }
 };
 ```
@@ -157,7 +164,7 @@ const uploadPhoto = async (file: File): Promise<PhotoResponse> => {
 public class PhotoService {
     public Photo uploadPhoto(MultipartFile file) {
         log.info("Photo upload started: fileName={}", file.getOriginalFilename());
-        
+
         try {
             // 処理
             return photo;
@@ -203,24 +210,28 @@ public class PhotoService {
 実装完了後、以下を確認してください:
 
 ### すべての実装で
+
 - [ ] テストが書かれ、すべて通っている
 - [ ] エラーハンドリングが実装されている
 - [ ] ログ出力が適切(機密情報を含まない)
 - [ ] コーディング規約に従っている
 
 ### フロントエンド実装で
+
 - [ ] 型安全か(`any`を使っていない)
 - [ ] アクセシビリティが考慮されている
 - [ ] エラーメッセージがユーザーフレンドリー
 - [ ] レスポンシブデザインに対応している
 
 ### バックエンド実装で
-- [ ] 入力バリデーションが実装されている
-- [ ] エラーレスポンスがRFC 9457に準拠している
-- [ ] N+1問題が発生していない
-- [ ] テストカバレッジが80%以上
 
-### E2Eテストで
+- [ ] 入力バリデーションが実装されている
+- [ ] エラーレスポンスが RFC 9457 に準拠している
+- [ ] N+1 問題が発生していない
+- [ ] テストカバレッジが 80%以上
+
+### E2E テストで
+
 - [ ] ユーザー視点で書かれている
 - [ ] 固定時間の待機を使っていない
 - [ ] アクセシビリティを考慮したセレクタを使用している
@@ -234,18 +245,19 @@ public class PhotoService {
 3. **デバッグログを追加して状態を確認する**
 4. **類似のテストがどう実装されているか確認する**
 
-### モックAPIとリアルAPIで動作が異なる
+### モック API とリアル API で動作が異なる
 
 1. **レスポンス形式を比較する**
+
    ```typescript
    // モックのレスポンスをログ出力
-   console.log('Mock response:', mockResponse);
-   
+   console.log("Mock response:", mockResponse);
+
    // リアルAPIのレスポンスをログ出力
-   console.log('Real response:', realResponse);
+   console.log("Real response:", realResponse);
    ```
 
-2. **日付フォーマット、null値の扱いなどを確認する**
+2. **日付フォーマット、null 値の扱いなどを確認する**
 
 3. **必要に応じてバックエンドを修正する**
 
@@ -268,19 +280,19 @@ public class PhotoService {
 
 ### 段階的実装
 
-大きな機能を小さな単位に分解して、1つずつ確実に実装してください:
+大きな機能を小さな単位に分解して、1 つずつ確実に実装してください:
 
-1. **1シナリオずつ**: 複数のシナリオを同時に実装しない
-2. **1ステップずつ**: Given/When/Thenを1つずつ実装
+1. **1 シナリオずつ**: 複数のシナリオを同時に実装しない
+2. **1 ステップずつ**: Given/When/Then を 1 つずつ実装
 3. **Red-Green-Refactor**: 必ずこのサイクルを回す
 
-### 常にGreenを維持
+### 常に Green を維持
 
 変更ごとにテストを実行し、すべてのテストが通ることを確認してください:
 
-- **作業開始時**: Green状態であることを確認
+- **作業開始時**: Green 状態であることを確認
 - **作業中**: 各変更後にテストを実行
-- **作業終了時**: すべてのテストがGreen状態であることを確認
+- **作業終了時**: すべてのテストが Green 状態であることを確認
 
 ## 参照
 

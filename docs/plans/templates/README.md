@@ -1,26 +1,30 @@
 # 実装計画テンプレート
 
-このディレクトリには、BDD/TDD開発プロセスで使用する実装計画とテストリストのテンプレートが含まれています。
+このディレクトリには、BDD/TDD 開発プロセスで使用する実装計画とテストリストのテンプレートが含まれています。
 
 ## 📋 テンプレート一覧
 
 ### 1. implementation_plan.template.md
-**用途**: Phase 4 - Gherkinシナリオ作成 + 実装計画策定  
-**内容**: 
-- OpenAPI仕様の参照
-- ステップ別実装分類（フロントのみ/API依存/状態依存）
+
+**用途**: Phase 4 - Gherkin シナリオ作成 + 実装計画策定  
+**内容**:
+
+- OpenAPI 仕様の参照
+- ステップ別実装分類（フロントのみ/API 依存/状態依存）
 - 推奨実装グルーピング
 
-**使用タイミング**: Gherkinシナリオ選択後、実装開始前  
+**使用タイミング**: Gherkin シナリオ選択後、実装開始前  
 **配置先**: `docs/plans/[Spec名]_[シナリオ識別子].md`
 
 ---
 
 ### 2. step-dependency-analysis.template.md
+
 **用途**: Phase 6 - 縦切り実装粒度の決定支援  
 **内容**:
-- 各ステップのAPI依存分析
-- 状態依存の明確化（UI状態/DB状態）
+
+- 各ステップの API 依存分析
+- 状態依存の明確化（UI 状態/DB 状態）
 - 依存関係図（Mermaid）
 
 **使用タイミング**: 実装粒度を相談・決定する前  
@@ -29,9 +33,11 @@
 ---
 
 ### 3. implementation-granularity-proposal.template.md
+
 **用途**: Phase 6 - 実装粒度パターンの選択・記録  
 **内容**:
-- 3パターン比較（ステップ単位/APIグループ単位/シナリオ単位）
+
+- 3 パターン比較（ステップ単位/API グループ単位/シナリオ単位）
 - メリット・デメリット分析
 - 選択理由の記録
 
@@ -41,20 +47,22 @@
 ---
 
 ### 4. domain-testlist.template.md
-**用途**: Phase 6 - バックエンドドメイン層のTDD実装  
+
+**用途**: Phase 6 - バックエンドドメイン層の TDD 実装  
 **対象**: Entity, Repository, DomainService
 
 **使用タイミング**: 縦切り実装でバックエンド実装が必要な時  
-**配置先**: `docs/plans/{feature_name}/backend-testlist/domain_{step_description}.md`
+**配置先**: `docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md`
 
 ---
 
 ### 5. api-testlist.template.md
-**用途**: Phase 6 - バックエンドAPI層のTDD実装  
+
+**用途**: Phase 6 - バックエンド API 層の TDD 実装  
 **対象**: UseCase, Controller, DTO, 統合テスト
 
-**使用タイミング**: ドメイン層実装完了後、API層実装時  
-**配置先**: `docs/plans/{feature_name}/backend-testlist/api_{step_description}.md`
+**使用タイミング**: ドメイン層実装完了後、API 層実装時  
+**配置先**: `docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md`
 
 ---
 
@@ -107,6 +115,7 @@ cp docs/plans/templates/implementation_plan.template.md \
 ### Phase 6: 実装粒度の相談
 
 **Step 1: 依存関係分析**
+
 ```bash
 cp docs/plans/templates/step-dependency-analysis.template.md \
    docs/plans/[Spec名]_[シナリオ識別子]_dependency.md
@@ -118,6 +127,7 @@ cp docs/plans/templates/step-dependency-analysis.template.md \
 ```
 
 **Step 2: 実装粒度提案**
+
 ```bash
 cp docs/plans/templates/implementation-granularity-proposal.template.md \
    docs/plans/[Spec名]_[シナリオ識別子]_granularity.md
@@ -126,19 +136,20 @@ cp docs/plans/templates/implementation-granularity-proposal.template.md \
 # - パターンA: ステップ単位
 # - パターンB: APIグループ単位（推奨）
 # - パターンC: シナリオ単位
-# 
+#
 # 選択理由を記録
 ```
 
-**Step 3: バックエンド実装（API依存ステップのみ）**
+**Step 3: バックエンド実装（API 依存ステップのみ）**
+
 ```bash
 # ドメイン層テストリスト
 cp docs/plans/templates/domain-testlist.template.md \
-   docs/plans/{feature_name}/backend-testlist/domain_{step_description}.md
+   docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md
 
 # API層テストリスト
 cp docs/plans/templates/api-testlist.template.md \
-   docs/plans/{feature_name}/backend-testlist/api_{step_description}.md
+   docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md
 
 # TDDサイクルで実装:
 # 1. Red: テストを書く（失敗する）
@@ -172,38 +183,45 @@ docs/plans/
 
 ## ⚠️ 重要な注意事項
 
-### API Contract First開発
-- **OpenAPI仕様が契約**: フロント・バックエンド間の中立な契約
-- **Phase 5でStub生成**: フロントエンドはStubに直接接続して開発開始
-- **Phase 6で本実装**: API依存ステップのみバックエンド本実装
+### API Contract First 開発
+
+- **OpenAPI 仕様が契約**: フロント・バックエンド間の中立な契約
+- **Phase 5 で Stub 生成**: フロントエンドは Stub に直接接続して開発開始
+- **Phase 6 で本実装**: API 依存ステップのみバックエンド本実装
 
 ### 実装粒度の柔軟性
-- **AIと相談して決定**: 依存関係分析→3パターン比較→選択
-- **通常はパターンB推奨**: APIグループ単位（2-5ステップ）
-- **状態連続性を重視**: DB状態依存があるステップはまとめる
+
+- **AI と相談して決定**: 依存関係分析 →3 パターン比較 → 選択
+- **通常はパターン B 推奨**: API グループ単位（2-5 ステップ）
+- **状態連続性を重視**: DB 状態依存があるステップはまとめる
 
 ### 縦切り実装の利点
-- **差分が小さい**: レビュー容易、フィードバック早い
-- **E2E確認が早い**: 各サイクルでE2Eテスト実行
-- **手戻りが少ない**: API契約が確定しているため
 
-### ドメイン層とAPI層の分離
+- **差分が小さい**: レビュー容易、フィードバック早い
+- **E2E 確認が早い**: 各サイクルで E2E テスト実行
+- **手戻りが少ない**: API 契約が確定しているため
+
+### ドメイン層と API 層の分離
+
 - **ドメイン層**: ビジネスロジック、外部技術から独立
-- **API層**: HTTPインターフェース、OpenAPI契約に準拠
+- **API 層**: HTTP インターフェース、OpenAPI 契約に準拠
 
 ---
 
 ## 🔗 関連ドキュメント
 
 ### 開発プロセス
-- [開発プロセスガイド](../../dev/DEVELOPMENT.md) - BDD/TDD全体フロー
-- [縦切り実装戦略](../../dev/VERTICAL_SLICE_STRATEGY.md) - Phase 6の詳細
-- [OpenAPIガイドライン](../../dev/OPENAPI_GUIDELINES.md) - API設計ルール
 
-### AIプロンプト
-- [実装ワークフロー](../../ai/prompts/system/01_implementation_workflow.md) - AI実行時の注意事項
-- [タスク一覧](../../ai/prompts/tasks/README.md) - Phase別プロンプト
+- [開発プロセスガイド](../../dev/DEVELOPMENT.md) - BDD/TDD 全体フロー
+- [縦切り実装戦略](../../dev/VERTICAL_SLICE_STRATEGY.md) - Phase 6 の詳細
+- [OpenAPI ガイドライン](../../dev/OPENAPI_GUIDELINES.md) - API 設計ルール
+
+### AI プロンプト
+
+- [実装ワークフロー](../../ai/prompts/system/01_implementation_workflow.md) - AI 実行時の注意事項
+- [タスク一覧](../../ai/prompts/tasks/README.md) - Phase 別プロンプト
 
 ### コーディング規約
+
 - [コーディング標準](../../dev/CODING_STANDARDS.md)
 - [品質基準](../../dev/QUALITY_STANDARDS.md)
