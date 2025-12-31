@@ -16,14 +16,14 @@ Milestone 0 では「完全一致」ではなく、次の feature（最小調整
 
 - リアルタイム追従（Milestone 1）
 - 複数人の配置（Milestone 2）
-- 手動調整 UI（別 feature: `05_mask_adjustment`）
+- 手動調整 UI（別 feature: [05_mask_adjustment](05_mask_adjustment.md)）
 - モデル種類の切替、美化
 
 ## 前提・依存
 
-- 画像アップロードが完了し、プレビュー可能であること（`01_photo_upload`）
-- 静止画の顔検出が成功していること（`02_face_detection_static`）
-- 3D ハトマスクが描画可能であること（`03_3d_mask_rendering`）
+- 画像アップロードが完了し、プレビュー可能であること（[01_photo_upload](01_photo_upload.md)）
+- 静止画の顔検出が成功していること（[02_face_detection_static](02_face_detection_static.md)）
+- 3D ハトマスクが描画可能であること（[03_3d_mask_rendering](03_3d_mask_rendering.md)）
 
 ## ユースケース
 

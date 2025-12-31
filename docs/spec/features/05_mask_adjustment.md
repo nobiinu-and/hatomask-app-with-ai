@@ -22,10 +22,10 @@ Milestone 0 では「迷わない」「すぐ直せる」を優先し、調整�
 
 ## 前提・依存
 
-- 画像アップロードが完了し、プレビュー可能であること（`01_photo_upload`）
-- 顔検出が成功していること（`02_face_detection_static`）
-- 3D ハトマスクが表示されていること（`03_3d_mask_rendering`）
-- 自動配置が完了していること（`04_mask_positioning`）
+- 画像アップロードが完了し、プレビュー可能であること（[01_photo_upload](01_photo_upload.md)）
+- 顔検出が成功していること（[02_face_detection_static](02_face_detection_static.md)）
+- 3D ハトマスクが表示されていること（[03_3d_mask_rendering](03_3d_mask_rendering.md)）
+- 自動配置が完了していること（[04_mask_positioning](04_mask_positioning.md)）
 
 ## ユースケース
 

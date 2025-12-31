@@ -16,12 +16,12 @@
 - リアルタイム（カメラ）追従（Milestone 1）
 - 複数人の同時描画（Milestone 2）
 - マスクの種類切替・ガチャ・美化
-- 画像の保存/共有（別 feature で扱う）
+- 画像の保存（別 feature: [06_image_save](06_image_save.md) で扱う）
 
 ## 前提・依存
 
-- 画像アップロードが完了し、プレビュー可能であること（[01_photo_upload.md](docs/spec/features/01_photo_upload.md)）
-- 静止画の顔検出が完了していること（[02_face_detection_static.md](docs/spec/features/02_face_detection_static.md)）
+- 画像アップロードが完了し、プレビュー可能であること（[01_photo_upload](01_photo_upload.md)）
+- 静止画の顔検出が完了していること（[02_face_detection_static](02_face_detection_static.md)）
 - ブラウザで 3D レンダリングが可能であること（WebGL 等）
 
 ## ユースケース

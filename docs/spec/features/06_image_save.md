@@ -9,9 +9,9 @@
 
 - 対象: 静止画
 - 入力:
-  - 元画像（`01_photo_upload`）
-  - 3D マスクの表示状態（`03_3d_mask_rendering`）
-  - マスクの配置（`04_mask_positioning`）および調整値（`05_mask_adjustment`）
+  - 元画像（[01_photo_upload](01_photo_upload.md)）
+  - 3D マスクの表示状態（[03_3d_mask_rendering](03_3d_mask_rendering.md)）
+  - マスクの配置（[04_mask_positioning](04_mask_positioning.md)）および調整値（[05_mask_adjustment](05_mask_adjustment.md)）
 - 出力:
   - 合成済み画像ファイル（ダウンロード）
 
@@ -24,9 +24,9 @@
 
 ## 前提・依存
 
-- 画像プレビューが表示されていること（`01_photo_upload`）
-- 3D マスクが表示されていること（`03_3d_mask_rendering`）
-- マスク配置・調整が反映済みであること（`04_mask_positioning` / `05_mask_adjustment`）
+- 画像プレビューが表示されていること（[01_photo_upload](01_photo_upload.md)）
+- 3D マスクが表示されていること（[03_3d_mask_rendering](03_3d_mask_rendering.md)）
+- マスク配置・調整が反映済みであること（[04_mask_positioning](04_mask_positioning.md) / [05_mask_adjustment](05_mask_adjustment.md)）
 
 ## ユースケース
 

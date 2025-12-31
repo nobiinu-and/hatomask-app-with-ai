@@ -18,7 +18,7 @@
 
 ## 前提・依存
 
-- 画像アップロードが完了し、プレビュー可能であること（例: feature `01_photo_upload`）
+- 画像アップロードが完了し、プレビュー可能であること（例: feature [01_photo_upload](01_photo_upload.md)）
 - ブラウザ上で顔検出が実行できること（例: MediaPipe Face Mesh 等を想定）
 
 ## ユースケース
