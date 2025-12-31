@@ -157,7 +157,14 @@ Scenario: [具体的なシナリオ名]
 
 `docs/spec/features/{連番}_{feature_name}.md`
 
-例: `docs/spec/features/02_face_detection.md`
+例: `docs/spec/features/02_face_detection_static.md`
+
+#### 命名ガイド
+
+- `{feature_name}` はスネークケース（例: `face_detection_static`）
+- 1 ファイル=1 機能にし、縦切り実装しやすい粒度まで分割する
+- 他 feature を参照する場合は、仕様内でリンク形式に統一する
+  - 例: `[01_photo_upload](01_photo_upload.md)`
 
 ### 3. 構成要素
 
@@ -178,9 +185,22 @@ Scenario: [具体的なシナリオ名]
 3. **一貫性**: 要件間で矛盾がない
 4. **テスト可能性**: 受け入れ基準が実装後に検証可能
 5. **実装中立性**: 技術的な実装方法ではなく、ビジネス要件に焦点を当てる
+6. **分割前提**: 大きい機能は段階的に分割し、依存関係（前提・入力・出力）を明確にする
+7. **参照の統一**: feature 間参照（前提・スコープ外・次工程など）はリンク形式に統一する
 
 ## 参考ドキュメント
 
 - **サンプル仕様書**: `docs/spec/features/01_photo_upload.md`
 - **テンプレート**: `docs/spec/templates/feature-spec.template.md`
 - **品質基準**: `docs/dev/QUALITY_STANDARDS.md`
+
+## 参考: Milestone 0（静止画）での分割例
+
+以下のように「小さく分割」して仕様化することを推奨します。
+
+- `01_photo_upload.md`（写真アップロード/プレビュー）
+- `02_face_detection_static.md`（静止画の顔検出）
+- `03_3d_mask_rendering.md`（3D マスク描画）
+- `04_mask_positioning.md`（自動配置）
+- `05_mask_adjustment.md`（最小調整: ドラッグ+スケール）
+- `06_image_save.md`（処理済み画像の保存）
