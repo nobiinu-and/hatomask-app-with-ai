@@ -1,6 +1,6 @@
 # 品質基準
 
-このドキュメントでは、HatoMaskプロジェクトにおけるコード品質の基準とベストプラクティスを定義します。
+このドキュメントでは、HatoMask プロジェクトにおけるコード品質の基準とベストプラクティスを定義します。
 
 ## 目次
 
@@ -21,32 +21,36 @@
 コードは書くよりも読む時間の方が長い。他の開発者が理解しやすいコードを書く。
 
 **良い例:**
+
 ```typescript
 const isValidImageFile = (file: File): boolean => {
-  const validTypes = ['image/jpeg', 'image/png'];
+  const validTypes = ["image/jpeg", "image/png"];
   const maxSize = 10 * 1024 * 1024; // 10MB
-  
+
   return validTypes.includes(file.type) && file.size <= maxSize;
 };
 ```
 
 **悪い例:**
+
 ```typescript
 const v = (f: File): boolean => {
-  return ['image/jpeg', 'image/png'].includes(f.type) && f.size <= 10485760;
+  return ["image/jpeg", "image/png"].includes(f.type) && f.size <= 10485760;
 };
 ```
 
 **ポイント:**
+
 - 意味のある変数名・関数名を使用する
 - マジックナンバーは定数化する
 - 複雑な条件は関数に抽出する
 
 ### 2. 単一責任の原則 (Single Responsibility Principle)
 
-1つのクラス/関数は1つの責任だけを持つ。
+1 つのクラス/関数は 1 つの責任だけを持つ。
 
 **良い例:**
+
 ```typescript
 // コンポーネントは表示のみを担当
 export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onDelete }) => {
@@ -61,27 +65,28 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ photo, onDelete }) => {
 // ビジネスロジックはカスタムフックに分離
 export const usePhotoManagement = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  
+
   const deletePhoto = async (id: string) => {
     await photoService.delete(id);
-    setPhotos(photos.filter(p => p.id !== id));
+    setPhotos(photos.filter((p) => p.id !== id));
   };
-  
+
   return { photos, deletePhoto };
 };
 ```
 
 **悪い例:**
+
 ```typescript
 // コンポーネントにビジネスロジックが混在
 export const PhotoCard: React.FC = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  
+
   const deletePhoto = async (id: string) => {
-    await fetch(`/api/photos/${id}`, { method: 'DELETE' });
-    setPhotos(photos.filter(p => p.id !== id));
+    await fetch(`/api/photos/${id}`, { method: "DELETE" });
+    setPhotos(photos.filter((p) => p.id !== id));
   };
-  
+
   return (
     <Card>
       <CardMedia image={photo.imageUrl} />
@@ -91,29 +96,30 @@ export const PhotoCard: React.FC = () => {
 };
 ```
 
-### 3. DRY原則 (Don't Repeat Yourself)
+### 3. DRY 原則 (Don't Repeat Yourself)
 
 同じコードを複数箇所に書かない。共通処理は関数/クラスに抽出する。
 
 **良い例:**
+
 ```java
 @Service
 @RequiredArgsConstructor
 public class FileValidator {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
     private static final Set<String> VALID_TYPES = Set.of("image/jpeg", "image/png");
-    
+
     public void validate(MultipartFile file) {
         validateFileSize(file);
         validateFileType(file);
     }
-    
+
     private void validateFileSize(MultipartFile file) {
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new FileSizeExceededException("File size exceeds 10MB");
         }
     }
-    
+
     private void validateFileType(MultipartFile file) {
         if (!VALID_TYPES.contains(file.getContentType())) {
             throw new InvalidFileTypeException("Only JPEG and PNG are allowed");
@@ -123,6 +129,7 @@ public class FileValidator {
 ```
 
 **悪い例:**
+
 ```java
 // 各コントローラーでバリデーションロジックを重複して記述
 @PostMapping("/photos")
@@ -130,7 +137,7 @@ public void uploadPhoto(MultipartFile file) {
     if (file.getSize() > 10 * 1024 * 1024) {
         throw new RuntimeException("File too large");
     }
-    if (!file.getContentType().equals("image/jpeg") && 
+    if (!file.getContentType().equals("image/jpeg") &&
         !file.getContentType().equals("image/png")) {
         throw new RuntimeException("Invalid file type");
     }
@@ -144,7 +151,7 @@ public void uploadPhoto(MultipartFile file) {
 
 ### ユニットテストの原則
 
-#### FIRST原則
+#### FIRST 原則
 
 - **F**ast: 高速に実行できる(外部依存を最小限に)
 - **I**ndependent: 他のテストに依存しない
@@ -161,6 +168,7 @@ public void uploadPhoto(MultipartFile file) {
 - **A**ssert: 結果の検証
 
 **例:**
+
 ```java
 @Test
 @DisplayName("ファイルサイズが10MBを超える場合はエラー")
@@ -168,25 +176,27 @@ void validate_fileSizeExceeds_throwsException() {
     // Arrange
     MultipartFile file = createMockFile(11 * 1024 * 1024);
     FileValidator validator = new FileValidator();
-    
+
     // Act & Assert
-    assertThrows(FileSizeExceededException.class, 
+    assertThrows(FileSizeExceededException.class,
         () -> validator.validate(file));
 }
 ```
 
 #### テストカバレッジの目標
 
-- **全体**: 80%以上（CI/CDで自動チェック ✅）
+- **全体**: 80%以上（CI/CD で自動チェック ✅）
 - **重要なビジネスロジック**: 90%以上
 - **ユーティリティ関数**: 100%
 
 **閾値適用状況:**
+
 - **バックエンド（JaCoCo）**: 80%閾値を設定済み（Instructions, Lines, Methods）
 - **フロントエンド（Vitest）**: 80%閾値を設定済み（Statements, Branches, Functions, Lines）
 - 閾値を下回るとビルドが失敗します
 
 **測定方法:**
+
 ```bash
 # フロントエンド（閾値チェック含む）
 cd src/frontend
@@ -197,26 +207,28 @@ cd src/backend
 mvn clean verify
 ```
 
-### E2Eテストの原則
+### E2E テストの原則
 
 #### 1. ユーザー視点でテスト
 
 実装の詳細ではなく、ユーザーの行動と期待結果をテストする。
 
 **良い例:**
+
 ```typescript
 // アクセシビリティを考慮したセレクタ
-await page.getByRole('button', { name: '写真を選択' }).click();
-await page.getByLabelText('写真ファイル').setInputFiles('test.jpg');
-await expect(page.getByText('アップロード完了')).toBeVisible();
+await page.getByRole("button", { name: "写真を選択" }).click();
+await page.getByLabelText("写真ファイル").setInputFiles("test.jpg");
+await expect(page.getByText("アップロード完了")).toBeVisible();
 ```
 
 **悪い例:**
+
 ```typescript
 // 実装詳細に依存(CSSクラス、ID)
-await page.locator('#upload-button').click();
-await page.locator('.file-input').setInputFiles('test.jpg');
-await page.locator('.success-message').waitFor();
+await page.locator("#upload-button").click();
+await page.locator(".file-input").setInputFiles("test.jpg");
+await page.locator(".success-message").waitFor();
 ```
 
 #### 2. 適切な待機
@@ -224,11 +236,13 @@ await page.locator('.success-message').waitFor();
 固定時間の待機は避け、要素の状態を待つ。
 
 **良い例:**
+
 ```typescript
-await expect(page.getByText('アップロード完了')).toBeVisible();
+await expect(page.getByText("アップロード完了")).toBeVisible();
 ```
 
 **悪い例:**
+
 ```typescript
 await page.waitForTimeout(3000);
 ```
@@ -251,13 +265,15 @@ const uploadPhoto = async (file: File) => {
   } catch (error) {
     if (error instanceof FileSizeExceededException) {
       // ユーザーにわかりやすいメッセージ
-      throw new Error('ファイルサイズは10MB以下にしてください');
+      throw new Error("ファイルサイズは10MB以下にしてください");
     }
     if (error instanceof NetworkError) {
-      throw new Error('ネットワークエラーが発生しました。もう一度お試しください');
+      throw new Error(
+        "ネットワークエラーが発生しました。もう一度お試しください"
+      );
     }
     // 予期しないエラー
-    throw new Error('エラーが発生しました。しばらくしてからお試しください');
+    throw new Error("エラーが発生しました。しばらくしてからお試しください");
   }
 };
 ```
@@ -269,10 +285,10 @@ const uploadPhoto = async (file: File) => {
 ```typescript
 class ErrorBoundary extends React.Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    console.error("Error caught by boundary:", error, errorInfo);
     // エラーログサービスに送信
   }
-  
+
   render() {
     if (this.state.hasError) {
       return <ErrorFallback />;
@@ -308,14 +324,14 @@ public class PhotoNotFoundException extends RuntimeException {
 }
 ```
 
-#### 2. グローバル例外ハンドラー (RFC 9457準拠)
+#### 2. グローバル例外ハンドラー (RFC 9457 準拠)
 
-すべての例外を統一的に処理し、Problem Details形式でレスポンスを返す。
+すべての例外を統一的に処理し、Problem Details 形式でレスポンスを返す。
 
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler(FileSizeExceededException.class)
     public ResponseEntity<ProblemDetail> handleFileSizeExceeded(
         FileSizeExceededException ex
@@ -327,10 +343,10 @@ public class GlobalExceptionHandler {
         problemDetail.setTitle("File Size Exceeded");
         problemDetail.setType(URI.create("/errors/file-size-exceeded"));
         problemDetail.setProperty("maxSize", "10MB");
-        
+
         return ResponseEntity.badRequest().body(problemDetail);
     }
-    
+
     @ExceptionHandler(PhotoNotFoundException.class)
     public ResponseEntity<ProblemDetail> handlePhotoNotFound(
         PhotoNotFoundException ex
@@ -341,23 +357,23 @@ public class GlobalExceptionHandler {
         );
         problemDetail.setTitle("Photo Not Found");
         problemDetail.setType(URI.create("/errors/photo-not-found"));
-        
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleGenericException(
         Exception ex
     ) {
         log.error("Unexpected error occurred", ex);
-        
+
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
             HttpStatus.INTERNAL_SERVER_ERROR,
             "An unexpected error occurred"
         );
         problemDetail.setTitle("Internal Server Error");
         problemDetail.setType(URI.create("/errors/internal-server-error"));
-        
+
         return ResponseEntity.internalServerError().body(problemDetail);
     }
 }
@@ -370,19 +386,20 @@ public class GlobalExceptionHandler {
 @Service
 public class PhotoService {
     public Photo uploadPhoto(MultipartFile file) {
-        log.info("Photo upload started: fileName={}", file.getOriginalFilename());
-        
+    // 注意: 画像系の入力は個人情報・プライバシー情報になりうるため、
+    // fileName や画像/派生データをログに出さない（詳細は仕様: docs/spec/models/data_handling.md）
+    final String requestId = UUID.randomUUID().toString();
+    log.info("Photo upload started: requestId={}", requestId);
+
         try {
             // 処理
-            log.debug("Photo saved: id={}", photo.getId());
+      log.debug("Photo processed: requestId={}", requestId);
             return photo;
         } catch (FileSizeExceededException e) {
-            log.warn("File size exceeded: fileName={}, size={}", 
-                file.getOriginalFilename(), file.getSize());
+      log.warn("File size exceeded: requestId={}", requestId);
             throw e;
         } catch (Exception e) {
-            log.error("Failed to upload photo: fileName={}", 
-                file.getOriginalFilename(), e);
+      log.error("Failed to upload photo: requestId={}", requestId, e);
             throw new RuntimeException("Failed to upload photo", e);
         }
     }
@@ -390,14 +407,17 @@ public class PhotoService {
 ```
 
 **ログレベルの使い分け:**
+
 - `ERROR`: システムエラー、予期しない例外
 - `WARN`: 警告、復旧可能なエラー
 - `INFO`: 重要な処理の開始・終了
 - `DEBUG`: 開発時のデバッグ情報
 
 **注意事項:**
+
 - 個人情報はログに出力しない
 - パスワード、トークン等の機密情報は出力しない
+- 実在写真（入力由来ベース）および派生データ（中間画像、顔ランドマーク、特徴量、入力ファイル名等）はログ・テレメトリに出力しない
 
 ---
 
@@ -412,23 +432,23 @@ public class PhotoService {
 ```typescript
 const validateFile = (file: File): ValidationResult => {
   const errors: string[] = [];
-  
+
   // ファイルサイズチェック
   if (file.size > 10 * 1024 * 1024) {
-    errors.push('ファイルサイズは10MB以下にしてください');
+    errors.push("ファイルサイズは10MB以下にしてください");
   }
-  
+
   // ファイル形式チェック
-  const validTypes = ['image/jpeg', 'image/png'];
+  const validTypes = ["image/jpeg", "image/png"];
   if (!validTypes.includes(file.type)) {
-    errors.push('JPEG または PNG 形式のファイルを選択してください');
+    errors.push("JPEG または PNG 形式のファイルを選択してください");
   }
-  
+
   // ファイル名チェック(XSS対策)
   if (/<script|javascript:/i.test(file.name)) {
-    errors.push('無効なファイル名です');
+    errors.push("無効なファイル名です");
   }
-  
+
   return { isValid: errors.length === 0, errors };
 };
 ```
@@ -441,22 +461,22 @@ const validateFile = (file: File): ValidationResult => {
 @Component
 public class FileValidator {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
-    private static final Set<String> VALID_MIME_TYPES = 
+    private static final Set<String> VALID_MIME_TYPES =
         Set.of("image/jpeg", "image/png");
-    
+
     public void validate(MultipartFile file) {
         // ファイルの存在確認
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
-        
+
         // ファイルサイズチェック
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new FileSizeExceededException(
                 String.format("File size exceeds %d bytes", MAX_FILE_SIZE)
             );
         }
-        
+
         // MIMEタイプチェック
         String contentType = file.getContentType();
         if (!VALID_MIME_TYPES.contains(contentType)) {
@@ -464,16 +484,16 @@ public class FileValidator {
                 "Only JPEG and PNG files are allowed"
             );
         }
-        
+
         // ファイル内容の検証(マジックナンバーチェック)
         validateFileContent(file);
     }
-    
+
     private void validateFileContent(MultipartFile file) {
         try (InputStream is = file.getInputStream()) {
             byte[] header = new byte[8];
             is.read(header);
-            
+
             // JPEG: FF D8 FF
             // PNG: 89 50 4E 47
             if (!isValidImageHeader(header)) {
@@ -486,21 +506,21 @@ public class FileValidator {
 }
 ```
 
-### SQLインジェクション対策
+### SQL インジェクション対策
 
-#### Spring Data JPAを使用(推奨)
+#### Spring Data JPA を使用(推奨)
 
 ```java
 public interface PhotoRepository extends JpaRepository<Photo, UUID> {
     // パラメータは自動的にエスケープされる
     List<Photo> findByUserIdOrderByCreatedAtDesc(UUID userId);
-    
+
     @Query("SELECT p FROM Photo p WHERE p.fileName LIKE %:keyword%")
     List<Photo> searchByFileName(@Param("keyword") String keyword);
 }
 ```
 
-#### 生SQLを使う場合は必ずPreparedStatementを使用
+#### 生 SQL を使う場合は必ず PreparedStatement を使用
 
 ```java
 // ❌ 絶対にやってはいけない
@@ -527,7 +547,7 @@ private String dbPassword;
 
 ```typescript
 // ❌ コードに直接書かない
-const API_KEY = 'sk_live_1234567890';
+const API_KEY = "sk_live_1234567890";
 
 // ✅ 環境変数から取得
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -544,10 +564,10 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 初期ロード時間を短縮するため、必要になるまでコンポーネントを読み込まない。
 
 ```typescript
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense } from "react";
 
 // コンポーネントの遅延読み込み
-const PhotoGallery = lazy(() => import('./components/PhotoGallery'));
+const PhotoGallery = lazy(() => import("./components/PhotoGallery"));
 
 function App() {
   return (
@@ -565,13 +585,16 @@ function App() {
 ```typescript
 // 高コストな計算のメモ化
 const filteredPhotos = useMemo(() => {
-  return photos.filter(photo => photo.userId === currentUserId);
+  return photos.filter((photo) => photo.userId === currentUserId);
 }, [photos, currentUserId]);
 
 // コールバックのメモ化
-const handleDelete = useCallback((id: string) => {
-  deletePhoto(id);
-}, [deletePhoto]);
+const handleDelete = useCallback(
+  (id: string) => {
+    deletePhoto(id);
+  },
+  [deletePhoto]
+);
 ```
 
 #### 3. 仮想スクロール (大量データ)
@@ -579,7 +602,7 @@ const handleDelete = useCallback((id: string) => {
 大量のリストを表示する場合は、仮想スクロールを使用する。
 
 ```typescript
-import { FixedSizeList } from 'react-window';
+import { FixedSizeList } from "react-window";
 
 const PhotoList = ({ photos }: Props) => {
   return (
@@ -601,9 +624,9 @@ const PhotoList = ({ photos }: Props) => {
 
 ### バックエンド
 
-#### 1. N+1問題の回避
+#### 1. N+1 問題の回避
 
-関連エンティティを取得する際は、JOIN FETCHを使用する。
+関連エンティティを取得する際は、JOIN FETCH を使用する。
 
 ```java
 // ❌ N+1問題
@@ -647,13 +670,13 @@ public Page<PhotoResponse> getPhotos(
 @Service
 @CacheConfig(cacheNames = "photos")
 public class PhotoService {
-    
+
     @Cacheable(key = "#id")
     public Photo getPhoto(UUID id) {
         return photoRepository.findById(id)
             .orElseThrow(() -> new PhotoNotFoundException(id));
     }
-    
+
     @CacheEvict(key = "#id")
     public void deletePhoto(UUID id) {
         photoRepository.deleteById(id);
@@ -665,9 +688,9 @@ public class PhotoService {
 
 ## アクセシビリティ基準
 
-### セマンティックHTML
+### セマンティック HTML
 
-意味のあるHTML要素を使用する。
+意味のある HTML 要素を使用する。
 
 ```typescript
 // ✅ セマンティックHTML
@@ -706,16 +729,16 @@ public class PhotoService {
 ```typescript
 const PhotoCard = ({ photo, onDelete }: Props) => {
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       onDelete(photo.id);
     }
   };
-  
+
   return (
     <Card>
       <CardMedia image={photo.imageUrl} alt={photo.fileName} />
-      <Button 
+      <Button
         onClick={() => onDelete(photo.id)}
         onKeyDown={handleKeyDown}
         aria-label={`${photo.fileName}を削除`}
@@ -727,14 +750,14 @@ const PhotoCard = ({ photo, onDelete }: Props) => {
 };
 ```
 
-### ARIA属性
+### ARIA 属性
 
-適切なARIA属性を使用して、スクリーンリーダーのサポートを強化する。
+適切な ARIA 属性を使用して、スクリーンリーダーのサポートを強化する。
 
 ```typescript
 const FileUpload = () => {
   const [uploading, setUploading] = useState(false);
-  
+
   return (
     <div>
       <input
@@ -746,13 +769,9 @@ const FileUpload = () => {
       <span id="file-help">
         JPEG または PNG 形式のファイルを選択してください(最大10MB)
       </span>
-      
+
       {uploading && (
-        <div 
-          role="status" 
-          aria-live="polite"
-          aria-busy="true"
-        >
+        <div role="status" aria-live="polite" aria-busy="true">
           アップロード中...
         </div>
       )}
@@ -768,6 +787,7 @@ const FileUpload = () => {
 実装完了後、以下の項目をチェックしてください。
 
 ### 全般
+
 - [ ] コーディング規約に従っているか
 - [ ] テストが書かれ、すべて通っているか
 - [ ] エラーハンドリングは適切か
@@ -775,6 +795,7 @@ const FileUpload = () => {
 - [ ] コメントは必要最小限か(コードで表現できることは書かない)
 
 ### フロントエンド
+
 - [ ] 型安全か(`any`を使っていないか)
 - [ ] アクセシビリティは考慮されているか
 - [ ] レスポンシブデザインに対応しているか
@@ -782,28 +803,31 @@ const FileUpload = () => {
 - [ ] ユーザーフレンドリーなエラーメッセージか
 
 ### バックエンド
+
 - [ ] 入力バリデーションは適切か
-- [ ] SQLインジェクション対策されているか
-- [ ] N+1問題はないか
+- [ ] SQL インジェクション対策されているか
+- [ ] N+1 問題はないか
 - [ ] トランザクション境界は適切か
-- [ ] エラーレスポンスはRFC 9457に準拠しているか
+- [ ] エラーレスポンスは RFC 9457 に準拠しているか
 
 ### テスト
-- [ ] ユニットテストカバレッジは80%以上か（CI/CDで自動チェック）
-- [ ] E2Eテストはユーザー視点で書かれているか
+
+- [ ] ユニットテストカバレッジは 80%以上か（CI/CD で自動チェック）
+- [ ] E2E テストはユーザー視点で書かれているか
 - [ ] エッジケースがテストされているか
 - [ ] エラーケースがテストされているか
 
 ### セキュリティ
+
 - [ ] 入力値は検証されているか
 - [ ] 機密情報はコードに含まれていないか
 - [ ] 認証・認可は適切か
-- [ ] CORS設定は適切か
+- [ ] CORS 設定は適切か
 
 ---
 
 ## 関連ドキュメント
 
 - [コーディング規約](./CODING_STANDARDS.md) - 命名規則、フォーマット、言語固有の規約
-- [開発プロセス](./DEVELOPMENT.md) - BDD/TDD開発フロー
-- [Linter設定](./LINTER.md) - 自動コード品質チェック
+- [開発プロセス](./DEVELOPMENT.md) - BDD/TDD 開発フロー
+- [Linter 設定](./LINTER.md) - 自動コード品質チェック
