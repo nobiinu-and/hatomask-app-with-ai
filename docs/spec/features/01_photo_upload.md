@@ -27,7 +27,7 @@
 ## データ取り扱い（Milestone 0: Option B）
 
 本 feature が扱う「元画像」は、プロジェクトの定義する **実在写真（入力由来ベース）** に該当する可能性があります。
-取り扱い方針は [data_handling](../models/data_handling.md) に従います。
+取り扱い方針は [DATA_HANDLING](../../dev/DATA_HANDLING.md) に従います。
 
 特に Milestone 0 では、サーバが画像を受信する可能性を許容しますが、以下を必須とします。
 

@@ -21,7 +21,7 @@
 - 画像アップロードが完了し、プレビュー可能であること（例: feature [01_photo_upload](01_photo_upload.md)）
 - ブラウザ上で顔検出が実行できること（例: MediaPipe Face Mesh 等を想定）
 
-※データ取り扱い方針は [data_handling](../models/data_handling.md) に従う（実在写真・派生データは非ログ/非永続）。
+※データ取り扱い方針は [DATA_HANDLING](../../dev/DATA_HANDLING.md) に従う（実在写真・派生データは非ログ/非永続）。
 
 ## ユースケース
 

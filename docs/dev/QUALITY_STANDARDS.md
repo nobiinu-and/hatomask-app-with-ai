@@ -387,7 +387,7 @@ public class GlobalExceptionHandler {
 public class PhotoService {
     public Photo uploadPhoto(MultipartFile file) {
     // 注意: 画像系の入力は個人情報・プライバシー情報になりうるため、
-    // fileName や画像/派生データをログに出さない（詳細は仕様: docs/spec/models/data_handling.md）
+  // fileName や画像/派生データをログに出さない（詳細: docs/dev/DATA_HANDLING.md）
     final String requestId = UUID.randomUUID().toString();
     log.info("Photo upload started: requestId={}", requestId);
 
