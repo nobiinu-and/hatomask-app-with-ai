@@ -6,7 +6,7 @@
 
 ### 1. implementation_plan.template.md
 
-**用途**: Phase 4 - Gherkin シナリオ作成 + 実装計画策定  
+**用途**: Task04 - Gherkin シナリオ作成 + 実装計画策定  
 **内容**:
 
 - OpenAPI 仕様の参照
@@ -20,7 +20,7 @@
 
 ### 2. step-dependency-analysis.template.md
 
-**用途**: Phase 6 - 縦切り実装粒度の決定支援  
+**用途**: Task06 - 縦切り実装粒度の決定支援  
 **内容**:
 
 - 各ステップの API 依存分析
@@ -34,7 +34,7 @@
 
 ### 3. implementation-granularity-proposal.template.md
 
-**用途**: Phase 6 - 実装粒度パターンの選択・記録  
+**用途**: Task06 - 実装粒度パターンの選択・記録  
 **内容**:
 
 - 3 パターン比較（ステップ単位/API グループ単位/シナリオ単位）
@@ -48,7 +48,7 @@
 
 ### 4. domain-testlist.template.md
 
-**用途**: Phase 6 - バックエンドドメイン層の TDD 実装  
+**用途**: Task06 - バックエンドドメイン層の TDD 実装  
 **対象**: Entity, Repository, DomainService
 
 **使用タイミング**: 縦切り実装でバックエンド実装が必要な時  
@@ -58,7 +58,7 @@
 
 ### 5. api-testlist.template.md
 
-**用途**: Phase 6 - バックエンド API 層の TDD 実装  
+**用途**: Task06 - バックエンド API 層の TDD 実装  
 **対象**: UseCase, Controller, DTO, 統合テスト
 
 **使用タイミング**: ドメイン層実装完了後、API 層実装時  
@@ -70,12 +70,12 @@
 
 ```mermaid
 graph TD
-    A[Phase 1: Spec作成] --> B[Phase 2: ドメインモデリング初稿]
-    B --> C[Phase 3: API Contract設計<br/>+ モデル見直し]
-    C --> D[Phase 4: Gherkin + 実装計画]
+   A[Task01: Spec作成] --> B[Task02: ドメインモデリング初稿]
+   B --> C[Task03: API Contract設計<br/>+ モデル見直し]
+   C --> D[Task04: Gherkin + 実装計画]
     D --> E[implementation_plan.template.md]
-    E --> F[Phase 5: Backend Stub生成]
-    F --> G[Phase 6: 縦切り実装サイクル]
+   E --> F[Task05: Backend Stub生成]
+   F --> G[Task06: 縦切り実装サイクル]
     G --> H{実装粒度相談}
     H --> I[step-dependency-analysis.template.md]
     I --> J[implementation-granularity-proposal.template.md]
@@ -92,14 +92,14 @@ graph TD
     P --> Q[TDD実装]
     O --> Q
     Q --> R[E2Eテスト実行]
-    R --> S[Phase 7: 統合テスト]
+   R --> S[シナリオ完結確認]
 ```
 
 ---
 
 ## 📖 使用方法
 
-### Phase 4: 実装計画作成
+### Task04: 実装計画作成
 
 ```bash
 # テンプレートをコピー
@@ -112,7 +112,7 @@ cp docs/plans/templates/implementation_plan.template.md \
 # - ステップ別実装分類（フロントのみ/API依存）
 ```
 
-### Phase 6: 実装粒度の相談
+### Task06: 実装粒度の相談
 
 **Step 1: 依存関係分析**
 
@@ -163,9 +163,9 @@ cp docs/plans/templates/api-testlist.template.md \
 
 ```
 docs/plans/
-  photo-upload-scenario1.md                    # Phase 4: 実装計画
-  photo-upload-scenario1_dependency.md         # Phase 6: 依存関係分析
-  photo-upload-scenario1_granularity.md        # Phase 6: 粒度選択
+   photo-upload-scenario1.md                    # Task04: 実装計画
+   photo-upload-scenario1_dependency.md         # Task06: 依存関係分析
+   photo-upload-scenario1_granularity.md        # Task06: 粒度選択
   photo-upload/
     backend-testlist/
       domain_photo_upload.md                   # ドメイン層TDD
@@ -186,8 +186,8 @@ docs/plans/
 ### API Contract First 開発
 
 - **OpenAPI 仕様が契約**: フロント・バックエンド間の中立な契約
-- **Phase 5 で Stub 生成**: フロントエンドは Stub に直接接続して開発開始
-- **Phase 6 で本実装**: API 依存ステップのみバックエンド本実装
+- **Task05 で Stub 生成**: フロントエンドは Stub に直接接続して開発開始
+- **Task06 で本実装**: API 依存ステップのみバックエンド本実装
 
 ### 実装粒度の柔軟性
 
@@ -212,16 +212,16 @@ docs/plans/
 
 ### 開発プロセス
 
-- [開発プロセスガイド](../../dev/DEVELOPMENT.md) - BDD/TDD 全体フロー
-- [縦切り実装戦略](../../dev/VERTICAL_SLICE_STRATEGY.md) - Phase 6 の詳細
-- [OpenAPI ガイドライン](../../dev/OPENAPI_GUIDELINES.md) - API 設計ルール
+- [開発プロセスガイド](../../dev/howto/development.md) - BDD/TDD 全体フロー
+- [縦切り実装ガイドライン](../../dev/guidelines/vertical-slice.md)
+- [OpenAPI ガイドライン](../../dev/standards/openapi.md) - API 設計ルール
 
 ### AI プロンプト
 
 - [実装ワークフロー](../../ai/prompts/system/01_implementation_workflow.md) - AI 実行時の注意事項
-- [タスク一覧](../../ai/prompts/tasks/README.md) - Phase 別プロンプト
+- [Task 一覧](../../ai/prompts/tasks/README.md) - タスク別プロンプト
 
 ### コーディング規約
 
-- [コーディング標準](../../dev/CODING_STANDARDS.md)
-- [品質基準](../../dev/QUALITY_STANDARDS.md)
+- [コーディング標準](../../dev/standards/coding.md)
+- [品質基準](../../dev/standards/quality.md)

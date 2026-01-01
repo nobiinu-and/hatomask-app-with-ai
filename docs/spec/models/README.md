@@ -7,12 +7,13 @@
 `{feature_name}.md`
 
 例:
+
 - `photo_upload_download.md` - 写真アップロード・ダウンロード機能のモデル
 - `face_detection.md` - 顔検出機能のモデル
 
 ## 作成タイミング
 
-**Phase 2: 簡単にモデリング**で、Spec作成後、Gherkinシナリオ作成前に作成します。
+**Task02（簡単にモデリング）**で、Spec 作成後、API 契約（Task03）より前に作成します。
 
 ## テンプレート
 

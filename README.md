@@ -38,7 +38,7 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 4. プレビューと調整
 5. 処理済み画像のダウンロード
 
-これらの機能を通じて、AI 協働開発の各フェーズ（仕様作成、モデリング、API 設計、実装、テスト）を実践的に学べます。
+これらの機能を通じて、AI 協働開発の各タスク（Task01〜Task06）を実践的に学べます。
 
 **技術スタック**: React + TypeScript / Spring Boot + PostgreSQL / Clean Architecture
 
@@ -59,7 +59,7 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 - カバレッジが閾値を下回るとビルドが失敗します
 - PR 時、カバレッジレポートが自動的にコメントされます
 
-詳細は [CI/CD ガイド](docs/dev/CI.md) を参照してください。
+詳細は [CI/CD ガイド](docs/dev/howto/ci.md) を参照してください。
 
 ### ローカルでの CI テスト
 
@@ -78,7 +78,7 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 1. **リポジトリをテンプレートとして使用**: GitHub の「Use this template」ボタンで新規リポジトリを作成
 2. **プロジェクト固有の情報を更新**: `README.md`、`docs/spec/`配下の機能仕様をあなたのプロジェクトに合わせて書き換え
 3. **AI プロンプトをカスタマイズ**: `docs/ai/prompts/`を必要に応じて調整
-4. **開発開始**: [開発ガイド](./docs/dev/DEVELOPMENT.md)に従って AI と協働で開発を進める
+4. **開発開始**: [開発ガイド](./docs/dev/howto/development.md)に従って AI と協働で開発を進める
 
 ## AI 協働開発の手法
 
@@ -146,14 +146,15 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 │   │   ├── prompts/          # AIプロンプト集
 │   │   └── logs/             # AI開発ログ
 │   ├── dev/                  # 開発ガイド
-│   │   ├── DEVELOPMENT.md    # 開発ガイド
-│   │   ├── CODING_STANDARDS.md  # コーディング規約
-│   │   ├── DOCKER.md         # Docker実行ガイド
-│   │   ├── LINTER.md         # Linter設定
-│   │   └── QUALITY_STANDARDS.md # 品質基準
+│   │   ├── README.md         # 入口
+│   │   ├── howto/            # 手順
+│   │   ├── standards/        # 規約
+│   │   ├── guidelines/       # ガイドライン
+│   │   └── policies/         # ポリシー
 │   ├── spec/                 # 仕様書
 │   │   ├── README.md         # プロジェクト概要
 │   │   ├── features/         # 機能仕様
+│   │   ├── api/              # OpenAPI仕様
 │   │   └── templates/        # 仕様テンプレート
 ├── e2e/                      # E2Eテスト (Playwright + Cucumber)
 │   ├── features/             # Cucumberフィーチャーファイル
@@ -182,8 +183,9 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 
 ### 開発プロセス
 
-- **[docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md)** - TDD 開発フロー、テスト実行方法
-- **[docs/dev/CODING_STANDARDS.md](./docs/dev/CODING_STANDARDS.md)** - コーディング規約（命名規則、設計原則）
+- **[docs/dev/README.md](./docs/dev/README.md)** - 開発ドキュメントの入口
+- **[docs/dev/howto/development.md](./docs/dev/howto/development.md)** - プロトコルとコマンド
+- **[docs/dev/standards/coding.md](./docs/dev/standards/coding.md)** - コーディング規約（命名規則、設計原則）
 
 ### 仕様・設計
 
@@ -192,12 +194,12 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 
 ### テスト・品質
 
-- **[docs/dev/LINTER.md](./docs/dev/LINTER.md)** - コード品質チェックツールの使い方
-- **[docs/dev/QUALITY_STANDARDS.md](./docs/dev/QUALITY_STANDARDS.md)** - 品質基準とベストプラクティス
+- **[docs/dev/standards/linting.md](./docs/dev/standards/linting.md)** - コード品質チェックツールの使い方
+- **[docs/dev/standards/quality.md](./docs/dev/standards/quality.md)** - 品質基準とベストプラクティス
 
 ### 環境・運用
 
-- **[docs/dev/DOCKER.md](./docs/dev/DOCKER.md)** - Docker 環境でのアプリケーション起動方法
+- **[docs/dev/howto/docker.md](./docs/dev/howto/docker.md)** - Docker 環境でのアプリケーション起動方法
 
 ### AI 開発
 
@@ -213,18 +215,18 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 
 ## 開発
 
-詳細は [docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md) を参照してください。
+詳細は [docs/dev/howto/development.md](./docs/dev/howto/development.md) を参照してください。
 
 ### TDD 開発フロー
 
 このプロジェクトでは、Outside-In TDD（E2E → Frontend → Backend）を採用しています。
-詳しくは [docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md#tdd開発フロー) を参照してください。
+詳しくは [docs/dev/howto/development.md](./docs/dev/howto/development.md) を参照してください。
 
 ### セットアップ
 
 ```bash
 # Docker Composeで起動
-docker-compose up
+docker compose up
 
 # または個別に起動
 
@@ -240,7 +242,7 @@ npm run dev
 
 ### テスト
 
-詳細は [docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md#テスト実行) を参照してください。
+詳細は [docs/dev/howto/development.md](./docs/dev/howto/development.md) を参照してください。
 
 #### 個別にテスト実行
 
@@ -260,7 +262,7 @@ npm run test:e2e
 
 ## 開発状況
 
-HatoMask App のサンプル実装は現在開発中です。AI 協働開発の各フェーズを実践しながら、ドキュメントとコードを進化させています。
+HatoMask App のサンプル実装は現在開発中です。AI 協働開発の各タスク（Task01〜Task06）を実践しながら、ドキュメントとコードを進化させています。
 
 ## ライセンス
 

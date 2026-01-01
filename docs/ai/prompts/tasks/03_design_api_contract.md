@@ -2,25 +2,25 @@
 description: ドメインモデルを参照しながらOpenAPI仕様を作成し、モデルにフィードバックするプロンプト
 ---
 
-# API Contract設計 + ドメインモデル見直し
+# API Contract 設計 + ドメインモデル見直し
 
 ## 目的
 
-**Phase 2で作成したドメインモデルを基に、API仕様（OpenAPI）を設計し、両者の整合性を確保する。**
+**Task02 で作成したドメインモデルを基に、API 仕様（OpenAPI）を設計し、両者の整合性を確保する。**
 
-API Contract Firstの原則に従い、フロントエンドとバックエンドの中立的な契約を確立します。
+API Contract First の原則に従い、フロントエンドとバックエンドの中立的な契約を確立します。
 
 ## 依頼内容
 
-以下のドメインモデルとSpec を参照し、OpenAPI 3.0仕様書を作成してください。
+以下のドメインモデルと Spec を参照し、OpenAPI 3.0 仕様書を作成してください。
 作成過程で気づいたドメインモデルの問題点があれば、フィードバックしてください。
 
 ## 入力情報
 
-- **Specファイル**: `docs/spec/features/{feature_name}.md`
-- **ドメインモデル**: `docs/spec/models/{feature_name}.md`（Phase 2で作成）
+- **Spec ファイル**: `docs/spec/features/{feature_name}.md`
+- **ドメインモデル**: `docs/spec/models/{feature_name}.md`（Task02 で作成）
 - **テンプレート**: `docs/spec/templates/openapi.template.yaml`
-- **ガイドライン**: `docs/dev/OPENAPI_GUIDELINES.md`
+- **ガイドライン**: `docs/dev/standards/openapi.md`
 
 ## 作業手順
 
@@ -28,34 +28,39 @@ API Contract Firstの原則に従い、フロントエンドとバックエン�
 
 `docs/spec/models/{feature_name}.md` を読み、以下を把握：
 
-- Entity構造（プロパティ、型、バリデーション）
-- ValueObject定義
+- Entity 構造（プロパティ、型、バリデーション）
+- ValueObject 定義
 - Repository Interface（メソッドシグネチャ）
 - DomainService（ビジネスルール）
 
-### 2. Specからエンドポイント抽出
+### 2. Spec からエンドポイント抽出
 
-`docs/spec/features/{feature_name}.md` から必要なAPIエンドポイントを特定：
+`docs/spec/features/{feature_name}.md` から必要な API エンドポイントを特定：
 
 #### エンドポイント抽出例
 
-Specの記載:
+Spec の記載:
+
 ```markdown
 ### 1. 写真アップロード
+
 ユーザーがファイル選択ボタンから写真を選択し、バックエンドにアップロード
 
 ### 2. プレビュー表示
+
 アップロードした写真を画面上にプレビュー表示
 
 ### 3. ダウンロード機能
+
 「ダウンロード」ボタンをクリックで写真をダウンロード
 ```
 
 抽出されるエンドポイント:
+
 - `POST /api/v1/photos` - 写真アップロード
 - `GET /api/v1/photos/{id}` - 写真取得（プレビュー、ダウンロード共通）
 
-### 3. OpenAPI仕様の作成
+### 3. OpenAPI 仕様の作成
 
 #### 3.1 ファイル作成
 
@@ -85,10 +90,10 @@ tags:
 
 各エンドポイントについて:
 
-1. **HTTPメソッドとパス**
+1. **HTTP メソッドとパス**
 2. **リクエストパラメータ/ボディ**
 3. **レスポンススキーマ**
-4. **エラーレスポンス（RFC 9457準拠）**
+4. **エラーレスポンス（RFC 9457 準拠）**
 
 ##### エンドポイント例: POST /photos
 
@@ -101,11 +106,11 @@ paths:
       summary: 写真をアップロード
       description: |
         写真ファイルをアップロードし、サーバーに保存します。
-        
+
         ### ビジネスルール
         - ファイルサイズは10MB以下
         - 対応形式: JPEG, PNG
-        
+
         ### 処理フロー
         1. ファイル形式をバリデーション
         2. ファイルサイズをチェック
@@ -126,7 +131,7 @@ paths:
               required:
                 - file
       responses:
-        '201':
+        "201":
           description: アップロード成功
           headers:
             Location:
@@ -136,13 +141,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PhotoResponse'
-        '400':
+                $ref: "#/components/schemas/PhotoResponse"
+        "400":
           description: バリデーションエラー
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                $ref: "#/components/schemas/ProblemDetails"
               examples:
                 fileSizeExceeded:
                   summary: ファイルサイズ超過
@@ -162,20 +167,23 @@ paths:
 
 #### 3.4 スキーマ定義
 
-ドメインモデルのEntityをDTOスキーマにマッピング：
+ドメインモデルの Entity を DTO スキーマにマッピング：
 
 **ドメインモデル**:
+
 ```markdown
 ### Photo
+
 - id: UUID
-- fileName: String (1-255文字)
-- fileSize: Long (1-10485760バイト)
+- fileName: String (1-255 文字)
+- fileSize: Long (1-10485760 バイト)
 - mimeType: String (image/jpeg, image/png)
 - filePath: String (内部実装のみ)
 - createdAt: LocalDateTime
 ```
 
 **OpenAPI スキーマ**:
+
 ```yaml
 components:
   schemas:
@@ -244,13 +252,14 @@ components:
 ```
 
 **重要な変換ルール**:
+
 - `filePath`は内部実装なので**レスポンスに含めない**
-- Java型をOpenAPI型にマッピング（UUID→string/uuid, LocalDateTime→string/date-time）
-- バリデーションルールをスキーマに反映（minLength, maximum等）
+- Java 型を OpenAPI 型にマッピング（UUID→string/uuid, LocalDateTime→string/date-time）
+- バリデーションルールをスキーマに反映（minLength, maximum 等）
 
 ### 4. ドメインモデルへのフィードバック
 
-API設計中に気づいた点を報告：
+API 設計中に気づいた点を報告：
 
 #### フィードバック例
 
@@ -260,39 +269,41 @@ API設計中に気づいた点を報告：
 ### 修正提案
 
 1. **Photo Entity - mimeType**
-   - 現状: String型で自由入力
-   - 提案: MimeType ValueObjectを追加し、列挙型で制約
-   - 理由: APIでは `enum` で制限しているため、ドメイン層でも型安全性を確保
+
+   - 現状: String 型で自由入力
+   - 提案: MimeType ValueObject を追加し、列挙型で制約
+   - 理由: API では `enum` で制限しているため、ドメイン層でも型安全性を確保
 
 2. **PhotoRepository - findById**
-   - 現状: Optional<Photo> findById(UUID id)
-   - 確認: エラーハンドリング方針（404返却）と一致しているか？
 
-3. **新規ValueObject提案: FileSize**
-   - 提案: ファイルサイズのバリデーション（1-10MB）をValueObjectで表現
-   - 理由: APIとドメイン層で制約を二重管理せず、ドメイン層が真実の源泉となる
+   - 現状: Optional<Photo> findById(UUID id)
+   - 確認: エラーハンドリング方針（404 返却）と一致しているか？
+
+3. **新規 ValueObject 提案: FileSize**
+   - 提案: ファイルサイズのバリデーション（1-10MB）を ValueObject で表現
+   - 理由: API とドメイン層で制約を二重管理せず、ドメイン層が真実の源泉となる
 
 ### 確認事項
 
-1. ダウンロード機能でContent-Typeヘッダーを動的に設定する必要があるが、
-   PhotoにmimeType情報があれば対応可能？ → 対応可能と判断
+1. ダウンロード機能で Content-Type ヘッダーを動的に設定する必要があるが、
+   Photo に mimeType 情報があれば対応可能？ → 対応可能と判断
 ```
 
 ### 5. 成果物確認
 
-作成したOpenAPI仕様書について：
+作成した OpenAPI 仕様書について：
 
-- [ ] 全エンドポイントにoperationIdが定義されている
+- [ ] 全エンドポイントに operationId が定義されている
 - [ ] リクエスト/レスポンススキーマが完全に定義されている
-- [ ] エラーレスポンスがRFC 9457準拠
+- [ ] エラーレスポンスが RFC 9457 準拠
 - [ ] バリデーションルールがドメインモデルと一致
-- [ ] 内部実装の詳細（filePathなど）が漏れていない
+- [ ] 内部実装の詳細（filePath など）が漏れていない
 - [ ] 例（example）が記載されている
 - [ ] ドメインモデルへのフィードバックがある
 
 ## 出力形式
 
-### 1. OpenAPI仕様書
+### 1. OpenAPI 仕様書
 
 **ファイルパス**: `docs/spec/api/{feature_name}.yaml`
 
@@ -302,46 +313,52 @@ API設計中に気づいた点を報告：
 ## ドメインモデルへのフィードバック
 
 ### 修正提案
+
 1. [提案内容]
 
 ### 確認事項
+
 1. [確認したい点]
 
 ### 新規追加提案
-1. [追加すべきValueObject/メソッド等]
+
+1. [追加すべき ValueObject/メソッド等]
 ```
 
-### 3. Phase 3完了報告
+### 3. Task03 完了報告
 
 ```markdown
-## Phase 3完了
+## Task03 完了
 
 ### 作成ファイル
+
 - `docs/spec/api/{feature_name}.yaml`
 
 ### エンドポイント一覧
+
 - POST /api/v1/photos - 写真アップロード
 - GET /api/v1/photos/{id} - 写真取得
 
 ### 次のアクション
+
 - ドメインモデル修正（必要な場合）
-- Phase 4: Gherkinシナリオ作成 + 実装計画策定へ進む
+- Task04: Gherkin シナリオ作成 + 実装計画策定へ進む
 ```
 
 ## 参考資料
 
-- **ガイドライン**: `docs/dev/OPENAPI_GUIDELINES.md`
+- **ガイドライン**: `docs/dev/standards/openapi.md`
 - **テンプレート**: `docs/spec/templates/openapi.template.yaml`
 - **OpenAPI Specification**: https://spec.openapis.org/oas/v3.0.3
 - **RFC 9457**: https://www.rfc-editor.org/rfc/rfc9457.html
 
 ## 注意事項
 
-### API Contract Firstの原則
+### API Contract First の原則
 
 - **ドメインモデルに忠実**: エンティティ構造を尊重
 - **中立な契約**: フロント/バックどちらにも偏らない設計
-- **実装詳細の隠蔽**: 内部実装（filePath等）は公開しない
+- **実装詳細の隠蔽**: 内部実装（filePath 等）は公開しない
 
 ### ユビキタス言語の一貫性
 
@@ -350,5 +367,5 @@ API設計中に気づいた点を報告：
 
 ### フロントエンドとの互換性確保
 
-- Phase 5でBackend Stubを生成するため、明確なスキーマ定義が必要
+- Task05 で Backend Stub を生成するため、明確なスキーマ定義が必要
 - 曖昧な定義（`type: object` のみ）は避ける

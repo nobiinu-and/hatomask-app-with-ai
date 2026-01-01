@@ -1,6 +1,6 @@
-# Cucumber E2Eテスト
+# Cucumber E2E テスト
 
-このディレクトリには、Cucumberを使用したBDD（振る舞い駆動開発）スタイルのE2Eテストが含まれています。
+このディレクトリには、Cucumber を使用した BDD（振る舞い駆動開発）スタイルの E2E テストが含まれています。
 
 ## ディレクトリ構造
 
@@ -23,24 +23,27 @@ e2e/
 ### 前提条件
 
 1. 依存関係のインストール:
+
 ```bash
 npm install
 ```
 
-2. Cucumberの最新バージョン（v12.2.0）を使用しています。
+2. Cucumber の最新バージョン（v12.2.0）を使用しています。
 
-3. Playwrightブラウザのインストール:
+3. Playwright ブラウザのインストール:
+
 ```bash
 npm run playwright:install
 ```
 
 4. アプリケーションの起動（別ターミナルで）:
+
 ```bash
 # フロントエンドとバックエンドを起動
-docker-compose -f docker-compose.dev.yml up
+docker compose up
 ```
 
-### Cucumberテストの実行
+### Cucumber テストの実行
 
 ```bash
 # すべてのCucumberテストを実行
@@ -50,7 +53,7 @@ npm run test:cucumber
 npm run test:cucumber:dry
 ```
 
-### Playwrightテストの実行（従来のテスト）
+### Playwright テストの実行（従来のテスト）
 
 ```bash
 # すべてのPlaywrightテストを実行
@@ -68,7 +71,7 @@ npm run test:e2e:debug
 
 ## フィーチャーファイルの書き方
 
-フィーチャーファイルはGherkin構文を使用し、日本語で記述されています：
+フィーチャーファイルは Gherkin 構文を使用し、日本語で記述されています：
 
 ```gherkin
 # language: ja
@@ -103,15 +106,15 @@ npm run test:e2e:debug
 新しいステップを追加する場合は、`step-definitions/steps.ts`に追加してください：
 
 ```typescript
-Given('新しい前提条件', async function () {
+Given("新しい前提条件", async function () {
   // 実装
 });
 
-When('新しいアクション', async function () {
+When("新しいアクション", async function () {
   // 実装
 });
 
-Then('新しい期待結果', async function () {
+Then("新しい期待結果", async function () {
   // 実装
 });
 ```
@@ -120,7 +123,7 @@ Then('新しい期待結果', async function () {
 
 ### エラー: `page is not defined`
 
-`support/hooks.ts`でPageオブジェクトが正しくセットアップされているか確認してください。
+`support/hooks.ts`で Page オブジェクトが正しくセットアップされているか確認してください。
 
 ### エラー: `Cannot find module`
 

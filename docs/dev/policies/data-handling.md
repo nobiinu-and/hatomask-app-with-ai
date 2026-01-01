@@ -81,7 +81,7 @@ OpenAPI の `description` で、少なくとも次を明記します。
 - 「短命 TTL（必要最小限）」
 - 「ログ/テレメトリに出さない（非ログ）」
 
-関連: [docs/dev/OPENAPI_GUIDELINES.md](OPENAPI_GUIDELINES.md)
+関連: [docs/dev/standards/openapi.md](../standards/openapi.md)
 
 ### バックエンド（Spring Boot）
 

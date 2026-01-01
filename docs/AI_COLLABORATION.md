@@ -24,13 +24,13 @@
 仕様書 → ドメインモデル →API 仕様 → 実装という順序で、段階的にドキュメントを作成しながら開発を進めます。
 
 ```
-Spec → ドメインモデル → API Contract → 実装計画 → 実装 → テスト → 統合
+    Spec → ドメインモデル → API Contract → 実装計画 → 実装 → E2E確認
 ```
 
 AI には以下の 2 種類のプロンプトで知識を共有します：
 
 - **システムプロンプト**: プロジェクトの共通ルール（役割、ワークフロー、品質基準）
-- **タスクプロンプト**: 各作業の具体的な手順（テンプレート化された Phase 1-7 の手順）
+- **タスクプロンプト**: 各作業の具体的な手順（`docs/ai/prompts/tasks/` の Task01〜Task06）
 
 **メリット**:
 
@@ -92,10 +92,10 @@ AI には以下の 2 種類のプロンプトで知識を共有します：
 #### 0. 実在写真（入力由来データ）の取り扱い
 
 本プロジェクトでは、ユーザーが投入する写真が実在人物を含む可能性があります。
-そのため、以下を協働開発の前提ルールとします（定義と詳細は [DATA_HANDLING](dev/DATA_HANDLING.md)）。
+そのため、以下を協働開発の前提ルールとします（定義と詳細は [data-handling](dev/policies/data-handling.md)）。
 
 - 実在写真（入力由来ベース）および派生データ（切り抜き、中間画像、顔ランドマーク、特徴量、base64 等）を、プロンプト・Issue・PR・作業ログへ貼り付けない
-- 動作確認やE2Eでは、原則としてダミー/合成画像のみを使用する（実在写真を使う場合は外部持ち出し経路に特に注意する）
+- 動作確認や E2E では、原則としてダミー/合成画像のみを使用する（実在写真を使う場合は外部持ち出し経路に特に注意する）
 
 #### 1. 明示的な制約
 
@@ -139,41 +139,42 @@ AI の「暴走」を防ぐため、以下の制約を明示的に設定して�
 
 ## 開発プロセス（Process）
 
-### 7 段階の開発フロー
+### 開発フロー
 
-このプロジェクトでは、以下の 7 つの Phase で開発を進めます。
+開発手順の正本は `docs/ai/prompts/tasks/`（Task01〜Task06）です。
+このドキュメントでは、手順を重複して詳細化せず、考え方を中心に説明します。
 
 ```mermaid
 graph LR
-    A[Phase 1: Spec作成] --> B[Phase 2: ドメインモデリング]
-    B --> C[Phase 3: API Contract設計]
-    C --> D[Phase 4: Gherkinシナリオ<br/>+ 実装計画策定]
-    D --> E[Phase 5: Backend Stub生成]
-    E --> F[Phase 6: 縦切り実装サイクル]
-    F --> G[Phase 7: 統合テスト]
+    A[Task01: Spec作成] --> B[Task02: ドメインモデリング]
+    B --> C[Task03: API Contract設計]
+    C --> D[Task04: Gherkinシナリオ<br/>+ 実装計画策定]
+    D --> E[Task05: Backend Stub生成]
+    E --> F[Task06: 縦切り実装サイクル]
+    F --> G[E2Eでシナリオ完結確認]
 ```
 
-#### Phase 1: Spec 作成（要件定義）
+#### Task01: Spec 作成（要件定義）
 
 - **目的**: 機能の受け入れ基準を明確化
 - **成果物**: `docs/spec/features/XX_feature_name.md`
 - **記述形式**: Given-When-Then 形式（BDD）
 
-#### Phase 2: ドメインモデリング（初稿）
+#### Task02: ドメインモデリング（初稿）
 
 - **目的**: ビジネスロジックの概念を整理
 - **成果物**: `docs/spec/models/XX_domain_model.md`
 - **内容**: Entity, ValueObject, Repository Interface
 - **AI タスク**: `docs/ai/prompts/tasks/02_simple_modeling.md`
 
-#### Phase 3: API Contract 設計 + モデル見直し
+#### Task03: API Contract 設計 + モデル見直し
 
 - **目的**: フロント/バック間の契約を確立
 - **成果物**: `docs/spec/api/XX_api_name.yaml`（OpenAPI 仕様）
-- **特徴**: Phase 2 で作成したドメインモデルを見直し、1 往復で概念を揃える
+- **特徴**: Task02 で作成したドメインモデルを見直し、1 往復で概念を揃える
 - **AI タスク**: `docs/ai/prompts/tasks/03_design_api_contract.md`
 
-#### Phase 4: Gherkin シナリオ + 実装計画策定
+#### Task04: Gherkin シナリオ + 実装計画策定
 
 - **目的**: E2E テストシナリオと実装計画を作成
 - **成果物**:
@@ -185,14 +186,14 @@ graph LR
   - ステップ間の依存関係分析（Mermaid 図）
 - **AI タスク**: `docs/ai/prompts/tasks/01_create_feature_spec.md`, `04_plan_implementation.md`
 
-#### Phase 5: Backend Stub 生成
+#### Task05: Backend Stub 生成
 
 - **目的**: フロント実装前にバックエンドに固定データを返す Stub を生成
 - **成果物**: `src/backend/src/main/java/.../StubController.java`
 - **利点**: フロントが早期に統合テスト可能、API Contract の検証が容易
 - **AI タスク**: `docs/ai/prompts/tasks/05_generate_stubs.md`
 
-#### Phase 6: 縦切り実装サイクル
+#### Task06: 縦切り実装サイクル
 
 **Outside-In TDD（E2E → Frontend → Backend）** を採用し、1 機能単位で UI→API→ ドメイン →DB まで貫通します。
 
@@ -217,10 +218,10 @@ graph TD
 
 **AI タスク**: `docs/ai/prompts/tasks/06_vertical_slice_implementation.md`
 
-#### Phase 7: 統合テスト
+#### 統合確認（シナリオ完結確認）
 
-- **目的**: 全機能の統合動作を確認
-- **実行内容**: E2E テストスイート全体の実行、パフォーマンステスト、セキュリティテスト
+- **目的**: シナリオ全体が実装済みバックエンドで完結することを確認
+- **実行内容**: E2E テストの実行
 
 ---
 
@@ -336,8 +337,8 @@ HatoMask App プロジェクトの AI 協働開発は、以下の特徴を持ち
 
 ## 関連ドキュメント
 
-- [開発ガイド](./dev/DEVELOPMENT.md) - TDD 開発フロー、テスト実行方法
-- [コーディング規約](./dev/CODING_STANDARDS.md) - 命名規則、設計原則
-- [品質基準](./dev/QUALITY_STANDARDS.md) - 品質基準とベストプラクティス
+- [開発ガイド](./dev/howto/development.md) - TDD 開発フロー、テスト実行方法
+- [コーディング規約](./dev/standards/coding.md) - 命名規則、設計原則
+- [品質基準](./dev/standards/quality.md) - 品質基準とベストプラクティス
 - [AI プロンプト集](./ai/prompts/tasks/) - タスク別指示テンプレート
 - [システムプロンプト](./ai/prompts/system/) - AI の基本動作定義

@@ -8,7 +8,7 @@
 
 ## テストリストの目的
 
-Phase 6 で実装するドメイン層（Entity, Repository, DomainService）のテストケースを列挙します。
+縦切り実装サイクル（Task06）の中で実装するドメイン層（Entity, Repository, DomainService）のテストケースを列挙します。
 
 ---
 
@@ -217,7 +217,7 @@ class PhotoValidationServiceTest {
 
 ## 実装順序の推奨
 
-### Phase 6: ドメイン層の実装フロー
+### 縦切り実装サイクル（Task06）: ドメイン層の実装フロー
 
 1. **Entity/ValueObject のバリデーションロジック**
 

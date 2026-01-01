@@ -2,7 +2,7 @@
 
 このドキュメントは、AIアシスタントがコードを生成する際の品質チェック項目を定義します。
 
-**プロジェクトの品質基準は`docs/dev/QUALITY_STANDARDS.md`に定義されています。必ずそちらを参照してください。**
+**プロジェクトの品質基準は`docs/dev/standards/quality.md`に定義されています。必ずそちらを参照してください。**
 
 このドキュメントには、AIアシスタント特有のコード生成時のチェック項目のみを記載します。
 
@@ -98,7 +98,7 @@ const handleUpload = (file: File): Promise<void> => {
 
 ## テスト生成時のチェック項目
 
-**テストの原則は`docs/dev/QUALITY_STANDARDS.md`を参照してください。**
+**テストの原則は`docs/dev/standards/quality.md`を参照してください。**
 
 ### ユニットテスト生成時
 
@@ -178,7 +178,7 @@ await expect(page.getByText('アップロード完了')).toBeVisible();
 
 ## エラーハンドリング生成時のチェック項目
 
-**エラーハンドリングの基準は`docs/dev/QUALITY_STANDARDS.md`を参照してください。**
+**エラーハンドリングの基準は`docs/dev/standards/quality.md`を参照してください。**
 
 ### すべてのAPI呼び出しにtry-catchを追加
 
@@ -253,7 +253,7 @@ log.debug("API request authenticated");
 
 ## セキュリティチェック項目
 
-**セキュリティ基準は`docs/dev/QUALITY_STANDARDS.md`を参照してください。**
+**セキュリティ基準は`docs/dev/standards/quality.md`を参照してください。**
 
 ### 入力バリデーションを必ず実装
 
@@ -310,7 +310,7 @@ stmt.setString(1, userId);
 
 ## アクセシビリティチェック項目
 
-**アクセシビリティ基準は`docs/dev/QUALITY_STANDARDS.md`を参照してください。**
+**アクセシビリティ基準は`docs/dev/standards/quality.md`を参照してください。**
 
 ### UIコンポーネント生成時
 
@@ -395,8 +395,8 @@ stmt.setString(1, userId);
 
 品質基準について不明な点がある場合は、以下を確認してください:
 
-1. **`docs/dev/QUALITY_STANDARDS.md`** - プロジェクトの品質基準
-2. **`docs/dev/CODING_STANDARDS.md`** - コーディング規約
+1. **`docs/dev/standards/quality.md`** - プロジェクトの品質基準
+2. **`docs/dev/standards/coding.md`** - コーディング規約
 3. **既存のコード** - 類似機能の実装例を参照
 
 それでも不明な場合は、ユーザーに質問してください。

@@ -1,7 +1,7 @@
 # 実装粒度提案: [シナリオ名]
 
 > **このドキュメントの目的**: 実装粒度の意思決定を記録する  
-> 実装戦略の詳細は [`docs/dev/VERTICAL_SLICE_STRATEGY.md`](../../dev/VERTICAL_SLICE_STRATEGY.md) を参照してください
+> 実装戦略の詳細は [`docs/dev/guidelines/vertical-slice.md`](../../dev/guidelines/vertical-slice.md) を参照してください
 
 ## 基本情報
 - **Feature**: [Feature名]

@@ -14,14 +14,14 @@
 
 ### タスクプロンプト
 
-各フェーズで使用するタスクプロンプト:
+各 Task で使用するタスクプロンプト:
 
 1. **01_create_feature_spec.md** - 機能仕様(Spec)作成
-2. **02_simple_modeling.md** - Spec → ドメインモデル作成
-3. **03_plan_implementation.md** - Gherkin + モデル → 実装計画策定
-4. **04_implement_frontend_bdd.md** - BDD でフロントエンド実装
-5. **05_implement_backend_domain.md** - TDD でバックエンドのドメイン層実装
-6. **06_implement_backend_api.md** - TDD でバックエンドの API 層実装
+2. **02_simple_modeling.md** - ドメインモデリング（初稿）
+3. **03_design_api_contract.md** - API Contract 設計 + モデル見直し
+4. **04_plan_implementation.md** - Gherkin シナリオ + 実装計画策定
+5. **05_generate_stubs.md** - Backend Stub 生成
+6. **06_vertical_slice_implementation.md** - 縦切り実装サイクル
 
 ## 技術スタック
 
@@ -42,16 +42,16 @@
 
 ```
 com.hatomask/
-  presentation/       # Controller, DTO（Phase 7で実装）
+  presentation/       # Controller, DTO（Task06でStub置き換え）
     controller/
     dto/
-  application/        # UseCase（Phase 7で実装）
+  application/        # UseCase（Task06で実装）
     usecase/
-  domain/            # ドメイン層（Phase 6で実装）
+  domain/            # ドメイン層（Task06で実装）
     model/           # Entity, ValueObject
     repository/      # Repository Interface
     service/         # DomainService
-  infrastructure/    # インフラ層（Phase 6で実装）
+  infrastructure/    # インフラ層（Task06で実装）
     repository/      # Repository実装 (JPA)
     external/
   config/
@@ -104,36 +104,29 @@ HatoMask プロジェクトは **BDD + TDD**（振る舞い駆動開発 + テス
 ### 開発フロー概要
 
 ```
-Phase 1: Spec作成
+Task01: Spec作成
   → docs/spec/features/ に仕様記述
 
-Phase 2: 簡単にモデリング
+Task02: 簡単にモデリング
   → docs/spec/models/ にドメインモデル作成
 
-Phase 3: Gherkinシナリオ作成
-  → e2e/features/ に.featureファイル作成
+Task03: API Contract 設計
+  → docs/spec/api/ に OpenAPI 仕様（契約）を作成
 
-Phase 4: 実装計画策定
+Task04: Gherkinシナリオ + 実装計画策定
+  → e2e/features/ に .feature ファイル作成
   → docs/plans/ に実装計画作成
 
-Phase 5: BDDでフロントエンド実装
-  → 1ステップずつ、Red-Green-Refactor
-  → MSWでモックAPI作成
+Task05: Backend Stub生成
+  → OpenAPI 仕様に基づき、フロントが接続できる Stub を用意
 
-Phase 6: TDDでバックエンド(ドメイン)実装
-  → Entity, Repository, DomainService
-  → domain/ と infrastructure/repository/
-
-Phase 7: TDDでバックエンド(API)実装
-  → UseCase, Controller, DTO
-  → application/ と presentation/
-  → MSWと同じレスポンス形式
-
-Phase 8: 統合テスト (MSWなし)
-  → E2Eテストをリアルバックエンドで実行
+Task06: 縦切り実装サイクル
+  → グループ単位で実装し、原則としてグループ単位の E2E 通過で完了
+  → API 依存グループのみ、バックエンドを段階的に本実装（ドメイン層 → アプリケーション層 → プレゼンテーション層）
+  → E2E を崩す必要がある場合は事前相談（AI は止まる）
 ```
 
-詳細は [docs/dev/DEVELOPMENT.md](./docs/dev/DEVELOPMENT.md) を参照してください。
+詳細は [docs/dev/howto/development.md](./docs/dev/howto/development.md) を参照してください。
 
 ### 利用するツール
 
@@ -155,9 +148,12 @@ magick -size 400x300 xc:#3498db test-blue.png
 magick -size 800x600 gradient:#ff6b6b-#f1c40f test-gradient.jpg
 magick -size 3000x2000 plasma: -quality 92 -define jpeg:extent=5000kb test_5mb.jpg
 
+```
+
 ## ブラウザ対応
 
 以下の最新版をサポート：
+
 - Chrome
 - Firefox
 - Safari
@@ -165,10 +161,13 @@ magick -size 3000x2000 plasma: -quality 92 -define jpeg:extent=5000kb test_5mb.j
 
 ## 関連ドキュメント
 
-- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - TDD開発フロー、テスト実行方法
-- **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - コーディング規約（命名規則、設計原則）
+- **[docs/dev/howto/development.md](docs/dev/howto/development.md)** - 開発プロセス（補足）、テスト実行方法
+- **[docs/dev/standards/coding.md](docs/dev/standards/coding.md)** - コーディング規約（命名規則、設計原則）
+- **[docs/dev/standards/quality.md](docs/dev/standards/quality.md)** - 品質基準
 - **[TEST_STRUCTURE.md](./TEST_STRUCTURE.md)** - テストディレクトリ構造
 - **[spec/README.md](./spec/README.md)** - 機能仕様の概要
-- **テストリスト**: `docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md` および `docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md` - TDD実装管理
+- **テストリスト**: `docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md` および `docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md` - TDD 実装管理
+
+```
 
 ```

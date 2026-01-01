@@ -42,4 +42,4 @@ PR Checks → Build & Coverage → Integration & E2E Tests
 
 ## 詳細ドキュメント
 
-詳しい使い方やトラブルシューティングは [docs/dev/CI.md](../../docs/dev/CI.md) を参照してください。
+詳しい使い方やトラブルシューティングは [docs/dev/howto/ci.md](../../docs/dev/howto/ci.md) を参照してください。

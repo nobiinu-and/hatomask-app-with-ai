@@ -387,7 +387,7 @@ public class GlobalExceptionHandler {
 public class PhotoService {
     public Photo uploadPhoto(MultipartFile file) {
     // 注意: 画像系の入力は個人情報・プライバシー情報になりうるため、
-  // fileName や画像/派生データをログに出さない（詳細: docs/dev/DATA_HANDLING.md）
+  // fileName や画像/派生データをログに出さない（詳細: docs/dev/policies/data-handling.md）
     final String requestId = UUID.randomUUID().toString();
     log.info("Photo upload started: requestId={}", requestId);
 
@@ -828,6 +828,6 @@ const FileUpload = () => {
 
 ## 関連ドキュメント
 
-- [コーディング規約](./CODING_STANDARDS.md) - 命名規則、フォーマット、言語固有の規約
-- [開発プロセス](./DEVELOPMENT.md) - BDD/TDD 開発フロー
-- [Linter 設定](./LINTER.md) - 自動コード品質チェック
+- [コーディング規約](./coding.md) - 命名規則、フォーマット、言語固有の規約
+- [開発プロセス](../howto/development.md) - BDD/TDD 開発フロー
+- [Linter 設定](./linting.md) - 自動コード品質チェック

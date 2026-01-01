@@ -9,7 +9,7 @@
 
 ## テストリストの目的
 
-Phase 7 で実装する API 層（UseCase, Controller, DTO）のテストケースを列挙し、MSW 互換性を確保します。
+縦切り実装サイクル（Task06）の中で実装する API 層（UseCase, Controller, DTO）のテストケースを列挙し、MSW 互換性を確保します。
 
 ---
 
@@ -211,7 +211,7 @@ UseCase 層の構造を参考に、以下のように記述します：
 
 ## 実装順序の推奨
 
-### Phase 7: API 層の実装フロー
+### API 層の実装フロー
 
 1. **UseCase 層**
 

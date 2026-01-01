@@ -1,24 +1,23 @@
-# AIプロンプトタスク
+# AI プロンプトタスク
 
-Phase別のAIプロンプトテンプレートです。
+Task 別の AI プロンプトテンプレートです。
 
-## Phase対応表（新フロー）
+## Task 対応表（新フロー）
 
-| Phase | タスク | ファイル |
-|-------|--------|----------|
-| Phase 1 | 機能仕様(Spec)作成 | `01_create_feature_spec.md` |
-| Phase 2 | ドメインモデリング（初稿） | `02_simple_modeling.md` |
-| Phase 3 | API Contract設計 + モデル見直し | `03_design_api_contract.md` |
-| Phase 4 | Gherkinシナリオ + 実装計画策定 | `04_plan_implementation.md` |
-| Phase 5 | Backend Stub生成 | `05_generate_stubs.md` |
-| Phase 6 | 縦切り実装サイクル | `06_vertical_slice_implementation.md` |
-| Phase 7 | 統合テスト | （DEVELOPMENT.mdに記載） |
+| Task   | 内容                             | ファイル                              |
+| ------ | -------------------------------- | ------------------------------------- |
+| Task01 | 機能仕様(Spec)作成               | `01_create_feature_spec.md`           |
+| Task02 | ドメインモデリング（初稿）       | `02_simple_modeling.md`               |
+| Task03 | API Contract 設計 + モデル見直し | `03_design_api_contract.md`           |
+| Task04 | Gherkin シナリオ + 実装計画策定  | `04_plan_implementation.md`           |
+| Task05 | Backend Stub 生成                | `05_generate_stubs.md`                |
+| Task06 | 縦切り実装サイクル               | `06_vertical_slice_implementation.md` |
 
 ## 使用方法
 
-各Phaseで対応するプロンプトファイルを参照し、AIに指示を出してください。
+各 Task で対応するプロンプトファイル（01〜06）を参照し、AI に指示を出してください。
 
-### 例: Phase 1で機能仕様を作成
+### 例: Task01 で機能仕様を作成
 
 ```bash
 # プロンプトファイルを確認
@@ -30,7 +29,7 @@ cat docs/ai/prompts/tasks/01_create_feature_spec.md
 対話的にヒアリングしながら進めてください。」
 ```
 
-### 例: Phase 3でAPI Contract設計
+### 例: Task03 で API Contract 設計
 
 ```bash
 # プロンプトファイルを確認
@@ -43,6 +42,6 @@ photo_upload_download機能のOpenAPI仕様を作成してください」
 
 ## 参考ドキュメント
 
-- **開発プロセス全体**: `docs/dev/DEVELOPMENT.md`
-- **OpenAPIガイド**: `docs/dev/OPENAPI_GUIDELINES.md`
-- **縦切り戦略**: `docs/dev/VERTICAL_SLICE_STRATEGY.md`
+- **開発プロセス全体（補足）**: `docs/dev/howto/development.md`
+- **OpenAPI ガイド**: `docs/dev/standards/openapi.md`
+- **縦切り戦略**: `docs/dev/guidelines/vertical-slice.md`

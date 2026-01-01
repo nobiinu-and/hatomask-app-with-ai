@@ -1,10 +1,12 @@
 # 実装時の注意事項
 
-このドキュメントは、AI アシスタントが`docs/dev/DEVELOPMENT.md`に定義された開発プロセスを実行する際の注意事項を定義します。
+このドキュメントは、AI アシスタントが実装を進める際の注意事項を定義します。
 
 ## 基本方針
 
-**開発プロセスは`docs/dev/DEVELOPMENT.md`に従ってください。**
+**開発タスク（Task01〜Task06）の正本は `docs/ai/prompts/tasks/`（01〜06）です。**
+
+補足（プロトコル/コマンド）は `docs/dev/howto/development.md` を参照してください。
 
 このドキュメントには、AI アシスタント特有の実行時の注意点のみを記載します。
 
@@ -15,16 +17,16 @@
 実装を開始する前に、必ず以下のドキュメントを確認してください:
 
 ```
-1. docs/dev/DEVELOPMENT.md
-   → BDD/TDDの開発プロセス全体を理解する
+1. docs/ai/prompts/tasks/README.md
+   → 開発タスク（Task01〜Task06）の正本を確認する
 
 2. docs/spec/models/{feature_name}.md
-   → ドメインモデルを確認する（Phase 2で作成）
+   → ドメインモデルを確認する（Task02で作成）
 
 3. docs/spec/features/{feature_name}.md
    → 実装する機能の仕様と受け入れ基準を確認する
 
-4. docs/dev/CODING_STANDARDS.md
+4. docs/dev/standards/coding.md
    → コーディング規約を確認する
 
 5. docs/plans/[Spec名]_[シナリオ識別子].md (実装計画)
@@ -274,9 +276,9 @@ public class PhotoService {
 
 実装前に必ずドキュメントを確認してください:
 
-1. `docs/dev/DEVELOPMENT.md` で全体のフローを理解
+1. `docs/ai/prompts/tasks/README.md` でタスク（Task01〜Task06）の正本を確認
 2. `docs/spec/features/` で仕様を確認
-3. `docs/dev/CODING_STANDARDS.md` で規約を確認
+3. `docs/dev/standards/coding.md` で規約を確認
 
 ### 段階的実装
 
@@ -298,6 +300,7 @@ public class PhotoService {
 
 詳細な実装手順は、以下のドキュメントを参照してください:
 
-- **開発プロセス**: `docs/dev/DEVELOPMENT.md`
-- **コーディング規約**: `docs/dev/CODING_STANDARDS.md`
+- **開発タスク正本**: `docs/ai/prompts/tasks/README.md`
+- **開発プロセス（補足）**: `docs/dev/howto/development.md`
+- **コーディング規約**: `docs/dev/standards/coding.md`
 - **品質基準**: `docs/ai/prompts/system/02_quality_standards.md`

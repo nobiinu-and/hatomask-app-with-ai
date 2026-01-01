@@ -8,23 +8,30 @@
 
 ## 👨‍💻 開発者向け
 
-- [開発ガイド](dev/DEVELOPMENT.md) - TDD 開発フロー、テスト実行方法
-- [コーディング規約](dev/CODING_STANDARDS.md) - 命名規則、設計原則
-- [Docker 環境](dev/DOCKER.md) - コンテナ構成と起動方法
-- [Linter 設定](dev/LINTER.md) - 静的解析ツールの設定
+- [開発ドキュメント（入口）](dev/README.md)
+- [開発の進め方](dev/howto/development.md) - プロトコル、コマンド
+- [Docker 環境](dev/howto/docker.md) - コンテナ構成と起動方法
+- [CI/CD](dev/howto/ci.md) - パイプラインとローカル実行
+- [コーディング規約](dev/standards/coding.md) - 命名規則、設計原則
+- [品質基準](dev/standards/quality.md) - テスト、エラー、セキュリティ等
+- [OpenAPI 規約](dev/standards/openapi.md) - 契約設計の標準
+- [Lint/静的解析](dev/standards/linting.md) - ESLint/Checkstyle
+- [縦切りガイドライン](dev/guidelines/vertical-slice.md)
+- [データ取り扱いポリシー](dev/policies/data-handling.md)
 
 ## 🤖 AI 協働向け
 
 - [AI 協働ガイド](ai/README.md) - AI 活用の全体像と使い方
-- [システムプロンプト](ai/prompts/system/) - AI の基本動作定義（作成予定）
-- [タスクプロンプト](ai/prompts/tasks/) - タスク別指示テンプレート（作成予定）
-- [作業ログ](ai/logs/) - AI 協働セッション記録（作成予定）
+- [システムプロンプト](ai/prompts/system/) - AI の基本動作定義
+- [タスクプロンプト](ai/prompts/tasks/) - タスク別指示テンプレート
+- [作業ログ](ai/logs/) - AI 協働セッション記録
 
 ## 📖 仕様書
 
 - [機能概要](spec/README.md) - 全機能の一覧と概要
 - [機能仕様](spec/features/) - 詳細な機能仕様書
-- [仕様テンプレート](spec/templates/feature.template.md)
+- [API 仕様（OpenAPI）](spec/api/)
+- [仕様テンプレート](spec/templates/feature-spec.template.md)
 
 ## 📚 共有リソース
 

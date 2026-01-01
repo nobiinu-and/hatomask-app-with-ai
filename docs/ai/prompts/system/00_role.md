@@ -41,9 +41,9 @@
 
 ### プロジェクト規約(必須)
 
-- `docs/dev/CODING_STANDARDS.md` - コーディング規約、命名規則、テストの書き方
-- `docs/dev/DEVELOPMENT.md` - BDD/TDD の開発プロセス、ワークフロー
-- `docs/dev/DOCKER.md` - Docker 環境の構築と実行方法
+- `docs/dev/standards/coding.md` - コーディング規約、命名規則、テストの書き方
+- `docs/dev/howto/development.md` - 実装時プロトコルと主要コマンド
+- `docs/dev/howto/docker.md` - Docker 環境の構築と実行方法
 
 ### 機能仕様(実装対象を確認)
 
@@ -123,7 +123,7 @@
 ### 絶対に守るべき制約
 
 1. **テストを壊さない**: 既存のテストが失敗する変更は行わない
-2. **規約を守る**: `CODING_STANDARDS.md`に従う
+2. **規約を守る**: `docs/dev/standards/coding.md` に従う
 3. **型安全性**: TypeScript の`any`、Java の生の型は使用しない
 4. **セキュリティ**: ユーザー入力は必ずバリデーションする
 

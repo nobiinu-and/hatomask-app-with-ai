@@ -1,6 +1,6 @@
-# OpenAPI仕様書作成ガイドライン
+# OpenAPI 仕様書作成ガイドライン
 
-このドキュメントは、HatoMaskプロジェクトでOpenAPI仕様書を手動作成する際のベストプラクティスをまとめたものです。
+このドキュメントは、HatoMask プロジェクトで OpenAPI 仕様書を手動作成する際のベストプラクティスをまとめたものです。
 
 ## ファイル配置
 
@@ -11,11 +11,11 @@
 
 ### 1. API Contract First
 
-- **先にAPIを設計**: 実装前にOpenAPI仕様を確定させる
-- **ドメインモデルとの同期**: Phase 2のドメインモデルを参照し、Phase 3で整合性を確保
+- **先に API を設計**: 実装前に OpenAPI 仕様を確定させる
+- **ドメインモデルとの同期**: `docs/ai/prompts/tasks/02_simple_modeling.md` の成果物を参照し、`03_design_api_contract.md` で整合性を確保
 - **中立な契約**: フロントエンドとバックエンドの中立的な仕様として機能
 
-### 2. OpenAPI 3.0.3を使用
+### 2. OpenAPI 3.0.3 を使用
 
 ```yaml
 openapi: 3.0.3
@@ -23,7 +23,7 @@ openapi: 3.0.3
 
 ### 3. バージョニング
 
-- **APIバージョン**: URLパスに `/api/v1` を含める
+- **API バージョン**: URL パスに `/api/v1` を含める
 - **仕様書バージョン**: `info.version` でドキュメントのバージョン管理
 
 ```yaml
@@ -34,7 +34,7 @@ servers:
 
 ## エンドポイント設計
 
-### RESTful命名規則
+### RESTful 命名規則
 
 ```yaml
 # リソース指向の命名
@@ -55,17 +55,17 @@ DELETE /photos/{id}      # 削除
 /photoDetail?id=123
 ```
 
-### HTTPメソッドの使い分け
+### HTTP メソッドの使い分け
 
-| メソッド | 用途 | 冪等性 | レスポンス |
-|---------|------|--------|-----------|
-| GET | リソース取得 | ✅ | 200, 404 |
-| POST | リソース作成 | ❌ | 201, 400 |
-| PUT | リソース更新（全体） | ✅ | 200, 404 |
-| PATCH | リソース更新（部分） | ❌ | 200, 404 |
-| DELETE | リソース削除 | ✅ | 204, 404 |
+| メソッド | 用途                 | 冪等性 | レスポンス |
+| -------- | -------------------- | ------ | ---------- |
+| GET      | リソース取得         | ✅     | 200, 404   |
+| POST     | リソース作成         | ❌     | 201, 400   |
+| PUT      | リソース更新（全体） | ✅     | 200, 404   |
+| PATCH    | リソース更新（部分） | ❌     | 200, 404   |
+| DELETE   | リソース削除         | ✅     | 204, 404   |
 
-### operationId命名規則
+### operationId 命名規則
 
 ```yaml
 operationId: uploadPhoto      # 動詞 + 名詞（camelCase）
@@ -76,7 +76,7 @@ operationId: deletePhoto
 
 ## スキーマ設計
 
-### DTO命名規則
+### DTO 命名規則
 
 ```yaml
 components:
@@ -84,11 +84,11 @@ components:
     # リクエスト: 動詞 + リソース + Request
     UploadPhotoRequest:
       type: object
-      
+
     # レスポンス: リソース + Response
     PhotoResponse:
       type: object
-    
+
     # 一覧レスポンス
     PhotoListResponse:
       type: object
@@ -96,14 +96,14 @@ components:
         photos:
           type: array
           items:
-            $ref: '#/components/schemas/PhotoResponse'
+            $ref: "#/components/schemas/PhotoResponse"
 ```
 
 ### プロパティ命名規則
 
 - **camelCase**: `fileName`, `createdAt`, `mimeType`
-- **日付時刻**: ISO 8601形式 (`format: date-time`)
-- **ID**: UUID形式 (`format: uuid`)
+- **日付時刻**: ISO 8601 形式 (`format: date-time`)
+- **ID**: UUID 形式 (`format: uuid`)
 
 ```yaml
 properties:
@@ -134,7 +134,7 @@ properties:
     type: integer
     format: int64
     minimum: 1
-    maximum: 10485760  # 10MB
+    maximum: 10485760 # 10MB
   mimeType:
     type: string
     enum:
@@ -150,12 +150,12 @@ properties:
 
 ```yaml
 responses:
-  '400':
+  "400":
     description: バリデーションエラー
     content:
       application/problem+json:
         schema:
-          $ref: '#/components/schemas/ProblemDetails'
+          $ref: "#/components/schemas/ProblemDetails"
         example:
           type: "about:blank"
           title: "Bad Request"
@@ -165,15 +165,15 @@ responses:
 
 ### ステータスコード使い分け
 
-| コード | 用途 | 例 |
-|-------|------|-----|
-| 200 | 成功 | GET, PUT成功 |
-| 201 | 作成成功 | POST成功 |
-| 204 | 成功（レスポンスボディなし） | DELETE成功 |
-| 400 | クライアントエラー | バリデーション失敗 |
-| 404 | リソース不在 | ID該当なし |
-| 409 | 競合 | 重複エラー |
-| 500 | サーバーエラー | 予期しないエラー |
+| コード | 用途                         | 例                 |
+| ------ | ---------------------------- | ------------------ |
+| 200    | 成功                         | GET, PUT 成功      |
+| 201    | 作成成功                     | POST 成功          |
+| 204    | 成功（レスポンスボディなし） | DELETE 成功        |
+| 400    | クライアントエラー           | バリデーション失敗 |
+| 404    | リソース不在                 | ID 該当なし        |
+| 409    | 競合                         | 重複エラー         |
+| 500    | サーバーエラー               | 予期しないエラー   |
 
 ### バリデーションエラーの詳細
 
@@ -217,7 +217,7 @@ requestBody:
 
 ```yaml
 responses:
-  '201':
+  "201":
     description: アップロード成功
     headers:
       Location:
@@ -229,7 +229,7 @@ responses:
 
 ## ドキュメント記述
 
-### description活用
+### description 活用
 
 ```yaml
 paths:
@@ -239,11 +239,11 @@ paths:
       description: |
         写真ファイルをアップロードし、必要に応じて処理を実行します。
         Milestone 0 では、実在写真（入力由来ベース）を扱う可能性があるため、画像および派生データは永続化しません（短命TTL・非ログ）。
-        
+
         ### ビジネスルール
         - ファイルサイズは10MB以下
         - 対応形式: JPEG, PNG
-        
+
         ### 処理フロー
         1. ファイル形式をバリデーション
         2. ファイルサイズをチェック
@@ -271,32 +271,32 @@ paths:
 
 ### 基本原則
 
-- **Entity → Response DTO**: ドメインモデルのEntityをAPIレスポンスにマッピング
+- **Entity → Response DTO**: ドメインモデルの Entity を API レスポンスにマッピング
 - **内部実装の隠蔽**: `filePath`などの内部実装プロパティはレスポンスに含めない
-- **ValueObject → Schema**: ドメインモデルのValueObjectを再利用
-- **型変換**: Java型をOpenAPI型にマッピング（UUID→string/uuid, LocalDateTime→string/date-time）
+- **ValueObject → Schema**: ドメインモデルの ValueObject を再利用
+- **型変換**: Java 型を OpenAPI 型にマッピング（UUID→string/uuid, LocalDateTime→string/date-time）
 - **バリデーションの同期**: ドメインモデルのバリデーションルールをスキーマに反映
 
 ### 型マッピング表
 
-| Java型 | OpenAPI型 | format | 例 |
-|--------|-----------|--------|-----|
-| UUID | string | uuid | "550e8400-e29b-41d4-a716-446655440000" |
-| LocalDateTime | string | date-time | "2024-01-15T10:30:00Z" |
-| Long | integer | int64 | 5242880 |
-| String | string | - | "sample.jpg" |
-| Enum | string | enum | ["image/jpeg", "image/png"] |
+| Java 型       | OpenAPI 型 | format    | 例                                     |
+| ------------- | ---------- | --------- | -------------------------------------- |
+| UUID          | string     | uuid      | "550e8400-e29b-41d4-a716-446655440000" |
+| LocalDateTime | string     | date-time | "2024-01-15T10:30:00Z"                 |
+| Long          | integer    | int64     | 5242880                                |
+| String        | string     | -         | "sample.jpg"                           |
+| Enum          | string     | enum      | ["image/jpeg", "image/png"]            |
 
 ## ツール・バリデーション
 
 ### オンラインエディタ
 
-- [Swagger Editor](https://editor.swagger.io/) - YAML検証、プレビュー
+- [Swagger Editor](https://editor.swagger.io/) - YAML 検証、プレビュー
 - [Stoplight Studio](https://stoplight.io/studio) - ビジュアルエディタ
 
-### VS Code拡張機能
+### VS Code 拡張機能
 
-- **Swagger Viewer**: YAML内でプレビュー表示
+- **Swagger Viewer**: YAML 内でプレビュー表示
 - **OpenAPI (Swagger) Editor**: シンタックスハイライト、補完
 
 ### バリデーション
@@ -308,17 +308,17 @@ npx @apidevtools/swagger-cli validate docs/spec/api/{feature_name}.yaml
 
 ## 品質チェックリスト
 
-OpenAPI仕様書作成時の確認項目：
+OpenAPI 仕様書作成時の確認項目：
 
-- [ ] OpenAPI 3.0.3形式で記述されている
+- [ ] OpenAPI 3.0.3 形式で記述されている
 - [ ] 全エンドポイントに `operationId` が定義されている
 - [ ] リクエスト/レスポンススキーマが完全に定義されている
-- [ ] RFC 9457準拠のエラーレスポンスがある
-- [ ] バリデーションルール（minLength, maximum等）が定義されている
+- [ ] RFC 9457 準拠のエラーレスポンスがある
+- [ ] バリデーションルール（minLength, maximum 等）が定義されている
 - [ ] `description` で処理内容・制約が説明されている
 - [ ] 内部実装の詳細が漏れていない
 - [ ] `example` が記載されている
-- [ ] RESTful命名規則に従っている
+- [ ] RESTful 命名規則に従っている
 
 ## 参考資料
 
