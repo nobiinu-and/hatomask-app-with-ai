@@ -157,6 +157,9 @@ paths:
 
 components:
   schemas:
+    # 注: `required` は機能要件に合わせて設定する。
+    # - `id`（UUID等）や `createdAt`/`updatedAt`/`uploadedAt` のような監査・識別子系フィールドは、このテンプレートでは必須としない。
+    # - 採用する場合は命名を `id`, `createdAt`, `updatedAt`（または意味に応じて `uploadedAt` など）に統一することを推奨。
     ExampleResponse:
       type: object
       description: レスポンスの例
@@ -173,9 +176,7 @@ components:
           format: date-time
           description: 作成日時（ISO 8601形式）
       required:
-        - id
         - name
-        - createdAt
 
     CreateExampleRequest:
       type: object
@@ -207,11 +208,9 @@ components:
           type: string
           format: date-time
       required:
-        - id
         - fileName
         - fileSize
         - mimeType
-        - uploadedAt
 
     ProblemDetails:
       type: object

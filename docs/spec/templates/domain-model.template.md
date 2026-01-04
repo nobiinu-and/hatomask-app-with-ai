@@ -1,35 +1,60 @@
 # [機能名] ドメインモデル
 
 ## 概要
-[この機能のドメインを1-2文で説明]
-[Specに含まれる全ての機能範囲を明記]
+
+[この機能のドメインを 1-2 文で説明]
+[Spec に含まれる全ての機能範囲を明記]
+
+## 命名規約（任意項目を採用する場合）
+
+このテンプレートでは、識別子（UUID 等）や監査用タイムスタンプ（createdAt/updatedAt 等）は**必須ではありません**。
+ただし採用する場合は、Spec 間での揺れを避けるため、以下の名称に統一することを推奨します。
+
+- 識別子（主キー）: `id`
+  - 例: `id: UUID` / `id: String` / `id: [Entity]Id`（プロジェクト方針に合わせて自由に選択）
+- 監査フィールド（任意）: `createdAt`, `updatedAt`
+  - API に出す場合は ISO 8601（OpenAPI では `type: string`, `format: date-time`）を推奨
+  - 実装言語側の型（`Instant`, `LocalDateTime` など）は実装都合で選択
 
 ## エンティティ
 
-### [エンティティ名1]
+### [エンティティ名 1]
+
 **説明**: [エンティティの説明]
 
 **プロパティ**:
-- id: UUID (自動生成)
+
 - [propertyName]: [Type] ([必須/任意]、[制約条件])
-- createdAt: LocalDateTime (自動生成)
-- updatedAt: LocalDateTime (自動更新)
+
+（任意: 採用する場合のみ）
+
+- id: [IdType] ([自動生成/外部から付与/自然キー] など)
+- createdAt: [DateTimeType] (自動生成)
+- updatedAt: [DateTimeType] (自動更新)
 
 **バリデーションルール**:
+
 - [propertyName]: [バリデーション条件]
 
-### [エンティティ名2]
+### [エンティティ名 2]
+
 **説明**: [エンティティの説明]
 
 **プロパティ**:
-- id: UUID (自動生成)
+
 - [propertyName]: [Type] ([必須/任意]、[制約条件])
-- createdAt: LocalDateTime (自動生成)
+
+（任意: 採用する場合のみ）
+
+- id: [IdType] ([自動生成/外部から付与/自然キー] など)
+- createdAt: [DateTimeType] (自動生成)
 
 **関連**:
-- [エンティティ名1] との関連を説明
 
-### [その他、Specに関連する全てのエンティティ]
+- [エンティティ名 1] との関連を説明
+
+### [その他、Spec に関連する全てのエンティティ]
+
 ...
 
 ## エンティティ関連図
@@ -42,50 +67,61 @@
 ## バリューオブジェクト
 
 ### [バリューオブジェクト名]
+
 **説明**: [バリューオブジェクトの説明]
 
 **プロパティ**:
+
 - [propertyName]: [Type]
 
 **バリデーションルール**:
+
 - [バリデーション条件]
 
 ## リポジトリインターフェース
 
-### [リポジトリ名1]
+### [リポジトリ名 1]
+
 **説明**: [Entity1] エンティティの永続化を担当
 
 **メソッド**:
+
 - save([entity]: [Entity1]): [Entity1]
-  - [Entity1] を保存し、ID と createdAt が設定されたインスタンスを返す
-- findById(id: UUID): Optional<[Entity1]>
+  - [Entity1] を保存し、永続化後のインスタンスを返す（ID/createdAt 等を採用している場合はそれらが設定される）
+- findById(id: [IdType]): Optional<[Entity1]>
   - ID で [Entity1] を検索する
 - [その他必要なメソッド]
 
-### [リポジトリ名2]
+### [リポジトリ名 2]
+
 **説明**: [Entity2] エンティティの永続化を担当
 
 **メソッド**:
+
 - save([entity]: [Entity2]): [Entity2]
   - [Entity2] を保存する
-- findById(id: UUID): Optional<[Entity2]>
+- findById(id: [IdType]): Optional<[Entity2]>
   - ID で [Entity2] を検索する
 - [その他必要なメソッド]
 
 ### [その他、必要な全てのリポジトリ]
+
 ...
 
 ## ドメインサービス
 
 ### [サービス名]
+
 **説明**: [ドメインサービスの説明]
 
 **メソッド**:
+
 - [methodName]([params]): [ReturnType]
   - [メソッドの説明]
 
 （必要な場合のみ定義）
 
 ## 補足・注意事項
+
 [モデリング時の考慮点やドメイン知識など]
-[Specに記載された機能範囲の確認]
+[Spec に記載された機能範囲の確認]
