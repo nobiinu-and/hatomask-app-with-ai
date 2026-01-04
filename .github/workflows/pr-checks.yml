@@ -2,9 +2,13 @@ name: PR Checks
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - 'experiment/**'
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'experiment/**'
   workflow_dispatch:
 
 jobs:
