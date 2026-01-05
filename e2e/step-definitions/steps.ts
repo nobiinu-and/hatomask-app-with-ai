@@ -1,6 +1,8 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { Page } from '@playwright/test';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 interface CustomWorld {
   page: Page;
@@ -55,4 +57,41 @@ Then('コンテンツ {string} が表示される', { timeout: 60000 }, async fu
 Then('Material-UIのカードコンポーネントが表示される', { timeout: 60000 }, async function (this: CustomWorld) {
   const card = this.page.locator('[class*="MuiCard-root"]').first();
   await expect(card).toBeVisible();
+});
+
+When('ユーザーが「写真を選択」ボタンをクリックする', { timeout: 60000 }, async function (this: CustomWorld) {
+  await this.page.getByRole('button', { name: '写真を選択' }).click();
+});
+
+When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  const input = this.page.locator('input[type="file"]');
+
+  const fixturePath = path.resolve(__dirname, '..', 'fixtures', 'sample.jpg');
+  if (!fs.existsSync(fixturePath)) {
+    throw new Error(`fixturesに sample.jpg が見つかりません: ${fixturePath}`);
+  }
+
+  const stats = fs.statSync(fixturePath);
+  if (stats.size <= 0) {
+    throw new Error(`fixturesの sample.jpg が空です: ${fixturePath}`);
+  }
+  if (stats.size > 10 * 1024 * 1024) {
+    throw new Error(`fixturesの sample.jpg が10MBを超えています: ${stats.size} bytes`);
+  }
+
+  await input.setInputFiles(fixturePath);
+});
+
+Then('プレビューエリアに選択した画像が表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  const image = this.page.locator('img[alt="選択済み画像"]');
+  await expect(image).toBeVisible({ timeout: 20000 });
+  await this.page.waitForFunction(
+    (img) => Boolean((img as any).complete) && Number((img as any).naturalWidth) > 0,
+    await image.elementHandle(),
+    { timeout: 20000 }
+  );
+});
+
+Then('「顔検出を実行」ボタンが有効になる', { timeout: 60000 }, async function (this: CustomWorld) {
+  await expect(this.page.getByRole('button', { name: '顔検出を実行' })).toBeEnabled({ timeout: 10000 });
 });

@@ -43,6 +43,10 @@ npm run playwright:install
 docker compose up
 ```
 
+5. 写真アップロードのE2Eは fixtures を使用します:
+
+- `e2e/fixtures/sample.jpg` が必要です（テストで直接選択します）
+
 ### Cucumber テストの実行
 
 ```bash
