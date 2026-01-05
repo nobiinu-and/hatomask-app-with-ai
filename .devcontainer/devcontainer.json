@@ -40,6 +40,5 @@
   "forwardPorts": [
     3000,
     8080
-  ],
-  "postCreateCommand": "cd e2e && npm install && npx playwright install --with-deps"
+  ]
 }
