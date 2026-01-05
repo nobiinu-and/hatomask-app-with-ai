@@ -27,7 +27,8 @@
         "GitHub.copilot-chat",
         "42crunch.vscode-openapi",
         "ms-playwright.playwright",
-        "alexkrechik.cucumberautocomplete"
+        "alexkrechik.cucumberautocomplete",
+        "humao.rest-client"
       ],
       "settings": {
         "editor.formatOnSave": true,
