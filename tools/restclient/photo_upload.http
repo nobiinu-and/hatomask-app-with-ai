@@ -1,0 +1,21 @@
+# VS Code extension: "REST Client" (Huachao Mao)
+# Usage: open this file, then click "Send Request" above each request.
+
+@baseUrl = http://localhost:8080/api/v1
+
+### Health check (example)
+GET {{baseUrl}}/hello
+
+### Upload photo (multipart/form-data)
+# OpenAPI: POST /photos, requestBody: multipart/form-data, field: file (binary)
+# Token is optional. If you want to send it, add:
+#   X-Github-Token: <token>
+POST {{baseUrl}}/photos
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="sample.jpg"
+Content-Type: image/jpeg
+
+< ./tools/restclient/sample.jpg
+--boundary--
