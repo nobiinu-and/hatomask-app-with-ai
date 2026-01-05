@@ -150,6 +150,11 @@ Then('エラーメッセージ {string} が表示される', { timeout: 60000 },
   await expect(alert).toBeVisible({ timeout: 10000 });
 });
 
+Then('エラーメッセージ {string} が表示されない', { timeout: 60000 }, async function (this: CustomWorld, message: string) {
+  const alert = this.page.locator('[role="alert"]').filter({ hasText: message });
+  await expect(alert).toHaveCount(0, { timeout: 10000 });
+});
+
 Then('プレビュー画像が表示されない', { timeout: 60000 }, async function (this: CustomWorld) {
   const image = this.page.locator('img[alt="選択済み画像"]');
   await expect(image).toHaveCount(0);
