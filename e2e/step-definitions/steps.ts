@@ -82,6 +82,22 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
   await input.setInputFiles(fixturePath);
 });
 
+When('ユーザーがファイルサイズ11MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  const input = this.page.locator('input[type="file"]');
+
+  const fixturePath = path.resolve(__dirname, '..', 'fixtures', 'sample_11mb.jpg');
+  if (!fs.existsSync(fixturePath)) {
+    throw new Error(`fixturesに sample_11mb.jpg が見つかりません: ${fixturePath}`);
+  }
+
+  const stats = fs.statSync(fixturePath);
+  if (stats.size <= 10 * 1024 * 1024) {
+    throw new Error(`fixturesの sample_11mb.jpg が10MB以下です（サイズ超過シナリオ用）: ${stats.size} bytes`);
+  }
+
+  await input.setInputFiles(fixturePath);
+});
+
 Then('プレビューエリアに選択した画像が表示される', { timeout: 60000 }, async function (this: CustomWorld) {
   const image = this.page.locator('img[alt="選択済み画像"]');
   await expect(image).toBeVisible({ timeout: 20000 });
@@ -92,6 +108,20 @@ Then('プレビューエリアに選択した画像が表示される', { timeou
   );
 });
 
+Then('エラーメッセージ {string} が表示される', { timeout: 60000 }, async function (this: CustomWorld, message: string) {
+  const alert = this.page.locator('[role="alert"]').filter({ hasText: message });
+  await expect(alert).toBeVisible({ timeout: 10000 });
+});
+
+Then('プレビュー画像が表示されない', { timeout: 60000 }, async function (this: CustomWorld) {
+  const image = this.page.locator('img[alt="選択済み画像"]');
+  await expect(image).toHaveCount(0);
+});
+
 Then('「顔検出を実行」ボタンが有効になる', { timeout: 60000 }, async function (this: CustomWorld) {
   await expect(this.page.getByRole('button', { name: '顔検出を実行' })).toBeEnabled({ timeout: 10000 });
+});
+
+Then('「顔検出を実行」ボタンが無効になる', { timeout: 60000 }, async function (this: CustomWorld) {
+  await expect(this.page.getByRole('button', { name: '顔検出を実行' })).toBeDisabled({ timeout: 10000 });
 });
