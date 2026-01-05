@@ -98,6 +98,25 @@ When('ユーザーがファイルサイズ11MBのJPEGファイルを選択する
   await input.setInputFiles(fixturePath);
 });
 
+When('ユーザーがPNGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  const input = this.page.locator('input[type="file"]');
+
+  const fixturePath = path.resolve(__dirname, '..', 'fixtures', 'sample.png');
+  if (!fs.existsSync(fixturePath)) {
+    throw new Error(`fixturesに sample.png が見つかりません: ${fixturePath}`);
+  }
+
+  const stats = fs.statSync(fixturePath);
+  if (stats.size <= 0) {
+    throw new Error(`fixturesの sample.png が空です: ${fixturePath}`);
+  }
+  if (stats.size > 10 * 1024 * 1024) {
+    throw new Error(`fixturesの sample.png が10MBを超えています: ${stats.size} bytes`);
+  }
+
+  await input.setInputFiles(fixturePath);
+});
+
 Then('プレビューエリアに選択した画像が表示される', { timeout: 60000 }, async function (this: CustomWorld) {
   const image = this.page.locator('img[alt="選択済み画像"]');
   await expect(image).toBeVisible({ timeout: 20000 });
