@@ -1,0 +1,48 @@
+{
+  "responderUsername": "GitHub Copilot",
+  "totalRequests": 24,
+  "totalThinkingItems": 294,
+  "totalPrepareToolInvocations": 191,
+  "toolCallsByName": [
+    {
+      "tool": "copilot_applyPatch",
+      "count": 28
+    },
+    {
+      "tool": "copilot_createFile",
+      "count": 7
+    },
+    {
+      "tool": "copilot_findFiles",
+      "count": 8
+    },
+    {
+      "tool": "copilot_findTextInFiles",
+      "count": 14
+    },
+    {
+      "tool": "copilot_getChangedFiles",
+      "count": 1
+    },
+    {
+      "tool": "copilot_getErrors",
+      "count": 16
+    },
+    {
+      "tool": "copilot_listDirectory",
+      "count": 23
+    },
+    {
+      "tool": "copilot_readFile",
+      "count": 67
+    },
+    {
+      "tool": "manage_todo_list",
+      "count": 14
+    },
+    {
+      "tool": "run_in_terminal",
+      "count": 13
+    }
+  ]
+}
