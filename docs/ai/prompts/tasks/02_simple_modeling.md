@@ -38,9 +38,16 @@ description: 機能仕様書(Spec)から簡単なドメインモデルを作成�
 
 ### 2. 保存先
 
-`docs/spec/models/{feature_name}.md`
+ドメインモデルのファイル名は **feature 名に固定しません**。次を満たすように `{model_name}` を決めてください。
 
-例: `docs/spec/models/photo_upload_download.md`
+- **優先**: リソース/ドメイン境界（例: `photo_upload.md`, `face_detection.md`）
+- **避ける**: UI 操作や 1 シナリオに寄った feature 名のままの分断（例: `02_face_detection_static.yaml`）
+- **既存優先**: 既に `docs/spec/models/*.md` に関連するモデルがある場合、まずは**追記・拡張**を検討
+
+#### 3.1 ファイル作成
+
+保存先: `docs/spec/models/{model_name}.md`
+例: `docs/spec/models/photo_upload.md`
 
 ### 3. モデリング要素
 
@@ -97,8 +104,9 @@ description: 機能仕様書(Spec)から簡単なドメインモデルを作成�
 
 1. **テンプレート取得**: `docs/spec/templates/domain-model.template.md` を参照
 2. **Spec 分析**: 機能仕様書を読み、必要なエンティティを洗い出す
-3. **モデル作成**: テンプレートに従い `docs/spec/models/{feature_name}.md` を作成
-4. **チェックリスト確認**: 制約事項と完全性を検証
+3. **model_name 決定（必須）**: `docs/spec/models/*.md` を棚卸しし、既存のモデルに追記できないかを確認したうえで `{model_name}` を決める
+4. **モデル作成**: テンプレートに従い `docs/spec/models/{model_name}.md` を作成（迷う場合のみ `{feature_name}.md`）
+5. **チェックリスト確認**: 制約事項と完全性を検証
 
 ## チェックリスト
 

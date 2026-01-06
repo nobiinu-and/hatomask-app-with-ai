@@ -1,7 +1,7 @@
 # API 層テストリスト: {ステップ名}
 
 **Feature**: {対応する Gherkin 機能の参照}  
-**Domain Model**: `docs/spec/models/{feature_name}.md`  
+**Domain Model**: `docs/spec/models/{model_name}.md`  
 **Plan**: `docs/plans/[Spec名]_[シナリオ識別子].md`  
 **MSW Handler**: `src/frontend/src/mocks/handlers.ts`
 
@@ -281,7 +281,7 @@ UseCase 層の構造を参考に、以下のように記述します：
 
 ## References
 
-- Domain Model: `docs/spec/models/{feature_name}.md`
+- Domain Model: `docs/spec/models/{model_name}.md`
 - MSW Handler: `src/frontend/src/mocks/handlers.ts`
 - Implementation Plan: `docs/plans/[Spec名]_[シナリオ識別子].md`
 - API TDD Prompt: `docs/ai/prompts/tasks/06_implement_backend_api.md`

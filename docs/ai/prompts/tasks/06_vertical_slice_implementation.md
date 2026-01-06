@@ -30,8 +30,8 @@ AI が依存関係を分析し、3 パターンを提案、人間が決定しま
 
 - [ ] Task04 で実装計画が作成されている
 - [ ] Task05 で Backend Stub が作成されている
-- [ ] OpenAPI 仕様が確定している (`docs/spec/api/{feature_name}.yaml`)
-- [ ] ドメインモデルが確定している (`docs/spec/models/{feature_name}.md`)
+- [ ] 実装計画の「このシナリオで採用する仕様（選択結果）」で、利用する仕様(Model, API)が確定している
+- [ ] Task06 の実装・テスト・修正は **実装計画で採用されたモデル/API** を参照元とする（計画にないモデル/API を勝手に追加しない、追加が必要になった場合は相談をする）
 
 ## 実装粒度相談プロトコル
 
@@ -144,6 +144,8 @@ AI の提案を確認し、以下を決定してください：
    - テンプレート: `docs/plans/templates/api-testlist.template.md`
    - 出力: `docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md`
    - 内容: UseCase、Controller のテストケース
+
+※テストリストの前提となる **対象エンドポイント / スキーマ / ドメインモデル** は、実装計画の「エンドポイント一覧」および「このシナリオで採用する仕様（選択結果）」を参照して確定させる。
 
 【ドメイン層】
 3. Entity/ValueObject TDD
@@ -320,7 +322,7 @@ AI の提案を確認し、以下を決定してください：
 
 - **縦切り戦略**: `docs/dev/guidelines/vertical-slice.md`
 - **実装計画**: `docs/plans/[Spec名]_[シナリオ識別子].md`
-- **OpenAPI 仕様**: `docs/spec/api/{feature_name}.yaml`
+- 実装計画の「このシナリオで採用する仕様（選択結果）」に記載された OpenAPI（Primary/Related）を参照
 - **AI 協働プロトコル**: `docs/dev/howto/development.md`
 
 ## 注意事項

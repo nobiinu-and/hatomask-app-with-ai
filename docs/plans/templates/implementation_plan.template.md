@@ -5,19 +5,49 @@
 - **Feature**: [Feature 名]
 - **Scenario**: [シナリオ名]
 - **Spec**: [Spec ファイルへのリンク]
-- **Domain Model**: `docs/spec/models/{feature_name}.md`
-- **OpenAPI**: `docs/spec/api/{feature_name}.yaml`
+
+## 入力（候補一覧）
+
+このシナリオに関係しうるドキュメントを列挙します（全てを使う必要はありません）。
+
+### ドメインモデル（候補）
+
+- `docs/spec/models/[model].md`
+
+### OpenAPI 仕様（候補）
+
+- `docs/spec/api/[api].yaml`
+
+## このシナリオで採用する仕様（選択結果）
+
+### ドメインモデル
+
+- **Primary**: `docs/spec/models/{model_name}.md`
+- **Related（任意）**: `docs/spec/models/{related_model_name}.md`（複数可）
+
+### OpenAPI
+
+- **Primary**: `docs/spec/api/{api_name}.yaml`
+- **Related（任意）**: `docs/spec/api/{related_api_name}.yaml`（複数可）
 
 ## OpenAPI 仕様
 
-参照: `docs/spec/api/{feature_name}.yaml`
+参照（このシナリオで採用する OpenAPI）:
+
+- Primary: `docs/spec/api/{api_name}.yaml`
+- Related（任意）: `docs/spec/api/{related_api_name}.yaml`
 
 ### エンドポイント一覧
 
-| エンドポイント          | メソッド | 概要   | 使用ステップ |
-| ----------------------- | -------- | ------ | ------------ |
-| /api/v1/[resource]      | POST     | [概要] | [ステップ名] |
-| /api/v1/[resource]/{id} | GET      | [概要] | [ステップ名] |
+| Spec(OpenAPI)                             | エンドポイント          | メソッド | 概要   | 使用ステップ |
+| ----------------------------------------- | ----------------------- | -------- | ------ | ------------ |
+| `docs/spec/api/{api_name}.yaml` (Primary) | /api/v1/[resource]      | POST     | [概要] | [ステップ名] |
+| `docs/spec/api/{related_api_name}.yaml`   | /api/v1/[resource]/{id} | GET      | [概要] | [ステップ名] |
+
+補足:
+
+- Spec(OpenAPI) 列には、該当エンドポイントが定義されている YAML を必ず記載する
+- 可能なら `#/paths/...` の JSON Pointer も併記して、参照箇所を一意にする（例: `docs/spec/api/photos.yaml#/paths/~1photos/post`）
 
 ### 主要スキーマ
 
@@ -133,7 +163,7 @@ _(次のステップも同様に記述)_
 
 ## データモデル (共通)
 
-**参照**: `docs/spec/models/{feature_name}.md`
+**参照**: `docs/spec/models/{model_name}.md`
 
 ドメインモデルで定義されたエンティティ、バリューオブジェクト、リポジトリインターフェースを使用します。
 

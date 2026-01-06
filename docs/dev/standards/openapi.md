@@ -4,7 +4,7 @@
 
 ## ファイル配置
 
-- **保存先**: `docs/spec/api/{feature_name}.yaml`
+- **保存先**: `docs/spec/api/{api_name}.yaml`
 - **テンプレート**: `docs/spec/templates/openapi.template.yaml`
 
 ## 基本原則
@@ -303,7 +303,7 @@ paths:
 
 ```bash
 # CLIツールでバリデーション（オプション）
-npx @apidevtools/swagger-cli validate docs/spec/api/{feature_name}.yaml
+npx @apidevtools/swagger-cli validate docs/spec/api/{api_name}.yaml
 ```
 
 ## 品質チェックリスト

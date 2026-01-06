@@ -1,8 +1,10 @@
 # API 仕様（OpenAPI）
 
-このディレクトリには、機能ごとの OpenAPI 仕様（YAML）を配置します。
+このディレクトリには、API 契約（OpenAPI 仕様: YAML）を配置します。
 
-- **保存先**: `docs/spec/api/{feature_name}.yaml`
+原則として **リソース/ドメイン境界** を表す単位で 1 ファイルにまとめ、feature 名に引きずられて API 境界が分断されないようにします。
+
+- **保存先**: `docs/spec/api/{api_name}.yaml`（迷う場合のフォールバック: `{feature_name}.yaml`）
 - **テンプレート**: `docs/spec/templates/openapi.template.yaml`
 
 ## 目的

@@ -18,7 +18,9 @@ API Contract First の原則に従い、フロントエンドとバックエン�
 ## 入力情報
 
 - **Spec ファイル**: `docs/spec/features/{feature_name}.md`
-- **ドメインモデル**: `docs/spec/models/{feature_name}.md`（Task02 で作成）
+- **ドメインモデル（Primary）**: `docs/spec/models/{model_name}.md`
+- **ドメインモデル（Related, 任意）**: `docs/spec/models/{related_model_name}.md`（複数可）
+  - 例: 既存モデルを参照/拡張する、またはモデル境界をまたぐ場合
 - **テンプレート**: `docs/spec/templates/openapi.template.yaml`
 - **ガイドライン**: `docs/dev/standards/openapi.md`
 
@@ -26,7 +28,7 @@ API Contract First の原則に従い、フロントエンドとバックエン�
 
 ### 1. ドメインモデルの理解
 
-`docs/spec/models/{feature_name}.md` を読み、以下を把握：
+`docs/spec/models/{model_name}.md`（および Related があればそれら）を読み、以下を把握：
 
 - Entity 構造（プロパティ、型、バリデーション）
 - ValueObject 定義
@@ -62,11 +64,27 @@ Spec の記載:
 
 ### 3. OpenAPI 仕様の作成
 
+#### 3.0 ファイル名（api_name）と API 境界の決定（必須）
+
+OpenAPI ファイル名は **feature 名に固定しません**。次を満たすように `{api_name}` を決めてください。
+
+- **優先**: リソース/ドメイン境界（例: `photos.yaml`, `masks.yaml`）
+- **避ける**: UI 操作や 1 シナリオに寄った feature 名のままの分断（例: `02_face_detection_static.yaml`）
+- **既存優先**: 既に `docs/spec/api/*.yaml` に関連する契約がある場合、まずは**追記・拡張**を検討
+
+検討時は以下を必ず実施してください。
+
+1. **API インベントリ（棚卸し）**: `docs/spec/api/*.yaml` の既存仕様を列挙し、今回関係しそうなものを特定
+2. **再利用/拡張/新規** の判断を 1 つ選び、理由を 2〜5 行で記述
+3. 新規にする場合でも、既存のエンドポイント/スキーマを踏まえて整合する命名・責務分割にする
+
 #### 3.1 ファイル作成
 
-保存先: `docs/spec/api/{feature_name}.yaml`
+保存先: `docs/spec/api/{api_name}.yaml`
 
-例: `docs/spec/api/photo_upload_download.yaml`
+※今回の変更が複数の API 仕様ファイルにまたがる場合は、**Primary を 1 つ決めた上で**、関連する `docs/spec/api/*.yaml` も必要最小限で更新してよい（ただし、更新ファイルを必ず列挙し、差分の理由を説明する）。
+
+例: `docs/spec/api/photos.yaml`
 
 #### 3.2 基本情報記述
 
@@ -305,7 +323,7 @@ API 設計中に気づいた点を報告：
 
 ### 1. OpenAPI 仕様書
 
-**ファイルパス**: `docs/spec/api/{feature_name}.yaml`
+**ファイルパス**: `docs/spec/api/{api_name}.yaml`
 
 ### 2. ドメインモデルフィードバック
 
@@ -332,7 +350,7 @@ API 設計中に気づいた点を報告：
 
 ### 作成ファイル
 
-- `docs/spec/api/{feature_name}.yaml`
+- `docs/spec/api/{api_name}.yaml`
 
 ### エンドポイント一覧
 

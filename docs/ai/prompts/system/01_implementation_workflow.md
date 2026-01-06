@@ -20,7 +20,7 @@
 1. docs/ai/prompts/tasks/README.md
    → 開発タスク（Task01〜Task06）の正本を確認する
 
-2. docs/spec/models/{feature_name}.md
+2. docs/spec/models/{model_name}.md
    → ドメインモデルを確認する（Task02で作成）
 
 3. docs/spec/features/{feature_name}.md

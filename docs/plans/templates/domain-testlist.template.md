@@ -1,7 +1,7 @@
 # ドメイン層テストリスト: {ステップ名}
 
 **Feature**: {対応する Gherkin 機能の参照}  
-**Domain Model**: `docs/spec/models/{feature_name}.md`  
+**Domain Model**: `docs/spec/models/{model_name}.md`  
 **Plan**: `docs/plans/{feature_id}/`
 
 ---
@@ -273,6 +273,6 @@ class PhotoValidationServiceTest {
 
 ## References
 
-- Domain Model: `docs/spec/models/{feature_name}.md`
+- Domain Model: `docs/spec/models/{model_name}.md`
 - Implementation Plan: `docs/plans/[Spec名]_[シナリオ識別子].md`
 - Domain TDD Prompt: `docs/ai/prompts/tasks/05_implement_backend_domain.md`

@@ -17,8 +17,8 @@ Task06 の縦切り実装に備えて、ステップの依存関係と推奨グ�
 ## 入力情報
 
 - **Spec ファイル**: `docs/spec/features/{feature_name}.md`
-- **ドメインモデル**: `docs/spec/models/{feature_name}.md`
-- **OpenAPI 仕様**: `docs/spec/api/{feature_name}.yaml` ← **Task03 で作成**
+- **ドメインモデル（候補一覧）**: `docs/spec/models/*.md`
+- **OpenAPI 仕様（候補一覧）**: `docs/spec/api/*.yaml`
 - **テンプレート**: `docs/plans/templates/implementation_plan.template.md`
 
 ## 作業手順
@@ -79,6 +79,11 @@ Feature: 写真のアップロードとダウンロード
 
 `docs/plans/templates/implementation_plan.template.md` のテンプレートに従い、以下のセクションを記述してください。
 
+**重要**:
+
+- 入力（候補一覧）にある全てを計画の中心にする必要はありません
+- ただし、実装計画内で **このシナリオが依存するドメインモデル/OpenAPI** を選び、**Primary/Related** を明示してください
+
 **記述のポイント**:
 
 - **基本情報**: Feature 名、シナリオ名、参照ドキュメントのパス
@@ -117,7 +122,8 @@ Task04 完了後:
 
 ## 参考資料
 
-- **OpenAPI 仕様**: `docs/spec/api/{feature_name}.yaml`
+- **OpenAPI 仕様（Primary）**: `docs/spec/api/{api_name}.yaml`
+- **OpenAPI 仕様（Related, 任意）**: `docs/spec/api/{related_api_name}.yaml`
 - **縦切り戦略**: `docs/dev/guidelines/vertical-slice.md`
 - **テンプレート**: `docs/plans/templates/implementation_plan.template.md`
 
