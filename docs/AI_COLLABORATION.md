@@ -227,6 +227,17 @@ graph TD
 
 ## 実践（Practice）
 
+### ふりかえり（レトロスペクティブ）にログを使う
+
+AI協働開発の改善には「何が詰まりやすいか」「どの手戻りが多いか」を振り返れる材料が重要です。
+VS Code からエクスポートできるチャットログは情報量が多く、そのままだと大きくなりがちなので、用途別に整形して扱います。
+
+- 置き場所: `docs/ai/logs/`
+- 生成スクリプト: `scripts/ai-chatlog-export.sh`
+- 詳細: [docs/ai/logs/README.md](ai/logs/README.md)
+
+ログ取り扱いは [dev/policies/data-handling.md](../dev/policies/data-handling.md) に従ってください（実在写真や個人情報の混入防止）。
+
 ### AI 制御のプロトコル
 
 #### 1. 実装粒度の相談プロトコル
