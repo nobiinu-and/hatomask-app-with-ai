@@ -35,6 +35,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const [uploading, setUploading] = useState<boolean>(false)
+  const [previewUrl, setPreviewUrl] = useState<string>('')
 
   useEffect(() => {
     fetch('/api/v1/hello')
@@ -62,6 +63,11 @@ function App() {
 
     try {
       setUploading(true)
+      const objectUrl = URL.createObjectURL(file)
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev)
+        return objectUrl
+      })
 
       const formData = new FormData()
       formData.append('file', file)
@@ -133,8 +139,50 @@ function App() {
                         accept="image/jpeg,image/png"
                         data-testid="photo-file-input"
                         disabled={uploading}
-                        onChange={handlePhotoFileChange}
+                        onChange={(event) => {
+                          void handlePhotoFileChange(event)
+                        }}
                       />
+                    </Button>
+                  </Box>
+
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle1" component="h3" sx={{ mb: 1 }}>
+                      プレビューエリア
+                    </Typography>
+                    <Box
+                      sx={{
+                        width: '100%',
+                        aspectRatio: '16 / 9',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {previewUrl ? (
+                        <Box
+                          component="img"
+                          src={previewUrl}
+                          alt="選択した画像"
+                          data-testid="photo-preview-image"
+                          sx={{
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'contain',
+                          }}
+                        />
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          写真が選択されていません
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                    <Button variant="contained" disabled={!previewUrl || uploading}>
+                      顔検出を実行
                     </Button>
                   </Box>
                 </>

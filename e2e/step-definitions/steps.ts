@@ -78,3 +78,11 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
 Then('写真アップロードが成功する', { timeout: 60000 }, async function (this: CustomWorld) {
   expect(this.uploadPhotoResponseStatus).toBe(201);
 });
+
+Then('プレビューエリアに選択した画像が表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  await expect(this.page.getByTestId('photo-preview-image')).toBeVisible({ timeout: 10000 });
+});
+
+Then('「顔検出を実行」ボタンが有効になる', { timeout: 60000 }, async function (this: CustomWorld) {
+  await expect(this.page.getByRole('button', { name: '顔検出を実行' })).toBeEnabled({ timeout: 10000 });
+});
