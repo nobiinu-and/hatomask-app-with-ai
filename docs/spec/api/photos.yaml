@@ -79,6 +79,44 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /photos/{photoId}/face-detections:
+    post:
+      tags:
+        - photos
+      summary: 静止画の顔検出（1人）
+      description: |
+        指定された `photoId`（短命参照）に紐づく静止画から、1 人分の顔ランドマークを検出して返す。
+
+        ### 方針（必須）
+        - データ取り扱い: `docs/dev/policies/data-handling.md`
+        - マイルストーン要件: `docs/spec/architecture/m0.md`
+
+        ### 注意
+        - レスポンスのランドマーク等は Protected Photo Data（派生データ）に該当しうるため、永続化・外部送信・永続ログ出力は行わない。
+        - 複数の顔が検出された場合は、最も確度が高い 1 件を採用して返す。
+      operationId: detectFaceOnPhoto
+      parameters:
+        - name: photoId
+          in: path
+          required: true
+          description: 写真ID（短命参照）
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: 検出成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FaceDetectionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   responses:
     BadRequest:
@@ -121,6 +159,18 @@ components:
             type: "about:blank"
             title: "Unsupported Media Type"
             status: 415
+            detail: "<human readable message>"
+
+    NotFound:
+      description: リソースが存在しない、または期限切れ
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "about:blank"
+            title: "Not Found"
+            status: 404
             detail: "<human readable message>"
 
     InternalServerError:
@@ -204,6 +254,87 @@ components:
           minimum: 1
           description: 高さ（px）
       required:
+        - width
+        - height
+
+    FaceDetectionResponse:
+      type: object
+      description: 静止画の顔検出レスポンス
+      properties:
+        result:
+          $ref: "#/components/schemas/FaceDetectionResult"
+      required:
+        - result
+
+    FaceDetectionResult:
+      type: object
+      description: |
+        1 人分の顔検出結果。
+        座標は正規化座標（0..1）を基本とする（左上原点、右/下が正）。
+      properties:
+        landmarks:
+          type: array
+          description: 2D ランドマーク点群（正規化座標）
+          items:
+            $ref: "#/components/schemas/FaceLandmark"
+          minItems: 1
+        boundingBox:
+          $ref: "#/components/schemas/FaceBoundingBox"
+        confidence:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+          description: 信頼度（取得可能な場合）
+      required:
+        - landmarks
+        - boundingBox
+
+    FaceLandmark:
+      type: object
+      description: 顔ランドマークの 1 点（正規化座標）
+      properties:
+        x:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        y:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+      required:
+        - x
+        - y
+
+    FaceBoundingBox:
+      type: object
+      description: 顔領域の矩形（正規化座標）
+      properties:
+        xMin:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        yMin:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        width:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        height:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+      required:
+        - xMin
+        - yMin
         - width
         - height
 

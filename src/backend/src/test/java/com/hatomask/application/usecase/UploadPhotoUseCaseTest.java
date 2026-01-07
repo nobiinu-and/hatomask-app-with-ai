@@ -7,8 +7,10 @@ import com.hatomask.application.exception.UnsupportedMediaTypeException;
 import com.hatomask.domain.model.FileSizeBytes;
 import com.hatomask.domain.model.MimeType;
 import com.hatomask.domain.model.UploadedPhotoReference;
+import com.hatomask.domain.repository.StoredPhotoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
 
 import javax.imageio.ImageIO;
@@ -21,6 +23,8 @@ import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("UploadPhotoUseCase 単体テスト")
 class UploadPhotoUseCaseTest {
@@ -29,13 +33,15 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は有効な PNG を受け取ると UploadedPhotoReference を返す")
     void execute_ValidPng_ReturnsReference() throws Exception {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        StoredPhotoRepository storedPhotoRepository = Mockito.mock(StoredPhotoRepository.class);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, storedPhotoRepository);
 
         byte[] pngBytes = createPngBytes(2, 3);
         MockMultipartFile file = new MockMultipartFile("file", "photo.png", "image/png", pngBytes);
 
         UploadedPhotoReference ref = useCase.execute(file);
 
+        verify(storedPhotoRepository).save(any());
         assertThat(ref.photoId()).isNotNull();
         assertThat(ref.mimeType()).isEqualTo(MimeType.IMAGE_PNG);
         assertThat(ref.fileSizeBytes().value()).isEqualTo(pngBytes.length);
@@ -48,7 +54,8 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は file が null の場合、InvalidFileException が発生する")
     void execute_FileNull_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        StoredPhotoRepository storedPhotoRepository = Mockito.mock(StoredPhotoRepository.class);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, storedPhotoRepository);
 
         assertThatThrownBy(() -> useCase.execute(null))
                 .isInstanceOf(InvalidFileException.class);
@@ -58,7 +65,8 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は empty file の場合、InvalidFileException が発生する")
     void execute_EmptyFile_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        StoredPhotoRepository storedPhotoRepository = Mockito.mock(StoredPhotoRepository.class);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, storedPhotoRepository);
 
         MockMultipartFile file = new MockMultipartFile("file", "photo.png", "image/png", new byte[0]);
 
@@ -70,7 +78,8 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() はサイズ超過の場合、PayloadTooLargeException が発生する")
     void execute_TooLarge_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        StoredPhotoRepository storedPhotoRepository = Mockito.mock(StoredPhotoRepository.class);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, storedPhotoRepository);
 
         byte[] bytes = new byte[(int) (FileSizeBytes.MAX_BYTES + 1)];
         MockMultipartFile file = new MockMultipartFile("file", "photo.jpg", "image/jpeg", bytes);
@@ -83,7 +92,8 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は未対応の contentType の場合、UnsupportedMediaTypeException が発生する")
     void execute_UnsupportedMediaType_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        StoredPhotoRepository storedPhotoRepository = Mockito.mock(StoredPhotoRepository.class);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, storedPhotoRepository);
 
         MockMultipartFile file = new MockMultipartFile("file", "photo.gif", "image/gif", new byte[] { 1, 2, 3 });
 
@@ -95,7 +105,8 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() はデコードできない場合、ImageDecodingException が発生する")
     void execute_DecodeFail_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        StoredPhotoRepository storedPhotoRepository = Mockito.mock(StoredPhotoRepository.class);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, storedPhotoRepository);
 
         MockMultipartFile file = new MockMultipartFile("file", "photo.jpg", "image/jpeg", new byte[] { 1, 2, 3 });
 
