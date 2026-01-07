@@ -34,6 +34,7 @@ function App() {
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
+  const [uploading, setUploading] = useState<boolean>(false)
 
   useEffect(() => {
     fetch('/api/v1/hello')
@@ -54,6 +55,31 @@ function App() {
         setLoading(false)
       })
   }, [])
+
+  const handlePhotoFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      setUploading(true)
+
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await fetch('/api/v1/photos', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        setError('写真アップロードに失敗しました')
+      }
+    } catch {
+      setError('写真アップロードに失敗しました')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -106,6 +132,8 @@ function App() {
                         type="file"
                         accept="image/jpeg,image/png"
                         data-testid="photo-file-input"
+                        disabled={uploading}
+                        onChange={handlePhotoFileChange}
                       />
                     </Button>
                   </Box>

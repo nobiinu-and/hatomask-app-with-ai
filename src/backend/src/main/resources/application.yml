@@ -1,6 +1,12 @@
 spring:
   application:
     name: hatomask-backend
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      # multipart 全体のサイズ（境界・ヘッダ分を考慮して少しだけ余裕を持たせる）
+      max-request-size: 11MB
   
   datasource:
     url: jdbc:postgresql://localhost:5432/hatomask

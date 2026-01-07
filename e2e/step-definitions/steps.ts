@@ -5,6 +5,7 @@ import path from 'path';
 
 interface CustomWorld {
   page: Page;
+  uploadPhotoResponseStatus?: number;
 }
 
 Given('ユーザーがブラウザを開いている', { timeout: 60000 }, async function (this: CustomWorld) {
@@ -64,5 +65,16 @@ When('ユーザーが「写真を選択」ボタンをクリックする', { tim
 
 When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
   const fixturePath = path.resolve(__dirname, '..', 'fixtures', 'photo_5mb.jpg');
-  await this.page.getByTestId('photo-file-input').setInputFiles(fixturePath);
+  const [response] = await Promise.all([
+    this.page.waitForResponse(
+      (res) => res.url().includes('/api/v1/photos') && res.request().method() === 'POST',
+      { timeout: 60000 },
+    ),
+    this.page.getByTestId('photo-file-input').setInputFiles(fixturePath),
+  ]);
+  this.uploadPhotoResponseStatus = response.status();
+});
+
+Then('写真アップロードが成功する', { timeout: 60000 }, async function (this: CustomWorld) {
+  expect(this.uploadPhotoResponseStatus).toBe(201);
 });
