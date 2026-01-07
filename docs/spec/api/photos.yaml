@@ -1,0 +1,256 @@
+openapi: 3.0.3
+
+info:
+  title: HatoMask API - Photos
+  description: |
+    写真（静止画）のアップロードに関する API 仕様。
+
+    ## 方針（必須）
+    データの保存/非保存、ログ、TTL 等の取り扱いは、次の方針に従う。
+    - `docs/spec/architecture/m0.md`
+    - `docs/dev/policies/data-handling.md`
+
+    本 API が扱う「元画像」は Protected Photo Data に該当しうるため、少なくとも以下を満たす前提で契約する（実装詳細は契約に含めない）。
+    - 永続化禁止（DB/ストレージ/キャッシュ/バックアップ等へ保存しない）
+    - 短命 TTL（保持が必要でも最短。原則リクエストスコープ。やむを得ない場合でも最大 5 分以内）
+    - 非ログ（画像/派生データ/入力ファイル名等をログ・テレメトリへ出さない）
+
+    ## エラーレスポンス
+    全てのエラーレスポンスは RFC 9457 (Problem Details for HTTP APIs) に準拠する。
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: バックエンド開発環境
+
+tags:
+  - name: photos
+    description: 写真（静止画）
+
+paths:
+  /photos:
+    post:
+      tags:
+        - photos
+      summary: 写真をアップロード
+      description: |
+        JPEG/PNG の静止画をアップロードし、短命な `photoId` を払い出す。
+
+        ### ビジネスルール
+        - 対応形式: JPEG, PNG
+        - 最大ファイルサイズ: 10MB（10 * 1024 * 1024 バイト）
+      operationId: uploadPhoto
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UploadPhotoRequest"
+      responses:
+        "201":
+          description: アップロード成功
+          headers:
+            Location:
+              description: 作成された写真参照（photoId）を識別するURI
+              schema:
+                type: string
+                example: "/api/v1/photos/<uuid>"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhotoUploadResponse"
+              examples:
+                created:
+                  summary: 成功（例）
+                  value:
+                    photoId: "<uuid>"
+                    mimeType: "image/jpeg"
+                    fileSizeBytes: 1234
+                    dimensions:
+                      width: 1920
+                      height: 1080
+                    expiresAt: "2026-01-07T12:34:56Z"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "413":
+          $ref: "#/components/responses/PayloadTooLarge"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  responses:
+    BadRequest:
+      description: バリデーションエラー
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            validationError:
+              summary: バリデーションエラー（例）
+              value:
+                type: "about:blank"
+                title: "Bad Request"
+                status: 400
+                detail: "<human readable message>"
+                errors:
+                  - field: "file"
+                    message: "<message>"
+
+    PayloadTooLarge:
+      description: "ペイロードが大きすぎる（例: 10MB 超過）"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "about:blank"
+            title: "Payload Too Large"
+            status: 413
+            detail: "<human readable message>"
+
+    UnsupportedMediaType:
+      description: 未対応のファイル形式
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "about:blank"
+            title: "Unsupported Media Type"
+            status: 415
+            detail: "<human readable message>"
+
+    InternalServerError:
+      description: サーバーエラー
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "about:blank"
+            title: "Internal Server Error"
+            status: 500
+            detail: "<human readable message>"
+
+  schemas:
+    UploadPhotoRequest:
+      type: object
+      description: 写真アップロードのリクエスト
+      properties:
+        file:
+          type: string
+          format: binary
+          description: |
+            アップロードする写真ファイル。
+            対応形式: JPEG/PNG、最大 10MB。
+      required:
+        - file
+
+    PhotoUploadResponse:
+      type: object
+      description: |
+        写真アップロードのレスポンス。
+        `photoId` は短命な参照であり、永続化された写真リソースを意味しない。
+      properties:
+        photoId:
+          type: string
+          format: uuid
+          description: 写真ID
+        mimeType:
+          $ref: "#/components/schemas/MimeType"
+        fileSizeBytes:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 10485760
+          description: ファイルサイズ（バイト）。最大 10MB（10 * 1024 * 1024 バイト）
+        dimensions:
+          $ref: "#/components/schemas/ImageDimensions"
+        expiresAt:
+          type: string
+          format: date-time
+          description: |
+            参照の有効期限（ISO 8601）。
+            期限を過ぎた場合、この `photoId` を用いた後続処理に利用できない場合がある。
+      required:
+        - photoId
+        - mimeType
+        - fileSizeBytes
+        - dimensions
+        - expiresAt
+
+    MimeType:
+      type: string
+      description: MIME type
+      enum:
+        - image/jpeg
+        - image/png
+
+    ImageDimensions:
+      type: object
+      description: 画像サイズ（幅/高さ）
+      properties:
+        width:
+          type: integer
+          format: int32
+          minimum: 1
+          description: 幅（px）
+        height:
+          type: integer
+          format: int32
+          minimum: 1
+          description: 高さ（px）
+      required:
+        - width
+        - height
+
+    ProblemDetails:
+      type: object
+      description: |
+        RFC 9457 準拠のエラーレスポンス。
+        全てのAPIエラーはこの形式で返却される。
+      properties:
+        type:
+          type: string
+          description: 問題タイプを識別するURI（通常は "about:blank"）
+          example: "about:blank"
+        title:
+          type: string
+          description: 人間が読める短いエラー概要
+          example: "Bad Request"
+        status:
+          type: integer
+          description: HTTPステータスコード
+          example: 400
+        detail:
+          type: string
+          description: 問題の詳細な説明
+          example: "<human readable message>"
+        instance:
+          type: string
+          description: 問題の発生箇所を識別するURI（任意）
+          example: "/api/v1/photos/<uuid>"
+        errors:
+          type: array
+          description: バリデーションエラー詳細（任意の拡張）
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: 問題が発生したフィールド
+                example: "file"
+              message:
+                type: string
+                description: フィールドのエラー内容
+                example: "<message>"
+            required:
+              - field
+              - message
+      required:
+        - type
+        - title
+        - status
