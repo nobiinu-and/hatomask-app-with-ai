@@ -37,6 +37,9 @@ function App() {
   const [uploading, setUploading] = useState<boolean>(false)
   const [previewUrl, setPreviewUrl] = useState<string>('')
 
+  const maxFileSizeBytes = 10 * 1024 * 1024
+  const allowedMimeTypes = ['image/jpeg', 'image/png']
+
   useEffect(() => {
     fetch('/api/v1/hello')
       .then((response) => {
@@ -57,9 +60,32 @@ function App() {
       })
   }, [])
 
+  const clearPreview = () => {
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev)
+      return ''
+    })
+  }
+
   const handlePhotoFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
+
+    setError('')
+
+    if (file.size > maxFileSizeBytes) {
+      setError('ファイルサイズは10MB以下にしてください')
+      clearPreview()
+      event.target.value = ''
+      return
+    }
+
+    if (!allowedMimeTypes.includes(file.type)) {
+      setError('JPEG または PNG ファイルを選択してください')
+      clearPreview()
+      event.target.value = ''
+      return
+    }
 
     try {
       setUploading(true)
@@ -84,6 +110,7 @@ function App() {
       setError('写真アップロードに失敗しました')
     } finally {
       setUploading(false)
+      event.target.value = ''
     }
   }
 
