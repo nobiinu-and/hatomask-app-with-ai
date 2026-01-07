@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { Page } from '@playwright/test';
+import path from 'path';
 
 interface CustomWorld {
   page: Page;
@@ -59,4 +60,9 @@ Then('Material-UIのカードコンポーネントが表示される', { timeout
 
 When('ユーザーが「写真を選択」ボタンをクリックする', { timeout: 60000 }, async function (this: CustomWorld) {
   await this.page.getByRole('button', { name: '写真を選択' }).click();
+});
+
+When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  const fixturePath = path.resolve(__dirname, '..', 'fixtures', 'photo_5mb.jpg');
+  await this.page.getByTestId('photo-file-input').setInputFiles(fixturePath);
 });

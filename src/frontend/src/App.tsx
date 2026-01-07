@@ -101,7 +101,12 @@ function App() {
                   <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
                     <Button variant="contained" component="label">
                       写真を選択
-                      <input hidden type="file" accept="image/jpeg,image/png" />
+                      <input
+                        hidden
+                        type="file"
+                        accept="image/jpeg,image/png"
+                        data-testid="photo-file-input"
+                      />
                     </Button>
                   </Box>
                 </>
