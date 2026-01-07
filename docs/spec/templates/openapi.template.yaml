@@ -3,6 +3,11 @@ info:
   title: HatoMask API
   description: |
     HatoMask アプリケーションのAPI仕様書
+
+    ## 方針（必須）
+    データの保存/非保存、ログ、TTL 等の取り扱いは、マイルストーン方針に従う。
+    - `docs/spec/architecture/{milestone_id}.md`
+    - `docs/dev/policies/data-handling.md`
     
     ## 認証
     将来的にJWT認証を実装予定。現在は認証なし。
@@ -10,24 +15,14 @@ info:
     ## エラーレスポンス
     全てのエラーレスポンスはRFC 9457 (Problem Details for HTTP APIs)に準拠。
   version: 1.0.0
-  contact:
-    name: HatoMask Development Team
 
 servers:
   - url: http://localhost:8080/api/v1
     description: ローカル開発環境
-  - url: http://localhost:5173/api/v1
-    description: フロントエンド開発サーバー（MSW）
-
-tags:
-  - name: feature-name
-    description: 機能の説明
 
 paths:
-  /example:
+  /example/{id}:
     get:
-      tags:
-        - feature-name
       summary: リソース取得の例
       description: |
         詳細な説明をここに記述。
@@ -61,17 +56,10 @@ paths:
                 type: "about:blank"
                 title: "Not Found"
                 status: 404
-                detail: "Resource with id '123' not found"
-        '500':
-          description: サーバーエラー
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
+                detail: "<human readable message>"
 
+  /example:
     post:
-      tags:
-        - feature-name
       summary: リソース作成の例
       description: 新規リソースを作成する
       operationId: createExample
@@ -103,63 +91,10 @@ paths:
                 type: "about:blank"
                 title: "Bad Request"
                 status: 400
-                detail: "Validation failed"
-                errors:
-                  - field: "name"
-                    message: "must not be blank"
-
-  /files/upload:
-    post:
-      tags:
-        - feature-name
-      summary: ファイルアップロードの例
-      description: |
-        multipart/form-dataでファイルをアップロードする例。
-        
-        ### 制限
-        - 最大ファイルサイズ: 10MB
-        - 対応形式: JPEG, PNG
-      operationId: uploadFile
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: アップロードするファイル
-                metadata:
-                  type: object
-                  description: オプションのメタデータ
-              required:
-                - file
-      responses:
-        '201':
-          description: アップロード成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FileUploadResponse'
-        '400':
-          description: バリデーションエラー
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-              example:
-                type: "about:blank"
-                title: "Bad Request"
-                status: 400
-                detail: "File size exceeds maximum allowed size of 10MB"
+                detail: "<human readable message>"
 
 components:
   schemas:
-    # 注: `required` は機能要件に合わせて設定する。
-    # - `id`（UUID等）や `createdAt`/`updatedAt`/`uploadedAt` のような監査・識別子系フィールドは、このテンプレートでは必須としない。
-    # - 採用する場合は命名を `id`, `createdAt`, `updatedAt`（または意味に応じて `uploadedAt` など）に統一することを推奨。
     ExampleResponse:
       type: object
       description: レスポンスの例
@@ -171,10 +106,6 @@ components:
         name:
           type: string
           description: 名前
-        createdAt:
-          type: string
-          format: date-time
-          description: 作成日時（ISO 8601形式）
       required:
         - name
 
@@ -190,28 +121,6 @@ components:
       required:
         - name
 
-    FileUploadResponse:
-      type: object
-      description: ファイルアップロードレスポンス
-      properties:
-        id:
-          type: string
-          format: uuid
-        fileName:
-          type: string
-        fileSize:
-          type: integer
-          format: int64
-        mimeType:
-          type: string
-        uploadedAt:
-          type: string
-          format: date-time
-      required:
-        - fileName
-        - fileSize
-        - mimeType
-
     ProblemDetails:
       type: object
       description: |
@@ -220,9 +129,7 @@ components:
       properties:
         type:
           type: string
-          description: |
-            問題タイプを識別するURI。
-            通常は "about:blank" を使用。
+          description: 問題タイプを識別するURI（通常は "about:blank"）
           example: "about:blank"
         title:
           type: string
@@ -235,36 +142,8 @@ components:
         detail:
           type: string
           description: 問題の詳細な説明
-          example: "Validation failed for field 'email'"
-        instance:
-          type: string
-          description: 問題が発生したリクエストのURI（オプション）
-        errors:
-          type: array
-          description: バリデーションエラーの詳細（オプション）
-          items:
-            type: object
-            properties:
-              field:
-                type: string
-                description: エラーが発生したフィールド名
-              message:
-                type: string
-                description: エラーメッセージ
+          example: "<human readable message>"
       required:
         - type
         - title
         - status
-
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: |
-        JWT認証（将来実装予定）
-        ヘッダー: Authorization: Bearer <token>
-
-# 将来的に認証が必要なエンドポイントに適用
-# security:
-#   - bearerAuth: []

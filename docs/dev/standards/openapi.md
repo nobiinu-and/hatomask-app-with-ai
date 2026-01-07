@@ -7,6 +7,20 @@
 - **保存先**: `docs/spec/api/{api_name}.yaml`
 - **テンプレート**: `docs/spec/templates/openapi.template.yaml`
 
+テンプレートは「写経されやすい実装詳細」を避けるため、**最小構成（GET/POST の例 + 必要最小限のスキーマ）**に寄せています。
+必要になった要素（例: `tags`, `securitySchemes`, 追加レスポンス、詳細スキーマ）は、仕様とマイルストーン方針に従って後から足してください。
+
+## 最小構成（テンプレの意図）
+
+OpenAPI 3.0.3 として成立する必須要素は以下です。
+
+- **必須**: `openapi`, `info`（`title`, `version`）, `paths`
+- **推奨（本プロジェクト）**: `servers`（`/api/v1` を含む）
+
+また、`paths` に operation（`get`, `post` など）を書く場合、operation には **`responses` が必須**です。
+
+例の値やエラーメッセージは固定しないでください（`<human readable message>` などのプレースホルダ推奨）。
+
 ## 基本原則
 
 ### 1. API Contract First
@@ -160,7 +174,7 @@ responses:
           type: "about:blank"
           title: "Bad Request"
           status: 400
-          detail: "File size exceeds maximum allowed size of 10MB"
+          detail: "<human readable message>"
 ```
 
 ### ステータスコード使い分け
@@ -182,12 +196,12 @@ example:
   type: "about:blank"
   title: "Bad Request"
   status: 400
-  detail: "Validation failed"
+  detail: "<human readable message>"
   errors:
     - field: "fileName"
-      message: "must not be blank"
+      message: "<message>"
     - field: "fileSize"
-      message: "must be less than or equal to 10485760"
+      message: "<message>"
 ```
 
 ## ファイルアップロード
@@ -206,11 +220,9 @@ requestBody:
             type: string
             format: binary
             description: アップロードするファイル
-          metadata:
-            type: object
-            description: オプションのメタデータ
         required:
           - file
+# `metadata` 等の追加フィールドは、仕様で必要になった場合のみ追加する。
 ```
 
 ### レスポンスヘッダー
@@ -224,48 +236,29 @@ responses:
         description: 作成されたリソースのURI
         schema:
           type: string
-          example: "/api/v1/photos/550e8400-e29b-41d4-a716-446655440000"
+          example: "/api/v1/photos/<id>"
 ```
 
 ## ドキュメント記述
 
 ### description 活用
 
-```yaml
-paths:
-  /photos:
-    post:
-      summary: 写真をアップロード
-      description: |
-        写真ファイルをアップロードし、必要に応じて処理を実行します。
-        Milestone 0 では、実在写真（入力由来ベース）を扱う可能性があるため、画像および派生データは永続化しません（短命TTL・非ログ）。
+`description` には「この API が何を保証し、何を要求するか」を、実装詳細に踏み込まずに記述します。
 
-        ### ビジネスルール
-        - ファイルサイズは10MB以下
-        - 対応形式: JPEG, PNG
+最低限、以下を含めてください。
 
-        ### 処理フロー
-        1. ファイル形式をバリデーション
-        2. ファイルサイズをチェック
-        3. （必要に応じて）一時的に処理
-        4. 処理結果を返却（M0では画像・派生データを保存しない）
-```
+- **目的**: 何をする endpoint か（UI 操作ではなくドメイン用語で）
+- **入力**: 期待する入力（例: 必須/任意、形式、サイズ制限）
+- **出力**: 主な成功時の結果（作成されるリソース、返るデータの種類）
+- **ビジネスルール**: 重要な制約・前提（ドメインモデル/機能仕様と一致させる）
+- **方針（必須）**: 保存/非保存、ログ、TTL 等のデータ取り扱いに関する方針
+  - 参照: `docs/spec/architecture/{milestone_id}.md`
+  - 参照: `docs/dev/policies/data-handling.md`
 
-### タグによる分類
+書かない（契約に含めない）もの:
 
-```yaml
-tags:
-  - name: photos
-    description: 写真管理
-  - name: face-detection
-    description: 顔検出
-
-paths:
-  /photos:
-    post:
-      tags:
-        - photos
-```
+- 保存方式・DB 有無・ストレージ種別などの実装詳細
+- エラーメッセージの固定文言（`<human readable message>` などを用い、形式のみを固定する）
 
 ## ドメインモデルとのマッピング
 
@@ -279,13 +272,13 @@ paths:
 
 ### 型マッピング表
 
-| Java 型       | OpenAPI 型 | format    | 例                                     |
-| ------------- | ---------- | --------- | -------------------------------------- |
-| UUID          | string     | uuid      | "550e8400-e29b-41d4-a716-446655440000" |
-| LocalDateTime | string     | date-time | "2024-01-15T10:30:00Z"                 |
-| Long          | integer    | int64     | 5242880                                |
-| String        | string     | -         | "sample.jpg"                           |
-| Enum          | string     | enum      | ["image/jpeg", "image/png"]            |
+| Java 型       | OpenAPI 型 | format    | 例                          |
+| ------------- | ---------- | --------- | --------------------------- |
+| UUID          | string     | uuid      | "<uuid>"                    |
+| LocalDateTime | string     | date-time | "<date-time>"               |
+| Long          | integer    | int64     | 1234                        |
+| String        | string     | -         | "<string>"                  |
+| Enum          | string     | enum      | ["image/jpeg", "image/png"] |
 
 ## ツール・バリデーション
 
@@ -317,7 +310,7 @@ OpenAPI 仕様書作成時の確認項目：
 - [ ] バリデーションルール（minLength, maximum 等）が定義されている
 - [ ] `description` で処理内容・制約が説明されている
 - [ ] 内部実装の詳細が漏れていない
-- [ ] `example` が記載されている
+- [ ] `example` は任意（固定文言を避け、プレースホルダ中心で記載する）
 - [ ] RESTful 命名規則に従っている
 
 ## 参考資料

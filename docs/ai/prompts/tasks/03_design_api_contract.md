@@ -78,6 +78,8 @@ OpenAPI ファイル名は **feature 名に固定しません**。次を満た�
 2. **再利用/拡張/新規** の判断を 1 つ選び、理由を 2〜5 行で記述
 3. 新規にする場合でも、既存のエンドポイント/スキーマを踏まえて整合する命名・責務分割にする
 
+※ `docs/spec/api/*.yaml` が 0 件の場合は、**「既存なし」**と明記した上で、新規作成として進めてください。
+
 #### 3.1 ファイル作成
 
 保存先: `docs/spec/api/{api_name}.yaml`
@@ -113,6 +115,11 @@ tags:
 3. **レスポンススキーマ**
 4. **エラーレスポンス（RFC 9457 準拠）**
 
+**必須（Milestone 方針の参照）**:
+
+- データの取り扱い（保存/非保存、ログ、TTL など）は、必ず `docs/dev/policies/data-handling.md` と `docs/spec/architecture/{milestone_id}.md` の方針に従って記述してください。
+- OpenAPI の `description` に、方針の要点（例: M0 は非永続化、等）を**断定できる範囲で**反映してください（ただし保存方式や DB 有無などの実装詳細は契約に含めない）。
+
 ##### エンドポイント例: POST /photos
 
 ```yaml
@@ -123,17 +130,15 @@ paths:
         - photos
       summary: 写真をアップロード
       description: |
-        写真ファイルをアップロードし、サーバーに保存します。
+        写真ファイルをアップロードします。
+
+        ### 方針（必須）
+        - データ取り扱い: `docs/dev/policies/data-handling.md`
+        - マイルストーン要件: `docs/spec/architecture/{milestone_id}.md`
 
         ### ビジネスルール
         - ファイルサイズは10MB以下
         - 対応形式: JPEG, PNG
-
-        ### 処理フロー
-        1. ファイル形式をバリデーション
-        2. ファイルサイズをチェック
-        3. ローカルストレージに保存
-        4. DBにメタデータを記録
       operationId: uploadPhoto
       requestBody:
         required: true
@@ -167,20 +172,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ProblemDetails"
               examples:
-                fileSizeExceeded:
-                  summary: ファイルサイズ超過
+                validationError:
+                  summary: バリデーションエラー（例）
                   value:
                     type: "about:blank"
                     title: "Bad Request"
                     status: 400
-                    detail: "File size exceeds maximum allowed size of 10MB"
-                invalidFormat:
-                  summary: 非対応形式
-                  value:
-                    type: "about:blank"
-                    title: "Bad Request"
-                    status: 400
-                    detail: "Unsupported file format. Only JPEG and PNG are allowed"
+                    detail: "<human readable message>"
 ```
 
 #### 3.4 スキーマ定義
@@ -241,9 +239,9 @@ components:
         - mimeType
         - createdAt
       example:
-        id: "550e8400-e29b-41d4-a716-446655440000"
-        fileName: "sample.jpg"
-        fileSize: 5242880
+        id: "<uuid>"
+        fileName: "<fileName>"
+        fileSize: 1234
         mimeType: "image/jpeg"
         createdAt: "2024-01-15T10:30:00Z"
 
@@ -274,6 +272,10 @@ components:
 - `filePath`は内部実装なので**レスポンスに含めない**
 - Java 型を OpenAPI 型にマッピング（UUID→string/uuid, LocalDateTime→string/date-time）
 - バリデーションルールをスキーマに反映（minLength, maximum 等）
+
+**例の粒度について**:
+
+- 例は「構造とルール」の理解用です。保存方式、DB 有無、エラーメッセージの固定文言など、実装に依存する詳細は契約に入れないでください。
 
 ### 4. ドメインモデルへのフィードバック
 
