@@ -35,40 +35,39 @@ AI が依存関係を分析し、3 パターンを提案、人間が決定しま
 
 ## 実装粒度相談プロトコル
 
-### AI の責務: 依存関係分析と粒度提案
+### AI の責務: 対話ベースの依存関係分析と粒度提案
 
-Task06 開始前に、以下のドキュメントを作成してください。
+Task06 では、**事前ドキュメント生成は原則省略**し、チャット対話の中で依存関係分析と粒度提案を行います。
 
-#### 1. ステップ依存関係分析
+AI は、実装計画（Task04）と対象シナリオ（Gherkin）を参照し、まず以下を **チャット上で簡潔に提示**してください。
 
-**テンプレート**: `docs/plans/templates/step-dependency-analysis.template.md`
+#### 1. ステップの分類（表）
 
-**作成ファイル**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_dependency.md`
+- 各ステップを「フロントのみ」「API 依存」に分類
+- 状態依存（UI 状態 / DB 状態）の有無を明記
 
-**内容**:
+#### 2. 粒度パターンの提案（A/B/C）
 
-- Gherkin シナリオの各ステップの分類（フロントのみ/API 依存）
-- 状態依存の分析（UI 状態/DB 状態）
-- Mermaid 図による依存関係の可視化
-- 重要な依存関係の詳細説明
+- パターン A/B/C のうち推奨を 1 つ提示し、理由を 1〜3 行で説明
+- 具体的なグルーピング案（グループ番号、含めるステップ範囲、関係する API）を提示
 
-#### 2. 実装粒度提案
+#### 3. 注意点（最小）
 
-**テンプレート**: `docs/plans/templates/implementation-granularity-proposal.template.md`
-
-**作成ファイル**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_granularity.md`
-
-**記載内容**:
-
-- **選択パターンと理由**: パターン A/B/C から最適なものを選択し、理由を明記
-- **実装グルーピング**: 具体的なグループ分け（ステップ番号、API、理由）
-- **実装上の注意点**: E2E 状態依存、Stub 継続判断、テストデータ準備方針
-
-**ポイント**:
-
-- 通常はパターン B（API グループ単位）を推奨
-- 依存関係分析結果を基に、自然なグループ分けを提案
+- E2E の状態依存（テストデータ準備、Stub 継続可否など）でリスクがある点だけを列挙
 - 詳細な実装戦略は `docs/dev/guidelines/vertical-slice.md` を参照
+
+#### （任意）テンプレを用いたドキュメント化
+
+以下に該当する場合のみ、必要に応じてテンプレを使ってドキュメント化してもよい（必須ではない）。
+
+- 状態依存が複雑で、口頭説明だと抜け漏れが出やすい
+- 複数 API が絡み、グルーピングの合意形成が難しい
+- 途中で方針変更が入り、経緯を記録として残したい
+
+テンプレート:
+
+- `docs/plans/templates/step-dependency-analysis.template.md`
+- `docs/plans/templates/implementation-granularity-proposal.template.md`
 
 ### 人間の責務: 粒度決定
 
@@ -205,80 +204,6 @@ AI の提案を確認し、以下を決定してください：
 5. 次のグループへ
    - 全テスト通過後、次のグループの実装へ進む
 ```
-
-## 実装手順（パターン B 例）
-
-### グループ 1: 初期表示（フロントのみ）
-
-**対象ステップ**:
-
-- Given: ユーザーが HatoMask アプリケーションにアクセスしている
-- When: ユーザーが「写真を選択」ボタンをクリックする
-- And: ユーザーがファイルサイズ 5MB の JPEG ファイルを選択する
-
-**実装内容**:
-
-1. Step Definition 作成（3 ステップ分）
-2. App.tsx 初期実装
-3. PhotoUploadButton.tsx 実装
-4. ファイル選択 UI 実装
-5. E2E 実行（バックエンド Stub 接続）
-
-### グループ 2: アップロード〜プレビュー（POST + GET）
-
-**対象ステップ**:
-
-- Then: アップロードが成功する
-- And: プレビューエリアに選択した画像が表示される
-
-**実装内容**:
-
-#### フロント実装
-
-1. Step Definition 作成（2 ステップ分）
-2. usePhotoUpload hook 実装
-3. PhotoPreview.tsx 実装
-4. E2E 実行（バックエンド Stub 接続）
-
-#### バックエンド実装
-
-6. Photo Entity TDD
-7. PhotoRepository Interface + 実装 TDD
-8. UploadPhotoUseCase TDD
-9. GetPhotoUseCase TDD
-10. PhotoController（POST /photos）Stub 置き換え
-11. PhotoController（GET /photos/:id）Stub 置き換え
-
-#### 統合確認
-
-12. E2E 実行（実装済みバックエンド、ステップ 1-5 通過確認）
-13. レスポンス形式確認
-
-### グループ 3: ダウンロード（GET 再利用）
-
-**対象ステップ**:
-
-- When: ユーザーが「ダウンロード」ボタンをクリックする
-- Then: 元の画像がダウンロードされる
-
-**実装内容**:
-
-#### フロント実装
-
-1. Step Definition 作成（2 ステップ分）
-2. DownloadButton.tsx 実装
-3. usePhotoDownload hook 実装
-4. E2E 実行（バックエンド Stub 接続）
-
-#### バックエンド実装
-
-5. DownloadPhotoUseCase TDD（GetPhoto を再利用）
-6. PhotoController 調整（Content-Disposition ヘッダー）
-
-#### 統合確認
-
-7. E2E 実行（実バックエンド、ステップ 1-7 全通過）
-8. シナリオ完結確認
 
 ## 出力形式
 
