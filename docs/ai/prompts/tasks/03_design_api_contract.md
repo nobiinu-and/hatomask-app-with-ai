@@ -60,7 +60,9 @@ Spec の記載:
 抽出されるエンドポイント:
 
 - `POST /api/v1/photos` - 写真アップロード
-- `GET /api/v1/photos/{id}` - 写真取得（プレビュー、ダウンロード共通）
+
+※このタスクでは、エンドポイントを例として提示しますが、**GET を必須要件として固定しません**。
+仕様（feature）とマイルストーン方針に基づき、必要なものだけを設計してください。
 
 ### 3. OpenAPI 仕様の作成
 
@@ -93,8 +95,8 @@ OpenAPI ファイル名は **feature 名に固定しません**。次を満た�
 ```yaml
 openapi: 3.0.3
 info:
-  title: HatoMask API - Photo Upload/Download
-  description: 写真のアップロードとダウンロード機能
+  title: HatoMask API - Photo Upload
+  description: 写真のアップロード機能
   version: 1.0.0
 
 servers:
@@ -357,7 +359,6 @@ API 設計中に気づいた点を報告：
 ### エンドポイント一覧
 
 - POST /api/v1/photos - 写真アップロード
-- GET /api/v1/photos/{id} - 写真取得
 
 ### 次のアクション
 
