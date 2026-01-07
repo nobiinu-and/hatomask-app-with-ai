@@ -3,6 +3,7 @@ import {
   Container,
   Box,
   Typography,
+  Button,
   Card,
   CardContent,
   CircularProgress,
@@ -96,6 +97,13 @@ function App() {
                       {error}
                     </Alert>
                   )}
+
+                  <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                    <Button variant="contained" component="label">
+                      写真を選択
+                      <input hidden type="file" accept="image/jpeg,image/png" />
+                    </Button>
+                  </Box>
                 </>
               )}
             </CardContent>
