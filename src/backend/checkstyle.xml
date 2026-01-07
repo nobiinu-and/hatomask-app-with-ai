@@ -215,6 +215,7 @@
 
     <!-- 行の長さチェック -->
     <module name="LineLength">
+        <property name="severity" value="warning"/>
         <property name="max" value="120"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>

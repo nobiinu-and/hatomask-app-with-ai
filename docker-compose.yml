@@ -35,6 +35,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/hatomask
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      - HATOMASK_OPENCV_CASCADE_PATH=/usr/share/opencv4/haarcascades/haarcascade_frontalface_default.xml
+      - HATOMASK_OPENCV_LBF_MODEL_PATH=/opt/hatomask/models/lbfmodel.yaml
+      - HATOMASK_FACE_DETECTION_LANDMARK_METHOD=LBF_68
     tty: true
 
   # PostgreSQLデータベース

@@ -98,6 +98,13 @@
             <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- OpenCV (server-side face detection) -->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>opencv-platform</artifactId>
+            <version>4.9.0-1.5.10</version>
+        </dependency>
     </dependencies>
     
     <build>
