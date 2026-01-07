@@ -153,7 +153,7 @@ AI アシスタントの基本的な役割とペルソナを定義します。
 
 ### タスクファイル一覧
 
-1. **01_create_feature_spec.md** - 機能仕様(Spec)作成
+1. **01_create_feature_spec.md** - 機能仕様作成
 2. **02_simple_modeling.md** - ドメインモデリング(初稿)
 3. **03_design_api_contract.md** - API Contract 設計 + モデル見直し
 4. **04_plan_implementation.md** - Gherkin シナリオ + 実装計画策定
@@ -163,7 +163,7 @@ AI アシスタントの基本的な役割とペルソナを定義します。
 ### ワークフローとの対応
 
 ```
-Task01: 機能仕様(Spec)作成
+Task01: 機能仕様作成
    → 01_create_feature_spec.md
    ↓
 Task02: ドメインモデリング(初稿)

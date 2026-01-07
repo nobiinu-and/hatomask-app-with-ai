@@ -17,12 +17,12 @@ API Contract First の原則に従い、フロントエンドとバックエン�
 
 ## 入力情報
 
-- **Spec ファイル**: `docs/spec/features/{feature_name}.md`
-- **ドメインモデル（Primary）**: `docs/spec/models/{model_name}.md`
-- **ドメインモデル（Related, 任意）**: `docs/spec/models/{related_model_name}.md`（複数可）
-  - 例: 既存モデルを参照/拡張する、またはモデル境界をまたぐ場合
-- **テンプレート**: `docs/spec/templates/openapi.template.yaml`
+- **マイルストーン(milestone_id)**: 例 `m0` / `m1`
+- **アーキテクチャ設計**: `docs/spec/architecture/{milestone_id}.md`
+- **機能仕様**: `docs/spec/features/{feature_name}.md`
+- **ドメインモデル**: `docs/spec/models/{model_name}.md`
 - **ガイドライン**: `docs/dev/standards/openapi.md`
+- **テンプレート**: `docs/spec/templates/openapi.template.yaml`
 
 ## 作業手順
 

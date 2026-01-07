@@ -58,7 +58,7 @@ graph TD
 
 #### 2. 実装粒度提案
 
-**作成ファイル**: `docs/plans/[Spec名]_[シナリオ識別子]_granularity.md`
+**作成ファイル**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_granularity.md`
 
 以下を記載：
 

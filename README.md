@@ -206,7 +206,7 @@ AI と協働で**再現可能**かつ**高品質**なソフトウェア開発を
 - **[docs/AI_COLLABORATION.md](./docs/AI_COLLABORATION.md)** - AI 協働開発の思想、原則、7 段階プロセス
 - **[docs/ai/](./docs/ai/)** - AI 開発コンテキストとプロンプト集
   - **[docs/ai/prompts/tasks/](./docs/ai/prompts/tasks/)** - AI タスク用プロンプト
-    - `01_create_feature_spec.md`: 機能仕様(Spec)を対話的に作成
+    - `01_create_feature_spec.md`: 機能仕様を対話的に作成
     - `02_simple_modeling.md`: ドメインモデリング
     - `03_design_api_contract.md`: API Contract 設計
     - `04_plan_implementation.md`: シナリオから実装計画を策定

@@ -43,7 +43,7 @@ Task06 開始前に、以下のドキュメントを作成してください。
 
 **テンプレート**: `docs/plans/templates/step-dependency-analysis.template.md`
 
-**作成ファイル**: `docs/plans/[Spec名]_[シナリオ識別子]_dependency.md`
+**作成ファイル**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_dependency.md`
 
 **内容**:
 
@@ -56,7 +56,7 @@ Task06 開始前に、以下のドキュメントを作成してください。
 
 **テンプレート**: `docs/plans/templates/implementation-granularity-proposal.template.md`
 
-**作成ファイル**: `docs/plans/[Spec名]_[シナリオ識別子]_granularity.md`
+**作成ファイル**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_granularity.md`
 
 **記載内容**:
 
@@ -137,12 +137,12 @@ AI の提案を確認し、以下を決定してください：
 【テストリスト作成】
 1. ドメイン層テストリスト作成
    - テンプレート: `docs/plans/templates/domain-testlist.template.md`
-   - 出力: `docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md`
+   - 出力: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md`
    - 内容: Entity/ValueObject、Repository のテストケース
 
 2. API層テストリスト作成
    - テンプレート: `docs/plans/templates/api-testlist.template.md`
-   - 出力: `docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md`
+   - 出力: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md`
    - 内容: UseCase、Controller のテストケース
 
 ※テストリストの前提となる **対象エンドポイント / スキーマ / ドメインモデル** は、実装計画の「エンドポイント一覧」および「このシナリオで採用する仕様（選択結果）」を参照して確定させる。
@@ -321,7 +321,7 @@ AI の提案を確認し、以下を決定してください：
 ## 参考資料
 
 - **縦切り戦略**: `docs/dev/guidelines/vertical-slice.md`
-- **実装計画**: `docs/plans/[Spec名]_[シナリオ識別子].md`
+- **実装計画**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
 - 実装計画の「このシナリオで採用する仕様（選択結果）」に記載された OpenAPI（Primary/Related）を参照
 - **AI 協働プロトコル**: `docs/dev/howto/development.md`
 

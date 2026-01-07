@@ -16,7 +16,7 @@ Task06 の縦切り実装に入る前に、フロントエンドが直接接続�
 
 ## 入力情報
 
-- **実装計画**: `docs/plans/[Spec名]_[シナリオ識別子].md`
+- **実装計画**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
   - 実装計画の「このシナリオで採用する仕様（選択結果）」に記載された **ドメインモデル（Primary/Related）** と **OpenAPI（Primary/Related）** を参照し、それに基づいてスタブを作成する
   - Task05 では、実装計画で採用された OpenAPI / モデル以外を勝手に追加しない（必要なら Task04 に戻って計画を更新する）
 
@@ -24,7 +24,7 @@ Task06 の縦切り実装に入る前に、フロントエンドが直接接続�
 
 ### 0. 参照元の確定（必須）
 
-1. 実装計画 `docs/plans/[Spec名]_[シナリオ識別子].md` を開き、以下を転記（または明確に参照）する:
+1. 実装計画 `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md` を開き、以下を転記（または明確に参照）する:
 
 - 採用するドメインモデル: Primary / Related
 - 採用する OpenAPI: Primary / Related
@@ -306,7 +306,7 @@ npm run dev
 
 ## 参考資料
 
-- **実装計画**: `docs/plans/[Spec名]_[シナリオ識別子].md`
+- **実装計画**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
   - 「このシナリオで採用する仕様（選択結果）」に記載の OpenAPI（Primary/Related）を参照
 - **Spring Boot**: https://spring.io/projects/spring-boot
 - **CORS 設定**: https://spring.io/guides/gs/rest-service-cors/

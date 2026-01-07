@@ -274,5 +274,5 @@ class PhotoValidationServiceTest {
 ## References
 
 - Domain Model: `docs/spec/models/{model_name}.md`
-- Implementation Plan: `docs/plans/[Spec名]_[シナリオ識別子].md`
+- Implementation Plan: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
 - Domain TDD Prompt: `docs/ai/prompts/tasks/05_implement_backend_domain.md`

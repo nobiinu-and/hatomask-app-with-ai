@@ -6,8 +6,8 @@
 ## 基本情報
 - **Feature**: [Feature名]
 - **Scenario**: [シナリオ名]
-- **依存関係分析**: `docs/plans/[Spec名]_[シナリオ識別子]_dependency.md`
-- **実装計画**: `docs/plans/[Spec名]_[シナリオ識別子].md`
+- **依存関係分析**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_dependency.md`
+- **実装計画**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
 
 ## 実装粒度の3パターン比較
 

@@ -10,10 +10,10 @@
 
 このタスクを始める前に、人間が次を指定してください。
 
-- `MILESTONE_ID`: 例 `milestone0` / `milestone1`
-- `MILESTONE_SCOPE`: そのマイルストーンで対象とする feature / 非対象（roadmap 等から）
+- `milestone_id`: 例 `m0` / `m1`
+- `milestone_scope`: そのマイルストーンで対象とする feature / 非対象（roadmap 等から）
 
-以降の本文では、`{MILESTONE_ID}` を上記の値で置換して読み進めてください。
+以降の本文では、`{milestone_id}` を上記の値で置換して読み進めてください。
 
 ---
 
@@ -35,7 +35,7 @@
 
 次のファイルを作る想定で、内容（Markdown）を提示してください（※本タスクではファイル作成はしない）。
 
-- 成果物: `docs/spec/architecture/{MILESTONE_ID}.md`
+- 成果物: `docs/spec/architecture/{milestone_id}.md`
 
 ---
 
@@ -43,16 +43,16 @@
 
 ### 対象（指定マイルストーン）
 
-- 人間が指定した `MILESTONE_SCOPE` に従う（roadmap 等の記述を優先）
+- 人間が指定した `milestone_scope` に従う（roadmap 等の記述を優先）
 - feature 単位の参照は `docs/spec/features/` 配下の該当ファイルを列挙する
 
 ### 非対象（明記）
 
-- 人間が指定した `MILESTONE_SCOPE` に従う（「やらないこと」を明確に列挙）
+- 人間が指定した `milestone_scope` に従う（「やらないこと」を明確に列挙）
 
 ---
 
-## 4. 成果物のフォーマット（`docs/spec/architecture/{MILESTONE_ID}.md`）
+## 4. 成果物のフォーマット（`docs/spec/architecture/{milestone_id}.md`）
 
 以下の見出し構成に沿って、過不足なく埋めてください。
 
@@ -108,7 +108,7 @@ Mermaid 図を 1〜2 個で示す（例: コンポーネント図・データフ
 - まず「当該マイルストーンの対象機能の一覧」と「共通の概念」を短く整理する
 - 次に、2〜3 案のアーキテクチャ分割（例: クライアント中心 / サーバ中心 / ハイブリッド）を出す
 - その上で **推奨案を 1 つ** 選び、理由とトレードオフを書く
-- 最後に、上のフォーマットに従い `docs/spec/architecture/{MILESTONE_ID}.md` の本文を完成させる
+- 最後に、上のフォーマットに従い `docs/spec/architecture/{milestone_id}.md` の本文を完成させる
 
 ---
 

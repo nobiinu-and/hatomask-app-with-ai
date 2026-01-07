@@ -16,12 +16,14 @@
 
 各 Task で使用するタスクプロンプト:
 
-1. **01_create_feature_spec.md** - 機能仕様(Spec)作成
+1. **01_create_feature_spec.md** - 機能仕様作成
 2. **02_simple_modeling.md** - ドメインモデリング（初稿）
 3. **03_design_api_contract.md** - API Contract 設計 + モデル見直し
 4. **04_plan_implementation.md** - Gherkin シナリオ + 実装計画策定
 5. **05_generate_stubs.md** - Backend Stub 生成
 6. **06_vertical_slice_implementation.md** - 縦切り実装サイクル
+
+※本リポジトリでは「Spec」は feature の **機能仕様** を指します。
 
 ## 技術スタック
 
@@ -104,8 +106,10 @@ HatoMask プロジェクトは **BDD + TDD**（振る舞い駆動開発 + テス
 ### 開発フロー概要
 
 ```
-Task01: Spec作成
+Task01: 機能仕様作成
   → docs/spec/features/ に仕様記述
+
+※本リポジトリでは、上記の「Spec」は feature の **機能仕様** を指します。
 
 Task02: 簡単にモデリング
   → docs/spec/models/ にドメインモデル作成
@@ -166,7 +170,7 @@ magick -size 3000x2000 plasma: -quality 92 -define jpeg:extent=5000kb test_5mb.j
 - **[docs/dev/standards/quality.md](docs/dev/standards/quality.md)** - 品質基準
 - **[TEST_STRUCTURE.md](./TEST_STRUCTURE.md)** - テストディレクトリ構造
 - **[spec/README.md](./spec/README.md)** - 機能仕様の概要
-- **テストリスト**: `docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md` および `docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md` - TDD 実装管理
+- **テストリスト**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md` および `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md` - TDD 実装管理
 
 ```
 

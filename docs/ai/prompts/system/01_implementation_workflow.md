@@ -29,7 +29,7 @@
 4. docs/dev/standards/coding.md
    → コーディング規約を確認する
 
-5. docs/plans/[Spec名]_[シナリオ識別子].md (実装計画)
+5. docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md (実装計画)
    → 実装計画を確認する
 ```
 

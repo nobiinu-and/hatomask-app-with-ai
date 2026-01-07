@@ -16,7 +16,9 @@ Task06 の縦切り実装に備えて、ステップの依存関係と推奨グ�
 
 ## 入力情報
 
-- **Spec ファイル**: `docs/spec/features/{feature_name}.md`
+- **マイルストーン(milestone_id)**: 例 `m0` / `m1`
+- **アーキテクチャ設計**: `docs/spec/architecture/{milestone_id}.md`
+- **機能仕様**: `docs/spec/features/{feature_name}.md`
 - **ドメインモデル（候補一覧）**: `docs/spec/models/*.md`
 - **OpenAPI 仕様（候補一覧）**: `docs/spec/api/*.yaml`
 - **テンプレート**: `docs/plans/templates/implementation_plan.template.md`
@@ -27,7 +29,7 @@ Task06 の縦切り実装に備えて、ステップの依存関係と推奨グ�
 
 #### 1.1 シナリオ選択
 
-Spec ファイルの「受け入れ基準」から、実装する**1 つのシナリオ**を選択：
+機能仕様の「受け入れ基準」から、実装する**1 つのシナリオ**を選択：
 
 ```markdown
 ## 受け入れ基準
@@ -65,13 +67,13 @@ Feature: 写真のアップロードとダウンロード
 
 #### 2.1 ファイル作成
 
-**保存先**: `docs/plans/[Specファイル名]_[シナリオ識別子].md`
+**保存先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
 
 例: `docs/plans/01_photo_upload_jpeg_download.md`
 
 **ファイル名規則**:
 
-- Spec ファイル名をプレフィックス
+- 機能仕様をプレフィックス
 - シナリオ内容を表す短い識別子（英数字、アンダースコア）
 - 例: `01_photo_upload_jpeg_download.md`, `01_photo_upload_size_error.md`
 
@@ -110,7 +112,7 @@ Feature: 写真のアップロードとダウンロード
 ## 出力ファイル
 
 1. **Gherkin シナリオ**: `e2e/features/{feature_name}.feature`
-2. **実装計画書**: `docs/plans/[Specファイル名]_[シナリオ識別子].md`
+2. **実装計画書**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
    - テンプレート: `docs/plans/templates/implementation_plan.template.md`
 
 ## 次のステップ

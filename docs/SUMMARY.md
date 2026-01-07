@@ -41,7 +41,7 @@
 
 ## 📝 テスト
 
-- テストリスト: `docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md` / `api_testlist.md` - TDD 実装管理
+- テストリスト: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md` / `api_testlist.md` - TDD 実装管理
 - [E2E テスト](../e2e/README.md) - Playwright + Cucumber
 
 ## 🔗 外部リンク

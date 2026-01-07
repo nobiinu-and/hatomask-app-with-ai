@@ -7,7 +7,7 @@ Task 別の AI プロンプトテンプレートです。
 | Task   | 内容                                  | ファイル                               |
 | ------ | ------------------------------------- | -------------------------------------- |
 | Task00 | マイルストーン指定 アーキテクチャ設計 | `00_architecture_design.md` |
-| Task01 | 機能仕様(Spec)作成                    | `01_create_feature_spec.md`            |
+| Task01 | 機能仕様作成                          | `01_create_feature_spec.md`            |
 | Task02 | ドメインモデリング（初稿）            | `02_simple_modeling.md`                |
 | Task03 | API Contract 設計 + モデル見直し      | `03_design_api_contract.md`            |
 | Task04 | Gherkin シナリオ + 実装計画策定       | `04_plan_implementation.md`            |

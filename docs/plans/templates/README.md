@@ -14,7 +14,7 @@
 - 推奨実装グルーピング
 
 **使用タイミング**: Gherkin シナリオ選択後、実装開始前  
-**配置先**: `docs/plans/[Spec名]_[シナリオ識別子].md`
+**配置先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md`
 
 ---
 
@@ -28,7 +28,7 @@
 - 依存関係図（Mermaid）
 
 **使用タイミング**: 実装粒度を相談・決定する前  
-**配置先**: `docs/plans/[Spec名]_[シナリオ識別子]_dependency.md`
+**配置先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_dependency.md`
 
 ---
 
@@ -42,7 +42,7 @@
 - 選択理由の記録
 
 **使用タイミング**: 依存関係分析後、実装開始前  
-**配置先**: `docs/plans/[Spec名]_[シナリオ識別子]_granularity.md`
+**配置先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_granularity.md`
 
 ---
 
@@ -52,7 +52,7 @@
 **対象**: Entity, Repository, DomainService
 
 **使用タイミング**: 縦切り実装でバックエンド実装が必要な時  
-**配置先**: `docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md`
+**配置先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md`
 
 ---
 
@@ -62,7 +62,7 @@
 **対象**: UseCase, Controller, DTO, 統合テスト
 
 **使用タイミング**: ドメイン層実装完了後、API 層実装時  
-**配置先**: `docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md`
+**配置先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md`
 
 ---
 
@@ -70,7 +70,7 @@
 
 ```mermaid
 graph TD
-   A[Task01: Spec作成] --> B[Task02: ドメインモデリング初稿]
+   A[Task01: 機能仕様作成] --> B[Task02: ドメインモデリング初稿]
    B --> C[Task03: API Contract設計<br/>+ モデル見直し]
    C --> D[Task04: Gherkin + 実装計画]
     D --> E[implementation_plan.template.md]
@@ -104,7 +104,7 @@ graph TD
 ```bash
 # テンプレートをコピー
 cp docs/plans/templates/implementation_plan.template.md \
-   docs/plans/[Spec名]_[シナリオ識別子].md
+   docs/plans/[機能仕様ファイル名]_[シナリオ識別子].md
 
 # プレースホルダーを埋める
 # - [Feature名], [シナリオ名]
@@ -118,7 +118,7 @@ cp docs/plans/templates/implementation_plan.template.md \
 
 ```bash
 cp docs/plans/templates/step-dependency-analysis.template.md \
-   docs/plans/[Spec名]_[シナリオ識別子]_dependency.md
+   docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_dependency.md
 
 # 各ステップを分析:
 # - API呼び出しの有無
@@ -130,7 +130,7 @@ cp docs/plans/templates/step-dependency-analysis.template.md \
 
 ```bash
 cp docs/plans/templates/implementation-granularity-proposal.template.md \
-   docs/plans/[Spec名]_[シナリオ識別子]_granularity.md
+   docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_granularity.md
 
 # 3パターンを比較:
 # - パターンA: ステップ単位
@@ -145,11 +145,11 @@ cp docs/plans/templates/implementation-granularity-proposal.template.md \
 ```bash
 # ドメイン層テストリスト
 cp docs/plans/templates/domain-testlist.template.md \
-   docs/plans/[Spec名]_[シナリオ識別子]_domain_testlist.md
+   docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md
 
 # API層テストリスト
 cp docs/plans/templates/api-testlist.template.md \
-   docs/plans/[Spec名]_[シナリオ識別子]_api_testlist.md
+   docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md
 
 # TDDサイクルで実装:
 # 1. Red: テストを書く（失敗する）
