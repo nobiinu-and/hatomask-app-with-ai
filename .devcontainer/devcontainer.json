@@ -16,6 +16,11 @@
     },
     "ghcr.io/devcontainers/features/git-lfs:1": {}
   },
+  "postCreateCommand": "bash scripts/setup-opencv.sh",
+  "containerEnv": {
+    "HATOMASK_OPENCV_CASCADE_PATH": "/usr/share/opencv4/haarcascades/haarcascade_frontalface_default.xml",
+    "HATOMASK_OPENCV_LBF_MODEL_PATH": "/opt/hatomask/models/lbfmodel.yaml"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
