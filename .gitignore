@@ -1,3 +1,5 @@
+# OpenCV facemark (LBF_68) model (downloaded locally; not committed)
+dev/opencv-models/lbfmodel.yaml
 # OS generated files
 .DS_Store
 .DS_Store?

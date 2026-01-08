@@ -20,6 +20,7 @@
     
     <properties>
         <java.version>17</java.version>
+        <bytedeco.version>4.9.0-1.5.10</bytedeco.version>
     </properties>
     
     <dependencies>
@@ -54,6 +55,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- OpenCV (Bytedeco) for server-side face detection -->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>opencv-platform</artifactId>
+            <version>${bytedeco.version}</version>
         </dependency>
         
         <!-- Spring Boot DevTools -->

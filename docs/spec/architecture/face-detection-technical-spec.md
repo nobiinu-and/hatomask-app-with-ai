@@ -156,11 +156,30 @@ public class FaceBoundingBox {
 
 ### LBF モデル（LBF_68 モード使用時）
 
+LBF モデル（`lbfmodel.yaml`）はサイズが大きいため、リポジトリには同梱しません。
+以下のスクリプトでダウンロードして利用します：
+
+```bash
+bash ./scripts/download-opencv-lbf-model.sh
+```
+
 **設定キー**:
 
 ```bash
 -Dhatomask.opencv.lbfModelPath=<path>
 export HATOMASK_OPENCV_LBF_MODEL_PATH=<path>
+```
+
+docker compose 利用時の例（モデルファイルは手元で用意してマウント）：
+
+```yaml
+services:
+  backend:
+    volumes:
+      - ./dev/opencv-models:/models:ro
+    environment:
+      - HATOMASK_FACE_DETECTION_LANDMARK_METHOD=LBF_68
+      - HATOMASK_OPENCV_LBF_MODEL_PATH=/models/lbfmodel.yaml
 ```
 
 ## Milestone 0 での制限事項

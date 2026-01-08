@@ -7,6 +7,7 @@ import com.hatomask.application.exception.UnsupportedMediaTypeException;
 import com.hatomask.domain.model.FileSizeBytes;
 import com.hatomask.domain.model.MimeType;
 import com.hatomask.domain.model.UploadedPhotoReference;
+import com.hatomask.infrastructure.repository.InMemoryUploadedPhotoDataRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -29,7 +30,7 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は有効な PNG を受け取ると UploadedPhotoReference を返す")
     void execute_ValidPng_ReturnsReference() throws Exception {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, new InMemoryUploadedPhotoDataRepository(clock));
 
         byte[] pngBytes = createPngBytes(2, 3);
         MockMultipartFile file = new MockMultipartFile("file", "photo.png", "image/png", pngBytes);
@@ -48,7 +49,7 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は file が null の場合、InvalidFileException が発生する")
     void execute_FileNull_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, new InMemoryUploadedPhotoDataRepository(clock));
 
         assertThatThrownBy(() -> useCase.execute(null))
                 .isInstanceOf(InvalidFileException.class);
@@ -58,7 +59,7 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は empty file の場合、InvalidFileException が発生する")
     void execute_EmptyFile_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, new InMemoryUploadedPhotoDataRepository(clock));
 
         MockMultipartFile file = new MockMultipartFile("file", "photo.png", "image/png", new byte[0]);
 
@@ -70,7 +71,7 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() はサイズ超過の場合、PayloadTooLargeException が発生する")
     void execute_TooLarge_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, new InMemoryUploadedPhotoDataRepository(clock));
 
         byte[] bytes = new byte[(int) (FileSizeBytes.MAX_BYTES + 1)];
         MockMultipartFile file = new MockMultipartFile("file", "photo.jpg", "image/jpeg", bytes);
@@ -83,7 +84,7 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() は未対応の contentType の場合、UnsupportedMediaTypeException が発生する")
     void execute_UnsupportedMediaType_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, new InMemoryUploadedPhotoDataRepository(clock));
 
         MockMultipartFile file = new MockMultipartFile("file", "photo.gif", "image/gif", new byte[] { 1, 2, 3 });
 
@@ -95,7 +96,7 @@ class UploadPhotoUseCaseTest {
     @DisplayName("execute() はデコードできない場合、ImageDecodingException が発生する")
     void execute_DecodeFail_Throws() {
         Clock clock = Clock.fixed(Instant.parse("2026-01-07T00:00:00Z"), ZoneOffset.UTC);
-        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock);
+        UploadPhotoUseCase useCase = new UploadPhotoUseCase(clock, new InMemoryUploadedPhotoDataRepository(clock));
 
         MockMultipartFile file = new MockMultipartFile("file", "photo.jpg", "image/jpeg", new byte[] { 1, 2, 3 });
 

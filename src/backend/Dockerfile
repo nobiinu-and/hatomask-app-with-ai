@@ -18,6 +18,11 @@ RUN mvn clean package -DskipTests
 # 実行用の軽量イメージ
 FROM eclipse-temurin:17-jre
 
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends opencv-data libgtk2.0-0t64 \
+    && rm -rf /var/lib/apt/lists/*
+
 # 作業ディレクトリを設定
 WORKDIR /app
 

@@ -6,6 +6,7 @@ import path from 'path';
 interface CustomWorld {
   page: Page;
   uploadPhotoResponseStatus?: number;
+  faceDetectionResponseStatus?: number;
 }
 
 Given('ユーザーがブラウザを開いている', { timeout: 60000 }, async function (this: CustomWorld) {
@@ -75,6 +76,18 @@ When('ユーザーがファイルサイズ5MBのJPEGファイルを選択する'
   this.uploadPhotoResponseStatus = response.status();
 });
 
+When('ユーザーが顔が写っているPNGファイルを選択する', { timeout: 60000 }, async function (this: CustomWorld) {
+  const fixturePath = path.resolve(__dirname, '..', 'fixtures', 'face-multiple.png');
+  const [response] = await Promise.all([
+    this.page.waitForResponse(
+      (res) => res.url().includes('/api/v1/photos') && res.request().method() === 'POST',
+      { timeout: 60000 },
+    ),
+    this.page.getByTestId('photo-file-input').setInputFiles(fixturePath),
+  ]);
+  this.uploadPhotoResponseStatus = response.status();
+});
+
 Then('写真アップロードが成功する', { timeout: 60000 }, async function (this: CustomWorld) {
   expect(this.uploadPhotoResponseStatus).toBe(201);
 });
@@ -85,4 +98,39 @@ Then('プレビューエリアに選択した画像が表示される', { timeou
 
 Then('「顔検出を実行」ボタンが有効になる', { timeout: 60000 }, async function (this: CustomWorld) {
   await expect(this.page.getByRole('button', { name: '顔検出を実行' })).toBeEnabled({ timeout: 10000 });
+});
+
+When('ユーザーが「顔検出を実行」ボタンをクリックする', { timeout: 60000 }, async function (this: CustomWorld) {
+  const [response] = await Promise.all([
+    this.page.waitForResponse(
+      (res) => res.url().includes('/api/v1/photos/') && res.url().includes('/face-detections') && res.request().method() === 'POST',
+      { timeout: 60000 },
+    ),
+    this.page.getByRole('button', { name: '顔検出を実行' }).click(),
+  ]);
+
+  this.faceDetectionResponseStatus = response.status();
+});
+
+Then('顔検出が成功する', { timeout: 60000 }, async function (this: CustomWorld) {
+  expect(this.faceDetectionResponseStatus).toBe(200);
+});
+
+Then('顔検出が失敗する（422）', { timeout: 60000 }, async function (this: CustomWorld) {
+  expect(this.faceDetectionResponseStatus).toBe(422);
+});
+
+Then('顔のオーバーレイが表示されない', { timeout: 60000 }, async function (this: CustomWorld) {
+  await expect(this.page.getByTestId('face-bounding-box')).toHaveCount(0);
+  await expect(this.page.getByTestId('face-landmark-point')).toHaveCount(0);
+});
+
+Then('68つの特徴点がプレビュー上に表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  const points = this.page.getByTestId('face-landmark-point');
+  await expect(points).toHaveCount(68, { timeout: 60000 });
+  await expect(points.first()).toBeVisible({ timeout: 10000 });
+});
+
+Then('顔領域（矩形）がプレビュー上に表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  await expect(this.page.getByTestId('face-bounding-box')).toBeVisible({ timeout: 60000 });
 });

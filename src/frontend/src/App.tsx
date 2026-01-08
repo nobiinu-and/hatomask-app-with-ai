@@ -12,10 +12,35 @@ import {
   createTheme,
   CssBaseline,
 } from '@mui/material'
-import { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 interface HelloResponse {
   message: string
+}
+
+interface PhotoUploadResponse {
+  photoId: string
+}
+
+interface FaceLandmarkDto {
+  name: string
+  x: number
+  y: number
+}
+
+interface FaceBoundingBoxDto {
+  xMin: number
+  yMin: number
+  width: number
+  height: number
+}
+
+interface FaceDetectionResponse {
+  result: {
+    landmarks: FaceLandmarkDto[]
+    boundingBox: FaceBoundingBoxDto
+    confidence: number
+  }
 }
 
 const theme = createTheme({
@@ -35,7 +60,22 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const [uploading, setUploading] = useState<boolean>(false)
+  const [detecting, setDetecting] = useState<boolean>(false)
   const [previewUrl, setPreviewUrl] = useState<string>('')
+  const [photoId, setPhotoId] = useState<string>('')
+  const [faceDetection, setFaceDetection] = useState<FaceDetectionResponse | null>(null)
+
+  const previewContainerRef = useRef<HTMLDivElement | null>(null)
+  const previewImageRef = useRef<HTMLImageElement | null>(null)
+  const [renderedImageRect, setRenderedImageRect] = useState<
+    | {
+        offsetX: number
+        offsetY: number
+        width: number
+        height: number
+      }
+    | null
+  >(null)
 
   const maxFileSizeBytes = 10 * 1024 * 1024
   const allowedMimeTypes = ['image/jpeg', 'image/png']
@@ -65,13 +105,69 @@ function App() {
       if (prev) URL.revokeObjectURL(prev)
       return ''
     })
+    setPhotoId('')
+    setFaceDetection(null)
+    setRenderedImageRect(null)
   }
+
+  const updateRenderedImageRect = () => {
+    const container = previewContainerRef.current
+    const img = previewImageRef.current
+    if (!container || !img) {
+      setRenderedImageRect(null)
+      return
+    }
+
+    const { clientWidth: containerWidth, clientHeight: containerHeight } = container
+    const { naturalWidth, naturalHeight } = img
+
+    if (containerWidth <= 0 || containerHeight <= 0 || naturalWidth <= 0 || naturalHeight <= 0) {
+      setRenderedImageRect(null)
+      return
+    }
+
+    const scale = Math.min(containerWidth / naturalWidth, containerHeight / naturalHeight)
+    const width = naturalWidth * scale
+    const height = naturalHeight * scale
+    const offsetX = (containerWidth - width) / 2
+    const offsetY = (containerHeight - height) / 2
+
+    setRenderedImageRect({ offsetX, offsetY, width, height })
+  }
+
+  const toOverlayX = (x01: number) => {
+    if (!renderedImageRect) return 0
+    return renderedImageRect.offsetX + x01 * renderedImageRect.width
+  }
+
+  const toOverlayY = (y01: number) => {
+    if (!renderedImageRect) return 0
+    return renderedImageRect.offsetY + y01 * renderedImageRect.height
+  }
+
+  useEffect(() => {
+    if (!previewUrl) {
+      setRenderedImageRect(null)
+      return
+    }
+
+    updateRenderedImageRect()
+    const onResize = () => {
+      updateRenderedImageRect()
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [previewUrl])
 
   const handlePhotoFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
     setError('')
+    setPhotoId('')
+    setFaceDetection(null)
 
     if (file.size > maxFileSizeBytes) {
       setError('ファイルサイズは10MB以下にしてください')
@@ -105,12 +201,44 @@ function App() {
 
       if (!response.ok) {
         setError('写真アップロードに失敗しました')
+        setPhotoId('')
+        return
       }
+
+      const data = (await response.json()) as PhotoUploadResponse
+      setPhotoId(data.photoId)
     } catch {
       setError('写真アップロードに失敗しました')
+      setPhotoId('')
     } finally {
       setUploading(false)
       event.target.value = ''
+    }
+  }
+
+  const handleDetectFace = async () => {
+    if (!photoId) return
+    setError('')
+    setFaceDetection(null)
+
+    try {
+      setDetecting(true)
+      const response = await fetch(`/api/v1/photos/${photoId}/face-detections`, {
+        method: 'POST',
+      })
+
+      if (!response.ok) {
+        setError('顔検出に失敗しました')
+        return
+      }
+
+      const data = (await response.json()) as FaceDetectionResponse
+      setFaceDetection(data)
+      updateRenderedImageRect()
+    } catch {
+      setError('顔検出に失敗しました')
+    } finally {
+      setDetecting(false)
     }
   }
 
@@ -178,9 +306,11 @@ function App() {
                       プレビューエリア
                     </Typography>
                     <Box
+                      ref={previewContainerRef}
                       sx={{
                         width: '100%',
                         aspectRatio: '16 / 9',
+                        position: 'relative',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -188,17 +318,61 @@ function App() {
                       }}
                     >
                       {previewUrl ? (
-                        <Box
-                          component="img"
-                          src={previewUrl}
-                          alt="選択した画像"
-                          data-testid="photo-preview-image"
-                          sx={{
-                            maxWidth: '100%',
-                            maxHeight: '100%',
-                            objectFit: 'contain',
-                          }}
-                        />
+                        <>
+                          <Box
+                            component="img"
+                            src={previewUrl}
+                            alt="選択した画像"
+                            data-testid="photo-preview-image"
+                            ref={previewImageRef}
+                            onLoad={() => {
+                              updateRenderedImageRect()
+                            }}
+                            sx={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'contain',
+                            }}
+                          />
+                          {faceDetection && renderedImageRect ? (
+                            <>
+                              <Box
+                                data-testid="face-bounding-box"
+                                sx={{
+                                  position: 'absolute',
+                                  left: toOverlayX(faceDetection.result.boundingBox.xMin),
+                                  top: toOverlayY(faceDetection.result.boundingBox.yMin),
+                                  width: faceDetection.result.boundingBox.width * renderedImageRect.width,
+                                  height: faceDetection.result.boundingBox.height * renderedImageRect.height,
+                                  border: 2,
+                                  borderColor: 'primary.main',
+                                  boxSizing: 'border-box',
+                                  pointerEvents: 'none',
+                                }}
+                              />
+                              {faceDetection.result.landmarks.map((lm) => (
+                                <Box
+                                  key={lm.name}
+                                  data-testid="face-landmark-point"
+                                  sx={{
+                                    position: 'absolute',
+                                    left: toOverlayX(lm.x),
+                                    top: toOverlayY(lm.y),
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: '50%',
+                                    bgcolor: 'secondary.main',
+                                    border: 2,
+                                    borderColor: 'common.white',
+                                    transform: 'translate(-50%, -50%)',
+                                    boxSizing: 'border-box',
+                                    pointerEvents: 'none',
+                                  }}
+                                />
+                              ))}
+                            </>
+                          ) : null}
+                        </>
                       ) : (
                         <Typography variant="body2" color="text.secondary">
                           写真が選択されていません
@@ -208,8 +382,14 @@ function App() {
                   </Box>
 
                   <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-                    <Button variant="contained" disabled={!previewUrl || uploading}>
-                      顔検出を実行
+                    <Button
+                      variant="contained"
+                      disabled={!photoId || uploading || detecting}
+                      onClick={() => {
+                        void handleDetectFace()
+                      }}
+                    >
+                      {detecting ? '顔検出中...' : '顔検出を実行'}
                     </Button>
                   </Box>
                 </>

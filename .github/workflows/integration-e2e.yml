@@ -59,6 +59,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Download OpenCV LBF model (LBF_68)
+        run: |
+          bash ./scripts/download-opencv-lbf-model.sh
+
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:

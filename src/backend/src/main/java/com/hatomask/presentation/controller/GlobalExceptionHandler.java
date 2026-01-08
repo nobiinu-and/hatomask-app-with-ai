@@ -3,6 +3,8 @@ package com.hatomask.presentation.controller;
 import com.hatomask.application.exception.ImageDecodingException;
 import com.hatomask.application.exception.InvalidFileException;
 import com.hatomask.application.exception.PayloadTooLargeException;
+import com.hatomask.application.exception.PhotoNotFoundException;
+import com.hatomask.application.exception.FaceNotDetectedException;
 import com.hatomask.application.exception.UnsupportedMediaTypeException;
 import com.hatomask.presentation.dto.ProblemDetails;
 import com.hatomask.presentation.dto.ProblemFieldError;
@@ -71,6 +73,47 @@ public class GlobalExceptionHandler {
                 List.of(new ProblemFieldError("file", ex.getMessage())));
 
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .contentType(PROBLEM_JSON)
+                .body(problem);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ProblemDetails> handleIllegalArgument(
+            IllegalArgumentException ex,
+            HttpServletRequest request) {
+        return badRequest("photoId", "photoId must be a valid UUID", request);
+    }
+
+    @ExceptionHandler(PhotoNotFoundException.class)
+    public ResponseEntity<ProblemDetails> handlePhotoNotFound(
+            PhotoNotFoundException ex,
+            HttpServletRequest request) {
+        ProblemDetails problem = new ProblemDetails(
+                "about:blank",
+                "Not Found",
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                request.getRequestURI(),
+                null);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .contentType(PROBLEM_JSON)
+                .body(problem);
+    }
+
+    @ExceptionHandler(FaceNotDetectedException.class)
+    public ResponseEntity<ProblemDetails> handleFaceNotDetected(
+            FaceNotDetectedException ex,
+            HttpServletRequest request) {
+        ProblemDetails problem = new ProblemDetails(
+                "about:blank",
+                "Unprocessable Entity",
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                ex.getMessage(),
+                request.getRequestURI(),
+                List.of(new ProblemFieldError("face", ex.getMessage())));
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(PROBLEM_JSON)
                 .body(problem);
     }

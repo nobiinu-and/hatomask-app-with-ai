@@ -20,10 +20,13 @@ services:
       - '8080:8080'
     networks:
       - hatomask-network
+    volumes:
+      - ./dev/opencv-models:/models:ro
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/hatomask
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      - HATOMASK_OPENCV_LBF_MODEL_PATH=/models/lbfmodel.yaml
     depends_on:
       db:
         condition: service_healthy

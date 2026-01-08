@@ -26,15 +26,22 @@ services:
     volumes:
       - ./src/backend:/app:cached
       - ~/.m2:/home/vscode/.m2
+      # LBF_68 用のモデル（リポジトリには同梱しない。scripts/download-opencv-lbf-model.sh で取得）
+      - ./dev/opencv-models:/models:ro
     ports:
       - '8080:8080'
     networks:
       - hatomask-network
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       - SPRING_DEVTOOLS_RESTART_ENABLED=true
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/hatomask
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      # LBF_68 デフォルト動作に必要なモデルパス
+      - HATOMASK_OPENCV_LBF_MODEL_PATH=/models/lbfmodel.yaml
     tty: true
 
   # PostgreSQLデータベース

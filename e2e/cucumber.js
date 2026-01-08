@@ -14,6 +14,7 @@ const common = {
 
 module.exports = {
   default: {
-    ...common
+    ...common,
+    tags: 'not @manual'
   }
 };
