@@ -52,8 +52,8 @@
 
 ### テスト計画(バックエンド実装時)
 
-- `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md` - ドメイン層のテストケース一覧とチェックリスト
-- `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md` - API 層のテストケース一覧とチェックリスト
+- `docs/plans/testlists/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md` - ドメイン層のテストケース一覧とチェックリスト
+- `docs/plans/testlists/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md` - API 層のテストケース一覧とチェックリスト
 
 ## AI 特有の実行ルール
 
