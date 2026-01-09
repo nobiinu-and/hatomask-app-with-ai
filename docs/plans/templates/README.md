@@ -52,7 +52,7 @@
 **対象**: Entity, Repository, DomainService
 
 **使用タイミング**: 縦切り実装でバックエンド実装が必要な時  
-**配置先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md`
+**配置先**: `docs/plans/testlists/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md`
 
 ---
 
@@ -62,7 +62,7 @@
 **対象**: UseCase, Controller, DTO, 統合テスト
 
 **使用タイミング**: ドメイン層実装完了後、API 層実装時  
-**配置先**: `docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md`
+**配置先**: `docs/plans/testlists/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md`
 
 ---
 
@@ -145,11 +145,11 @@ cp docs/plans/templates/implementation-granularity-proposal.template.md \
 ```bash
 # ドメイン層テストリスト
 cp docs/plans/templates/domain-testlist.template.md \
-   docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md
+   docs/plans/testlists/[機能仕様ファイル名]_[シナリオ識別子]_domain_testlist.md
 
 # API層テストリスト
 cp docs/plans/templates/api-testlist.template.md \
-   docs/plans/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md
+   docs/plans/testlists/[機能仕様ファイル名]_[シナリオ識別子]_api_testlist.md
 
 # TDDサイクルで実装:
 # 1. Red: テストを書く（失敗する）
@@ -166,17 +166,15 @@ docs/plans/
    photo-upload-scenario1.md                    # Task04: 実装計画
    photo-upload-scenario1_dependency.md         # Task06: 依存関係分析
    photo-upload-scenario1_granularity.md        # Task06: 粒度選択
-  photo-upload/
-    backend-testlist/
-      domain_photo_upload.md                   # ドメイン層TDD
-      api_photo_upload.md                      # API層TDD
+   testlists/
+      photo-upload-scenario1_domain_testlist.md # ドメイン層TDD
+      photo-upload-scenario1_api_testlist.md    # API層TDD
   photo-download-scenario1.md
   photo-download-scenario1_dependency.md
   photo-download-scenario1_granularity.md
-  photo-download/
-    backend-testlist/
-      domain_photo_download.md
-      api_photo_download.md
+   testlists/
+      photo-download-scenario1_domain_testlist.md
+      photo-download-scenario1_api_testlist.md
 ```
 
 ---

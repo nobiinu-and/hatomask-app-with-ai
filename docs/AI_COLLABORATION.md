@@ -256,7 +256,7 @@ AI は実装開始前に、以下の 3 パターンを提案します：
 
 実装前にテストケースを Markdown ファイルで計画します：
 
-**例**: `docs/plans/01_photo_upload_domain_testlist.md`
+**例**: `docs/plans/testlists/01_photo_upload_jpeg_upload_domain_testlist.md`
 
 ```markdown
 # Photo Upload ドメイン層 テストリスト
