@@ -42,6 +42,18 @@ jobs:
           $SUDO apt-get install -y --no-install-recommends \
             libgl1 libgomp1 libglib2.0-0 libsm6 libxext6 libxrender1 opencv-data libgtk2.0-0
 
+      - name: Cache OpenCV LBF model (LBF_68)
+        id: cache-lbf-model
+        uses: actions/cache@v4
+        with:
+          path: dev/opencv-models/lbfmodel.yaml
+          key: ${{ runner.os }}-lbfmodel-${{ hashFiles('scripts/download-opencv-lbf-model.sh') }}
+
+      - name: Download OpenCV LBF model (LBF_68)
+        if: steps.cache-lbf-model.outputs.cache-hit != 'true'
+        run: |
+          bash ./scripts/download-opencv-lbf-model.sh
+
       - name: Run tests with coverage
         working-directory: ./src/backend
         env:

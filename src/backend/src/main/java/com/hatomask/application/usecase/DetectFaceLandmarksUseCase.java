@@ -17,6 +17,7 @@ import org.bytedeco.opencv.opencv_core.RectVector;
 import org.bytedeco.opencv.opencv_face.Facemark;
 import org.bytedeco.opencv.opencv_face.FacemarkLBF;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
@@ -65,11 +66,23 @@ public class DetectFaceLandmarksUseCase {
     private final String lbfModelPath;
     private volatile Facemark facemark;
 
+    @Autowired
     public DetectFaceLandmarksUseCase(UploadedPhotoDataRepository uploadedPhotoDataRepository) {
         this.uploadedPhotoDataRepository = uploadedPhotoDataRepository;
         this.landmarkMethod = readLandmarkMethod();
         this.classifier = loadCascadeClassifier();
         this.lbfModelPath = readLbfModelPath().orElse(null);
+    }
+
+    DetectFaceLandmarksUseCase(
+            UploadedPhotoDataRepository uploadedPhotoDataRepository,
+            CascadeClassifier classifier,
+            LandmarkMethod landmarkMethod,
+            String lbfModelPath) {
+        this.uploadedPhotoDataRepository = uploadedPhotoDataRepository;
+        this.classifier = classifier;
+        this.landmarkMethod = landmarkMethod != null ? landmarkMethod : readLandmarkMethod();
+        this.lbfModelPath = lbfModelPath != null ? lbfModelPath : readLbfModelPath().orElse(null);
     }
 
     public FaceDetectionResult execute(UUID photoId) {
@@ -97,6 +110,9 @@ public class DetectFaceLandmarksUseCase {
     }
 
     private Rect detectLargestFace(Mat decodedBgr) {
+        if (classifier == null) {
+            throw new IllegalStateException("cascade classifier is not configured");
+        }
         Mat gray = new Mat();
         cvtColor(decodedBgr, gray, COLOR_BGR2GRAY);
         equalizeHist(gray, gray);
