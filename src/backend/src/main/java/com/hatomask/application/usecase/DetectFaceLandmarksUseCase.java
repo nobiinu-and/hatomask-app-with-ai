@@ -237,12 +237,18 @@ public class DetectFaceLandmarksUseCase {
 
     private static CascadeClassifier loadCascadeClassifier() {
         String configured = System.getProperty(CASCADE_PATH_PROPERTY);
-        if (configured == null || configured.isBlank()) {
+        if (isBlank(configured)) {
             configured = System.getenv(CASCADE_PATH_ENV);
         }
 
-        if (configured == null || configured.isBlank()) {
-            configured = "/usr/share/opencv4/haarcascades/haarcascade_frontalface_default.xml";
+        if (isBlank(configured)) {
+            configured = findDefaultCascadePath().orElse(null);
+        }
+
+        if (isBlank(configured)) {
+            throw new IllegalStateException(
+                    "cascade file not found. Set -D" + CASCADE_PATH_PROPERTY + " or " + CASCADE_PATH_ENV
+                            + " (example: /usr/share/opencv4/haarcascades/haarcascade_frontalface_default.xml)");
         }
 
         if (!Files.exists(Path.of(configured))) {
@@ -255,6 +261,26 @@ public class DetectFaceLandmarksUseCase {
         }
 
         return classifier;
+    }
+
+    private static Optional<String> findDefaultCascadePath() {
+        String[] candidates = {
+                "/usr/share/opencv4/haarcascades/haarcascade_frontalface_default.xml",
+                "/usr/local/share/opencv/haarcascades/haarcascade_frontalface_default.xml",
+                "/usr/share/opencv/haarcascades/haarcascade_frontalface_default.xml"
+        };
+
+        for (String candidate : candidates) {
+            if (Files.exists(Path.of(candidate))) {
+                return Optional.of(candidate);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 
     private static LandmarkMethod readLandmarkMethod() {
