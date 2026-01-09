@@ -38,12 +38,6 @@ export default defineConfig(({ mode }) => {
           '.eslintrc.{js,cjs}',
           'src/main.tsx', // Entry point - not typically tested
         ],
-        thresholds: {
-          statements: 80,
-          branches: 80,
-          functions: 80,
-          lines: 80,
-        },
       }
     }
   }

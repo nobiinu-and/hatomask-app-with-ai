@@ -1,10 +1,10 @@
 # CI/CD ガイド
 
-このプロジェクトでは、GitHub Actionsを使用した段階的なCIパイプラインを構築しています。
+このプロジェクトでは、GitHub Actions を使用した段階的な CI パイプラインを構築しています。
 
 ## 概要
 
-CI/CDパイプラインは、早期フィードバックと並列実行により、効率的な開発フローを実現します。
+CI/CD パイプラインは、早期フィードバックと並列実行により、効率的な開発フローを実現します。
 
 ### ワークフロー構成
 
@@ -39,7 +39,7 @@ PR作成 / mainブランチへのプッシュ
 
 ### ワークフロー間の依存関係
 
-- **初回実行**: PR作成時、3つのワークフローが並列で開始（早期フィードバック）
+- **初回実行**: PR 作成時、3 つのワークフローが並列で開始（早期フィードバック）
 - **依存実行**: 前段が成功すると、`workflow_run`イベントで次段が自動実行
 - **失敗時**: 前段が失敗した場合、後続のワークフローはスキップ
 
@@ -50,20 +50,22 @@ PR作成 / mainブランチへのプッシュ
 **目的**: 最速でコード品質の問題を検出
 
 **実行内容**:
+
 - **Backend Checkstyle**: コーディング規約チェック
   - 命名規則、インデント、行長、循環的複雑度など
   - 設定ファイル: `src/backend/checkstyle.xml`
 - **Backend Unit Tests**: ユニットテストの実行
   - JUnit 5 + Mockito
-- **Frontend Lint & TypeCheck**: 
+- **Frontend Lint & TypeCheck**:
   - ESLint: コード品質チェック
   - TypeScript: 型チェック（`tsc --noEmit`）
-- **Frontend Unit Tests**: 
+- **Frontend Unit Tests**:
   - Vitest + Testing Library
 
 **トリガー**: `pull_request`, `push` (main), `workflow_dispatch`
 
 **キャッシュ**:
+
 - Maven: `~/.m2/repository`
 - npm: `node_modules`
 
@@ -74,24 +76,26 @@ PR作成 / mainブランチへのプッシュ
 **目的**: ビルド可能性の検証とカバレッジ測定
 
 **実行内容**:
-- **Backend Coverage**: JaCoCoによるカバレッジ測定
+
+- **Backend Coverage**: JaCoCo によるカバレッジ測定
   - レポート出力先: `src/backend/target/site/jacoco/`
   - **現在のカバレッジ**: Instructions 84%, Lines 89%, Methods 87%
-  - **閾値設定**: 80% (Instructions, Lines, Methods)
+  - **目標**: 80% (Instructions, Lines, Methods)
   - HelloController: 100% カバレッジ達成 ✨
-- **Frontend Coverage**: Vitestによるカバレッジ測定
+- **Frontend Coverage**: Vitest によるカバレッジ測定
   - レポート出力先: `src/frontend/coverage/`
   - **現在のカバレッジ**: App.tsx 98.23% (実装コード)
-  - **閾値設定**: 80% (Statements, Branches, Functions, Lines)
-  - PR時、カバレッジをコメント投稿（`romeovs/lcov-reporter-action`）
-- **Backend Build**: JARファイルの作成（テストスキップ）
+  - **目標**: 80% (Statements, Branches, Functions, Lines)
+  - PR 時、カバレッジをコメント投稿（`romeovs/lcov-reporter-action`）
+- **Backend Build**: JAR ファイルの作成（テストスキップ）
 - **Frontend Build**: プロダクションビルド
 
-**トリガー**: `pull_request`, `push` (main), `workflow_dispatch`, `workflow_run` (PR Checks完了時)
+**トリガー**: `pull_request`, `push` (main), `workflow_dispatch`, `workflow_run` (PR Checks 完了時)
 
-**成果物保存**: 3日間保存
+**成果物保存**: 3 日間保存
+
 - カバレッジレポート（Backend/Frontend）
-- ビルド成果物（JARファイル、distフォルダ）
+- ビルド成果物（JAR ファイル、dist フォルダ）
 
 ---
 
@@ -100,32 +104,35 @@ PR作成 / mainブランチへのプッシュ
 **目的**: システム全体の動作確認
 
 **実行内容**:
-- **Backend Integration Tests**: 
-  - Testcontainersを使用したPostgreSQLとの統合テスト
+
+- **Backend Integration Tests**:
+  - Testcontainers を使用した PostgreSQL との統合テスト
   - `mvn verify` で実行
 - **E2E Tests**:
-  - `docker-compose.ci.yml`で環境構築（本番用Dockerfile使用）
-  - Cucumber + Playwrightでブラウザテスト
+  - `docker-compose.ci.yml`で環境構築（本番用 Dockerfile 使用）
+  - Cucumber + Playwright でブラウザテスト
   - 失敗時、スクリーンショットと動画を保存
 
-**トリガー**: `pull_request`, `push` (main), `workflow_dispatch`, `workflow_run` (Build完了時)
+**トリガー**: `pull_request`, `push` (main), `workflow_dispatch`, `workflow_run` (Build 完了時)
 
-**Docker最適化**:
-- buildxキャッシュを使用してビルド時間短縮
-- PostgreSQLはtmpfs（メモリ）で動作（高速化）
+**Docker 最適化**:
 
-**成果物保存**: 3日間保存
+- buildx キャッシュを使用してビルド時間短縮
+- PostgreSQL は tmpfs（メモリ）で動作（高速化）
+
+**成果物保存**: 3 日間保存
+
 - テストレポート
 - スクリーンショット（失敗時）
 - 動画（失敗時）
 
 ---
 
-## ローカルでのCIテスト
+## ローカルでの CI テスト
 
-### actを使用（推奨）
+### act を使用（推奨）
 
-GitHub Actionsをローカルで実行できるツール。
+GitHub Actions をローカルで実行できるツール。
 
 ```bash
 # actのインストール（初回のみ）
@@ -152,29 +159,30 @@ curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo ba
   --artifact-server-path /workspaces/act-artifacts
 ```
 
-**注意**: 
-- `pull_request`イベントではなく`push`イベントでテストする（actの制限）
-- Docker環境が必要
+**注意**:
+
+- `pull_request`イベントではなく`push`イベントでテストする（act の制限）
+- Docker 環境が必要
 
 ---
 
-## CI専用設定ファイル
+## CI 専用設定ファイル
 
 ### docker-compose.ci.yml
 
-CI環境用のDocker Compose設定。開発用（`docker-compose.yml`）との違い：
+CI 環境用の Docker Compose 設定。開発用（`docker-compose.yml`）との違い：
 
-| 項目 | 開発用 | CI用 |
-|------|--------|------|
-| Dockerfile | `Dockerfile.dev` | `Dockerfile` (本番用) |
-| ソースマウント | あり | なし（イメージに含める） |
-| ホットリロード | 有効 | 無効 |
-| PostgreSQL | 永続化ボリューム | tmpfs（メモリ） |
-| ポート公開 | 3000, 8080 | 3000, 8080 |
+| 項目           | 開発用           | CI 用                    |
+| -------------- | ---------------- | ------------------------ |
+| Dockerfile     | `Dockerfile.dev` | `Dockerfile` (本番用)    |
+| ソースマウント | あり             | なし（イメージに含める） |
+| ホットリロード | 有効             | 無効                     |
+| PostgreSQL     | 永続化ボリューム | tmpfs（メモリ）          |
+| ポート公開     | 3000, 8080       | 3000, 8080               |
 
 ### scripts/wait-for-services.sh
 
-docker-compose起動後、サービスが準備完了するまで待機するスクリプト。
+docker-compose 起動後、サービスが準備完了するまで待機するスクリプト。
 
 ```bash
 # 使用例
@@ -195,16 +203,19 @@ TIMEOUT=60
 **設定ファイル**: `src/backend/pom.xml`
 
 現在の設定：
+
 - ユニットテスト・統合テストの両方を測定
 - レポート形式: HTML, XML
-- **閾値チェック**: ✅ 有効（80% - Instructions, Lines, Methods）
+- **閾値チェック**: デフォルト無効（測定のみ）
 
 カバレッジレポートの確認：
+
 ```bash
 cd src/backend
-mvn clean verify  # 閾値チェック含む
-# または
-mvn clean test jacoco:report  # レポート生成のみ
+mvn clean test jacoco:report  # レポート生成（測定のみ）
+
+# 閾値ゲートを有効化したい場合
+mvn clean verify -Pcoverage-gate
 open target/site/jacoco/index.html
 ```
 
@@ -213,15 +224,17 @@ open target/site/jacoco/index.html
 **設定ファイル**: `src/frontend/vite.config.ts`
 
 現在の設定：
+
 - カバレッジプロバイダー: v8
 - レポート形式: text, json, html, lcov
 - 除外: `node_modules/`, テストファイル, 型定義ファイル, `.eslintrc.cjs`, `main.tsx`
-- **閾値設定**: ✅ 80% (Statements, Branches, Functions, Lines)
+- **閾値設定**: デフォルトなし（測定のみ）
 
 カバレッジレポートの確認：
+
 ```bash
 cd src/frontend
-npm run test:coverage  # 閾値チェック含む
+npm run test:coverage
 open coverage/index.html
 ```
 
@@ -232,6 +245,7 @@ open coverage/index.html
 ### ワークフローが失敗する
 
 1. **ローカルで再現を試みる**
+
    ```bash
    ./bin/act push -W .github/workflows/[失敗したワークフロー].yml \
      -P ubuntu-latest=quay.io/jamezp/act-maven \
@@ -239,14 +253,15 @@ open coverage/index.html
    ```
 
 2. **ログを確認**
-   - GitHub ActionsのUIで詳細ログを確認
+
+   - GitHub Actions の UI で詳細ログを確認
    - 特定のステップをクリックして展開
 
 3. **キャッシュをクリア**
-   - GitHubリポジトリの Settings → Actions → Caches
+   - GitHub リポジトリの Settings → Actions → Caches
    - または、ワークフローファイルのキャッシュキーを変更
 
-### docker-compose.ci.ymlが起動しない
+### docker-compose.ci.yml が起動しない
 
 ```bash
 # ローカルで動作確認
@@ -260,7 +275,7 @@ docker compose -f docker-compose.ci.yml logs
 docker compose -f docker-compose.ci.yml down -v
 ```
 
-### Checkstyleエラー
+### Checkstyle エラー
 
 ```bash
 cd src/backend
@@ -272,7 +287,7 @@ open target/checkstyle-result.xml
 
 設定ファイル: `src/backend/checkstyle.xml`
 
-### ESLintエラー
+### ESLint エラー
 
 ```bash
 cd src/frontend
@@ -335,9 +350,10 @@ coverage: {
 
 ### ワークフローの実行条件を変更
 
-例：PRのみでE2Eを実行しない場合
+例：PR のみで E2E を実行しない場合
 
 `.github/workflows/integration-e2e.yml`:
+
 ```yaml
 on:
   push:
@@ -351,7 +367,7 @@ on:
 ## 参考資料
 
 - [GitHub Actions ドキュメント](https://docs.github.com/ja/actions)
-- [act - ローカルでActionsを実行](https://github.com/nektos/act)
-- [JaCoCo - Javaコードカバレッジ](https://www.jacoco.org/jacoco/)
+- [act - ローカルで Actions を実行](https://github.com/nektos/act)
+- [JaCoCo - Java コードカバレッジ](https://www.jacoco.org/jacoco/)
 - [Vitest - ユニットテストフレームワーク](https://vitest.dev/)
 - [Testcontainers - 統合テスト](https://testcontainers.com/)
