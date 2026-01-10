@@ -25,6 +25,7 @@
         "dbaeumer.vscode-eslint",
         "GitHub.copilot",
         "GitHub.copilot-chat",
+        "github.vscode-github-actions",
         "42crunch.vscode-openapi",
         "ms-playwright.playwright",
         "alexkrechik.cucumberautocomplete",
