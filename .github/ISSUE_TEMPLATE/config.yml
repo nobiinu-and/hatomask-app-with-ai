@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: ドキュメント
+    url: https://github.com/nobiinu-and/hatomask-app-with-ai/tree/main/docs
+    about: プロジェクトのドキュメントを確認してください
+  - name: AI プロンプト
+    url: https://github.com/nobiinu-and/hatomask-app-with-ai/tree/main/docs/ai/prompts
+    about: AI 協働開発のプロンプトテンプレート
