@@ -38,11 +38,13 @@ Conventional Commits 形式を使用：
 
 #### ブランチ戦略
 
-GitHub Flow を採用：
+GitHub Flow を採用。詳細は [ブランチ戦略ガイド](../howto/branching.md) を参照してください。
 
 - `main`: 本番環境用
 - `feature/*`: 機能開発用
 - `fix/*`: バグ修正用
+- `docs/*`: ドキュメント更新用
+- `refactor/*`: リファクタリング用
 
 ---
 
