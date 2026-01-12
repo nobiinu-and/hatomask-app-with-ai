@@ -59,6 +59,12 @@
 
 AI エージェント（Devin、Copilot など）が作成するブランチには、識別しやすいプレフィックスを付けます。
 
+### 目的
+
+- **作業の追跡**: どの AI エージェントがどの作業を行ったかを明確にする
+- **レビューの効率化**: AI 生成コードであることを認識し、適切なレビュー観点を持てる
+- **履歴の管理**: AI 協働開発の履歴を後から振り返りやすくする
+
 ### 命名規則
 
 ```
@@ -78,39 +84,40 @@ date +%s
 
 ## Task01〜06 に対応したブランチ運用
 
-AI 協働開発の各タスクに対応したブランチ運用の推奨パターンです。
+AI 協働開発の各タスクに対応したブランチ運用のパターンです。
 
-### Task01〜05（設計フェーズ）
+### 基本方針: 1 機能 = 1 ブランチ
 
-設計ドキュメントの作成は、1 つのブランチでまとめて行うことを推奨します。
+Task01〜06 のすべてのタスクは、**1 つの feature ブランチ**で扱います。
 
 ```
-feature/{機能番号}-{機能名}-design
+feature/{機能番号}-{機能名}
 ```
 
-**例**: `feature/01-photo-upload-design`
+**例**: `feature/01-photo-upload`
 
-**含まれる成果物**:
+### ブランチに含まれる成果物
+
+1 つの feature ブランチには、ドキュメントとコードの両方がコミットされます:
 
 - Task01: 機能仕様（`docs/spec/features/`）
 - Task02: ドメインモデル（`docs/spec/models/`）
 - Task03: API Contract（`docs/spec/api/`）
 - Task04: Gherkin シナリオ + 実装計画（`e2e/features/`, `docs/plans/`）
 - Task05: Backend Stub（`src/backend/`）
+- Task06: 実装コード（`src/frontend/`, `src/backend/`）
 
-### Task06（実装フェーズ）
+### 大きな機能の場合
 
-実装は、シナリオ単位または API グループ単位でブランチを分けることを推奨します。
+機能が大きい場合は、**ブランチを分割するのではなく、機能（ストーリー）を分割**します。
 
-```
-feature/{機能番号}-{機能名}-{シナリオ識別子}
-```
+**例**: 「写真アップロード」機能が大きい場合
 
-**例**:
+- `feature/01a-photo-upload-basic` - 基本的なアップロード機能
+- `feature/01b-photo-upload-validation` - バリデーション機能
+- `feature/01c-photo-upload-preview` - プレビュー機能
 
-- `feature/01-photo-upload-happy-path`
-- `feature/01-photo-upload-error-handling`
-- `feature/01-photo-upload-validation`
+それぞれの feature ブランチで Task01〜06 を完結させます。
 
 ## ブランチ作成から PR マージまでの流れ
 
@@ -123,6 +130,8 @@ git checkout -b feature/01-photo-upload
 ```
 
 ### 2. 作業とコミット
+
+コミットメッセージは [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) 形式を使用します。
 
 ```bash
 git add <変更ファイル>
@@ -150,7 +159,7 @@ git push origin feature/01-photo-upload
 
 - CI がすべてパス
 - レビュー承認を取得
-- **Squash and Merge** を推奨（履歴をクリーンに保つ）
+- **Create a merge commit** を使用（詳細な履歴を保持）
 
 ### 7. ブランチの削除
 
@@ -164,16 +173,19 @@ git branch -d feature/01-photo-upload
 
 ## マージ戦略
 
-### 推奨: Squash and Merge
+### 推奨: Create a Merge Commit
 
-- **理由**: main ブランチの履歴をクリーンに保つ
-- **コミットメッセージ**: PR タイトルを使用
-- **適用場面**: 通常の feature/fix ブランチ
+- **理由**: 詳細な履歴を残し、各コミットの文脈を保持する
+- **適用場面**: すべての feature/fix ブランチ
+- **メリット**: 
+  - 各コミットが [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) 形式で残る
+  - 後から変更の経緯を追跡しやすい
 
-### 代替: Create a Merge Commit
+### 代替: Squash and Merge
 
-- **理由**: 詳細な履歴を残したい場合
-- **適用場面**: 大規模な機能開発、複数人での共同作業
+- **理由**: 履歴をシンプルにしたい場合
+- **適用場面**: 小さな修正、WIP コミットが多い場合
+- **注意**: 個々のコミット履歴が失われる
 
 ### 非推奨: Rebase and Merge
 
@@ -227,11 +239,15 @@ AI エージェントがコンフリクトに遭遇した場合:
 
 ### Q: 1 つの機能に複数のシナリオがある場合、ブランチはどう分けるべき？
 
-**A**: 以下の基準で判断してください:
+**A**: ブランチを分割するのではなく、**機能（ストーリー）を分割**することを推奨します。
 
-- **小規模（1-2 日で完了）**: 1 ブランチにまとめる
-- **中規模（3-5 日）**: シナリオ単位で分ける
-- **大規模（1 週間以上）**: API グループ単位で分ける
+大きな機能は複数の小さなストーリーに分割し、それぞれのストーリーを 1 つの feature ブランチで完結させます。これにより、各 PR が小さく保たれ、レビューしやすくなります。
+
+**例**: 「写真アップロード」機能が大きい場合
+
+- `feature/01a-photo-upload-basic` - 基本的なアップロード機能
+- `feature/01b-photo-upload-validation` - バリデーション機能
+- `feature/01c-photo-upload-preview` - プレビュー機能
 
 ### Q: AI エージェントが作成したブランチを人間が引き継ぐ場合は？
 
