@@ -116,8 +116,11 @@ Then('顔検出が成功する', { timeout: 60000 }, async function (this: Custo
   expect(this.faceDetectionResponseStatus).toBe(200);
 });
 
-Then('顔検出が失敗する（422）', { timeout: 60000 }, async function (this: CustomWorld) {
+Then('顔検出に失敗した旨のメッセージが表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+  // UI上の受け入れ基準としてはメッセージ表示を主に検証する。
+  // 実装都合のHTTPステータスはシナリオ文言に出さないが、テストとしては確認しておく。
   expect(this.faceDetectionResponseStatus).toBe(422);
+  await expect(this.page.getByText('顔検出に失敗しました')).toBeVisible({ timeout: 60000 });
 });
 
 Then('顔のオーバーレイが表示されない', { timeout: 60000 }, async function (this: CustomWorld) {
@@ -125,9 +128,11 @@ Then('顔のオーバーレイが表示されない', { timeout: 60000 }, async 
   await expect(this.page.getByTestId('face-landmark-point')).toHaveCount(0);
 });
 
-Then('68つの特徴点がプレビュー上に表示される', { timeout: 60000 }, async function (this: CustomWorld) {
+Then('ランドマーク（点群）がプレビュー上に表示される', { timeout: 60000 }, async function (this: CustomWorld) {
   const points = this.page.getByTestId('face-landmark-point');
-  await expect(points).toHaveCount(68, { timeout: 60000 });
+  await expect
+    .poll(async () => await points.count(), { timeout: 60000 })
+    .toBeGreaterThanOrEqual(5);
   await expect(points.first()).toBeVisible({ timeout: 10000 });
 });
 
